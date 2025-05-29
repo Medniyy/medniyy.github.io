@@ -9,13 +9,10 @@
 </head>
 <body>
 
-  <!-- 🎥 BACKGROUND VIDEO -->
-  <video autoplay muted loop playsinline class="bg-video">
+  <video autoplay muted loop playsinline class="bg-video" id="bgVideo">
     <source src="backvid.mp4" type="video/mp4">
-    Your browser does not support the video tag.
   </video>
 
-  <!-- 💬 CONTENT -->
   <div class="container">
     <h1 class="title">ATH MEDIA</h1>
 
@@ -35,7 +32,30 @@
     <div class="chat-wrapper">
       <a href="https://x.com/ath_media21" target="_blank" class="chat-button">ENTER THE CHAT</a>
     </div>
+
+    <div class="toggle-style">
+      <button id="toggleMode">CINEMODE: CINEMATIC</button>
+    </div>
   </div>
+
+  <script>
+    const video = document.getElementById('bgVideo');
+    const btn = document.getElementById('toggleMode');
+
+    const modes = [
+      { label: "SOFT", style: "opacity:0.25;filter:blur(4px) brightness(0.5);" },
+      { label: "CINEMATIC", style: "opacity:0.35;filter:blur(3px) brightness(0.6);" },
+      { label: "FOCUS", style: "opacity:0.5;filter:blur(1px) brightness(0.7);" }
+    ];
+
+    let current = 1;
+
+    btn.onclick = () => {
+      current = (current + 1) % modes.length;
+      video.style = modes[current].style;
+      btn.innerText = `CINEMODE: ${modes[current].label}`;
+    };
+  </script>
 
 </body>
 </html>
