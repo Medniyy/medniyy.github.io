@@ -1,11 +1,9 @@
-/* === RESET === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* === BASE === */
 body {
   background-color: #000;
   color: #fff;
@@ -16,7 +14,6 @@ body {
   max-width: 100vw;
 }
 
-/* === BACKGROUND IMAGE === */
 .bg-image {
   position: fixed;
   top: 0;
@@ -27,13 +24,12 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.3;
-  filter: blur(2px) brightness(0.5);
+  opacity: 0.4;
+  filter: blur(1px) brightness(0.7);
   z-index: -1;
   pointer-events: none;
 }
 
-/* === CONTAINER === */
 .container {
   max-width: 600px;
   width: 100%;
@@ -41,7 +37,6 @@ body {
   padding: 0 16px;
 }
 
-/* === TITLE === */
 .title {
   font-weight: 900;
   font-size: 3.6em;
@@ -52,7 +47,6 @@ body {
   overflow-wrap: break-word;
 }
 
-/* === TAGLINE === */
 .tagline {
   font-weight: 600;
   font-size: 1.1em;
@@ -63,7 +57,6 @@ body {
   overflow-wrap: break-word;
 }
 
-/* === BUTTONS === */
 .links {
   display: flex;
   flex-direction: column;
@@ -90,7 +83,6 @@ body {
   transform: scale(1.01);
 }
 
-/* === CHAT BUTTON === */
 .chat-wrapper {
   margin-top: 50px;
 }
@@ -119,7 +111,6 @@ body {
   transform: scale(1.03);
 }
 
-/* === MOBILE === */
 @media (max-width: 600px) {
   .title {
     font-size: 2.2em;
