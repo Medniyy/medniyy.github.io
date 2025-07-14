@@ -16,7 +16,7 @@ body {
   max-width: 100vw;
 }
 
-/* === IMAGE BACKGROUND === */
+/* === BACKGROUND IMAGE === */
 .bg-image {
   position: fixed;
   top: 0;
@@ -30,6 +30,7 @@ body {
   opacity: 0.3;
   filter: blur(2px) brightness(0.5);
   z-index: -1;
+  pointer-events: none;
 }
 
 /* === CONTAINER === */
@@ -116,27 +117,6 @@ body {
   background: #fff;
   color: #000;
   transform: scale(1.03);
-}
-
-/* === SWITCH STYLE BUTTON === */
-.toggle-style {
-  margin-top: 24px;
-}
-
-#toggleMode {
-  background: none;
-  border: 1px solid #666;
-  color: #ccc;
-  font-size: 0.8em;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: 0.2s ease;
-}
-
-#toggleMode:hover {
-  color: #fff;
-  border-color: #fff;
 }
 
 /* === MOBILE === */
