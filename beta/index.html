@@ -30,19 +30,17 @@
 
         /* --- VIDEO CONTAINERS --- */
 
-        /* Standard 16:9 (Horizontal) */
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; 
+            padding-bottom: 56.25%; /* 16:9 */
             background: #111;
             overflow: hidden;
             border-radius: 4px;
             cursor: pointer;
         }
 
-        /* Vertical 9:16 (Stories/Reels) */
         .video-container.vertical {
-            padding-bottom: 177.77%; 
+            padding-bottom: 177.77%; /* 9:16 */
         }
         
         .video-container video {
@@ -54,7 +52,7 @@
             object-fit: cover;
         }
 
-        /* Center Play Icon */
+        /* Center Play Icon (Hidden by default for auto-play feel) */
         .play-icon-overlay {
             position: absolute;
             top: 50%;
@@ -69,6 +67,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0; /* Hidden initially */
         }
 
         /* Mute Button */
@@ -92,14 +91,13 @@
             background: rgba(255,255,255,0.2);
         }
 
-        /* Like Animation */
         @keyframes likeHeart {
             0% { transform: scale(1); }
             50% { transform: scale(1.4); }
             100% { transform: scale(1); }
         }
         .liked {
-            color: #ef4444 !important; /* Tailwind red-500 */
+            color: #ef4444 !important;
             animation: likeHeart 0.4s ease-in-out;
         }
 
@@ -121,9 +119,10 @@
             </div>
             <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
         </div>
-        <button onclick="openModal()" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
-            Contact
-        </button>
+        <!-- Кнопка Contact заменена на BOOK A CALL -->
+        <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
+            BOOK A CALL
+        </a>
     </nav>
 
     <main id="feed-container" class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
@@ -149,31 +148,40 @@
             </div>
         </div>
 
-        <!-- Restored Highlights -->
+        <!-- Links / Highlights (UPDATED) -->
         <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
-            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎬</div>
-                <span class="text-xs text-neutral-400">Backstage</span>
-            </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🚁</div>
-                <span class="text-xs text-neutral-400">Drone</span>
-            </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎨</div>
-                <span class="text-xs text-neutral-400">Color</span>
-            </div>
+            <!-- Join us on X -->
+            <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition min-w-[64px]">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </div>
+                <span class="text-xs text-neutral-400 text-center">Join us on X</span>
+            </a>
+            <!-- DM us on X -->
+            <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition min-w-[64px]">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">
+                    <i class="fa-regular fa-envelope"></i>
+                </div>
+                <span class="text-xs text-neutral-400 text-center">DM us on X</span>
+            </a>
+            <!-- X Highlights -->
+            <a href="https://x.com/athcamera/highlights" target="_blank" class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition min-w-[64px]">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <span class="text-xs text-neutral-400 text-center">X Highlights</span>
+            </a>
         </div>
 
         <div class="flex justify-center mb-6 text-neutral-600 text-xs uppercase tracking-widest scroll-hint">
             <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
         </div>
 
-        <!-- ARTICLES WRAPPER (For cloning) -->
+        <!-- ARTICLES WRAPPER -->
         <div id="articles-wrapper">
 
             <!-- 1. ATH Creative Agency (Vertical) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -185,33 +193,27 @@
                         </div>
                     </div>
                 </div>
-                <!-- Video Block -->
-                <div class="video-container vertical" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container vertical" onclick="toggleManualPlay(this)">
+                    <!-- preload="metadata" помогает загрузить превью -->
+                    <video loop muted playsinline preload="metadata">
                         <source src="ATHCreativeAgency.mp4" type="video/mp4">
                     </video>
-                    <!-- Play Overlay -->
-                    <div class="play-icon-overlay">
-                        <i class="fas fa-play text-2xl"></i>
-                    </div>
-                    <!-- Mute Button -->
-                    <div class="mute-btn" onclick="toggleMute(event, this)">
-                        <i class="fas fa-volume-xmark"></i>
-                    </div>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
                 </div>
-                <!-- Actions -->
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Creative Agency')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <!-- Кнопка комментария теперь ведет на X -->
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Creative Agency')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Agency promo visuals. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 2. ATH Global Competition (Horizontal) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -223,8 +225,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="ATHGlobalCompetition.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -233,15 +235,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Global Competition')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Global Competition')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Global event highlights. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 3. ATH Jupiter (Horizontal) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -253,8 +255,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="ATHJupiter.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -263,15 +265,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Jupiter')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Jupiter')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Jupiter project visuals. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 4. ATH Series (Horizontal) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -283,8 +285,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="ATHSeries.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -293,15 +295,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('ATH Series')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('ATH Series')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Exclusive series production. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 5. ATH Solana Summit (Horizontal) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -313,8 +315,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="ATHSolanaSummit.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -323,15 +325,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Solana Summit')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Solana Summit')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Summit event coverage. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 6. Solflare sink (Vertical) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -343,8 +345,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container vertical" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container vertical" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="Solflaresink.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -353,15 +355,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Solflare Sink')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Solflare Sink')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Creative production. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 7. Solflare viral (Vertical) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -373,8 +375,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container vertical" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container vertical" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="Solflareviral.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -383,15 +385,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Solflare Viral')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Solflare Viral')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Viral campaign. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 8. Better call ath (Vertical) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -403,8 +405,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container vertical" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container vertical" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="bettercallath.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -413,15 +415,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Better Call ATH')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Better Call ATH')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Narrative content. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 9. Polaris (Horizontal) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -433,8 +435,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="polaris.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -443,15 +445,15 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Polaris')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Polaris')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Cinematic production. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
             <!-- 10. Solflare shield (Horizontal) -->
-            <article class="mb-12 border-b border-neutral-900 pb-8">
+            <article class="mb-12 border-b border-neutral-900 pb-8 video-article">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
@@ -463,8 +465,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline>
+                <div class="video-container" onclick="toggleManualPlay(this)">
+                    <video loop muted playsinline preload="metadata">
                         <source src="solflareshield.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
@@ -473,26 +475,28 @@
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <button onclick="openModal('Solflare Shield')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
-                    <button onclick="openModal('Solflare Shield')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
                 </div>
                 <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Product visual shield. <span class="text-blue-400">#BetterCallATH</span></p></div>
             </article>
 
         </div>
 
-        <!-- Loading / Infinite Scroll Marker -->
         <div id="loading-marker" class="flex justify-center py-8">
             <div class="w-8 h-8 border-4 border-neutral-800 border-t-white rounded-full animate-spin"></div>
         </div>
     </main>
 
-    <!-- Modal Window -->
+    <!-- Modal Window (With Swipe Down) -->
     <div id="contactModal" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full" id="modalPanel">
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full touch-pan-y" id="modalPanel">
+            
+            <!-- Handle for swipe visual -->
             <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
+
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-white">Work with ATH</h2>
                 <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
@@ -511,20 +515,72 @@
     </div>
 
     <script>
-        // --- VIDEO CONTROLS LOGIC ---
-        function togglePlay(container) {
+        // --- GLOBAL STATE FOR SOUND ---
+        // User requested sound ON by default. Browsers might block this on first load,
+        // so we attempt to play unmuted. If failed, fallback to muted.
+        let globalMuted = false;
+
+        // --- INTERSECTION OBSERVER FOR AUTO PLAY ---
+        // This will handle playing/pausing videos as you scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.6 // Play when 60% visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const container = entry.target.querySelector('.video-container');
+                if (!container) return;
+                const video = container.querySelector('video');
+                const playIcon = container.querySelector('.play-icon-overlay');
+                const muteBtnIcon = container.querySelector('.mute-btn i');
+
+                if (entry.isIntersecting) {
+                    // Try to play with current global mute state
+                    video.muted = globalMuted;
+                    updateMuteIcon(muteBtnIcon, globalMuted);
+                    
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            // Play successful
+                            playIcon.style.opacity = '0';
+                        }).catch(error => {
+                            // Auto-play was prevented (likely due to sound)
+                            // Fallback: Mute and play
+                            console.log("Autoplay with sound blocked. Muting...");
+                            video.muted = true;
+                            globalMuted = true; // Force global mute if browser blocked sound
+                            updateMuteIcon(muteBtnIcon, true);
+                            video.play();
+                            playIcon.style.opacity = '0';
+                        });
+                    }
+                } else {
+                    // Pause when out of view
+                    video.pause();
+                    playIcon.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+
+        // Start observing all articles
+        document.querySelectorAll('article').forEach(article => observer.observe(article));
+
+
+        // --- MANUAL CONTROLS ---
+
+        function toggleManualPlay(container) {
             const video = container.querySelector('video');
             const playIcon = container.querySelector('.play-icon-overlay');
-            const muteBtnIcon = container.querySelector('.mute-btn i');
             
             if (video.paused) {
+                // When manually playing, we try to use current global mute state
+                // If user hasn't interacted yet, this is the moment we can enable sound
+                video.muted = globalMuted; 
                 video.play();
-                // When playing from click, ensure sound is ON
-                video.muted = false;
                 playIcon.style.opacity = '0';
-                // Update mute icon to show sound is on
-                muteBtnIcon.classList.remove('fa-volume-xmark');
-                muteBtnIcon.classList.add('fa-volume-high');
             } else {
                 video.pause();
                 playIcon.style.opacity = '1';
@@ -532,16 +588,23 @@
         }
 
         function toggleMute(event, btn) {
-            // Prevent triggering the parent togglePlay event
             event.stopPropagation();
-            
             const container = btn.closest('.video-container');
             const video = container.querySelector('video');
             const icon = btn.querySelector('i');
 
-            video.muted = !video.muted;
+            // Toggle state
+            const newMuteState = !video.muted;
+            video.muted = newMuteState;
             
-            if (video.muted) {
+            // Update GLOBAL state so next videos follow suit
+            globalMuted = newMuteState;
+
+            updateMuteIcon(icon, newMuteState);
+        }
+
+        function updateMuteIcon(icon, isMuted) {
+            if (isMuted) {
                 icon.classList.remove('fa-volume-high');
                 icon.classList.add('fa-volume-xmark');
             } else {
@@ -551,65 +614,95 @@
         }
 
 
+        // --- MODAL SWIPE LOGIC ---
+        const modalPanel = document.getElementById('modalPanel');
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        modalPanel.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            isDragging = true;
+        }, { passive: true });
+
+        modalPanel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+
+            // Only allow dragging down
+            if (deltaY > 0) {
+                modalPanel.style.transform = `translateY(${deltaY}px)`;
+            }
+        }, { passive: true });
+
+        modalPanel.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const deltaY = currentY - startY;
+
+            // Threshold to close (e.g., 100px)
+            if (deltaY > 100) {
+                closeModal();
+            } else {
+                // Reset position
+                modalPanel.style.transform = '';
+            }
+            // Reset vars
+            startY = 0;
+            currentY = 0;
+        });
+
+
         // --- LIKE BUTTON LOGIC ---
         function handleLike(btn) {
-            // 1. Visual Animation
             const icon = btn.querySelector('i');
-            icon.classList.remove('far'); // Outline
-            icon.classList.add('fas'); // Solid
+            icon.classList.remove('far'); 
+            icon.classList.add('fas'); 
             btn.classList.add('liked');
 
-            // 2. Open Modal with special message
             const specialMessage = "We glad you loved this one! We can do one for you. Drop us your Telegram handle and project X handle - and we'll drop you the quote!";
             openModal('Liked Project', specialMessage);
         }
 
-
         // --- INFINITE SCROLL LOGIC ---
         const feedContainer = document.getElementById('articles-wrapper');
-        const loadingMarker = document.getElementById('loading-marker');
 
         window.addEventListener('scroll', () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            
-            // If scrolled near bottom (within 100px)
             if (scrollTop + clientHeight >= scrollHeight - 100) {
                 addMoreContent();
             }
         });
 
         function addMoreContent() {
-            // Simple clone of existing content to simulate infinite feed
-            // In a real app, this would fetch new data
-            const originalArticles = document.querySelectorAll('article');
+            const originalArticles = document.querySelectorAll('.video-article'); // Select only original articles class
             
-            // Limit clone to first 5 to avoid massive DOM quickly, or clone all
-            // Let's clone all current original articles to loop them
-            originalArticles.forEach(article => {
-                const clone = article.cloneNode(true);
-                // Note: inline onclick handlers (togglePlay, handleLike) work on clones automatically
+            // Clone only the first 3 to create loop effect without massive DOM
+            for (let i = 0; i < originalArticles.length; i++) {
+                const clone = originalArticles[i].cloneNode(true);
                 feedContainer.appendChild(clone);
-            });
+                // Observe the new clone
+                observer.observe(clone);
+            }
         }
-
 
         // --- MODAL LOGIC ---
         const modal = document.getElementById('contactModal');
-        const modalPanel = document.getElementById('modalPanel');
         const subjectInput = document.getElementById('subjectInput');
         const modalMessage = document.getElementById('modalMessage');
         const defaultMessage = "Let's create something visually stunning. Tell us about your project.";
 
         function openModal(projectInterest = '', customMsg = '') {
             modal.classList.remove('hidden');
-            
-            // Update message if custom, else default
             if (customMsg) {
                 modalMessage.innerText = customMsg;
             } else {
                 modalMessage.innerText = defaultMessage;
             }
-
+            // Remove inline transform style from swipe logic if exists
+            modalPanel.style.transform = ''; 
+            
             setTimeout(() => { modalPanel.classList.remove('translate-y-full'); }, 10);
             
             if(projectInterest) {
@@ -617,13 +710,16 @@
             } else {
                 subjectInput.value = '';
             }
-            
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
             modalPanel.classList.add('translate-y-full');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            // Reset transform after animation
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                modalPanel.style.transform = '';
+            }, 300);
             document.body.style.overflow = '';
         }
 
