@@ -30,10 +30,11 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Video 4:5 (vertical) */
+        /* Video 16:9 (Cinematic Widescreen) */
         .video-container {
             position: relative;
-            padding-bottom: 125%; 
+            /* 56.25% = 16:9 Aspect Ratio. This fits standard cinematic video perfectly without cropping */
+            padding-bottom: 56.25%; 
             background: #111;
             overflow: hidden;
             border-radius: 4px;
