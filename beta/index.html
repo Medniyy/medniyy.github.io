@@ -73,7 +73,7 @@
         /* Mute Button */
         .mute-btn {
             position: absolute;
-            bottom: 25px; /* Raised slightly */
+            bottom: 25px; 
             right: 15px;
             background: rgba(0,0,0,0.6);
             padding: 8px;
@@ -102,7 +102,7 @@
             cursor: pointer;
             z-index: 20;
             transition: height 0.1s ease;
-            touch-action: none; /* Prevents scrolling while scrubbing on touch devices */
+            touch-action: none;
         }
         
         .video-progress:hover {
@@ -112,7 +112,6 @@
             height: 100%;
             background: #fff; 
             width: 0%;
-            /* Removed transition for linear width to make dragging responsive */
         }
 
         @keyframes likeHeart {
@@ -222,8 +221,6 @@
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
-                    
-                    <!-- Progress Bar with Scrub Events -->
                     <div class="video-progress" onmousedown="startScrub(event, this)" ontouchstart="startScrub(event, this)">
                         <div class="video-progress-fill"></div>
                     </div>
@@ -550,20 +547,24 @@
             <!-- Handle for swipe visual -->
             <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
 
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-white">Work with ATH</h2>
+            <div class="flex justify-end items-center mb-2">
                 <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             
-            <p id="modalMessage" class="text-neutral-400 text-sm mb-6">Let's create something visually stunning. Tell us about your project.</p>
-            
-            <form action="mailto:info@ath.camera" method="GET" class="space-y-4">
-                <input type="text" placeholder="Subject / Project Type" id="subjectInput" name="subject" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition">
-                <textarea placeholder="Describe your vision..." name="body" rows="4" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition"></textarea>
-                <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2">
-                    SEND REQUEST <i class="fas fa-arrow-right"></i>
-                </button>
-            </form>
+            <div class="text-center pb-8">
+                <!-- Heart Icon -->
+                <div class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-red-500">
+                    <i class="fas fa-heart"></i>
+                </div>
+                
+                <p id="modalMessage" class="text-neutral-300 text-lg font-medium mb-8 leading-relaxed px-4">
+                    Enjoyed this video and want outstanding videos for your project?
+                </p>
+                
+                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2 mx-auto">
+                    <i class="fa-brands fa-x-twitter"></i> Let's chat on X
+                </a>
+            </div>
         </div>
     </div>
 
@@ -587,33 +588,39 @@
                 const muteBtnIcon = container.querySelector('.mute-btn i');
 
                 if (entry.isIntersecting) {
+                    // Try to play with current global mute state
                     video.muted = globalMuted;
                     updateMuteIcon(muteBtnIcon, globalMuted);
                     
                     const playPromise = video.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
+                            // Play successful
                             playIcon.style.opacity = '0';
                         }).catch(error => {
+                            // Check for AbortError (interruption) or NotAllowedError (autoplay policy)
                             if (error.name === 'AbortError') {
-                                // Silent ignore
+                                // Silent ignore - video was paused intentionally
                             } else {
+                                // Auto-play was prevented (likely due to sound)
                                 console.log("Autoplay with sound blocked. Muting...");
                                 video.muted = true;
-                                globalMuted = true;
+                                globalMuted = true; // Force global mute if browser blocked sound
                                 updateMuteIcon(muteBtnIcon, true);
-                                video.play().catch(e => {});
+                                video.play().catch(e => { /* Ignore secondary errors */ });
                                 playIcon.style.opacity = '0';
                             }
                         });
                     }
                 } else {
+                    // Pause when out of view
                     video.pause();
                     playIcon.style.opacity = '1';
                 }
             });
         }, observerOptions);
 
+        // Start observing all articles
         document.querySelectorAll('article').forEach(article => observer.observe(article));
 
 
@@ -714,12 +721,17 @@
             const playIcon = container.querySelector('.play-icon-overlay');
             
             if (video.paused) {
+                // When manually playing, we try to use current global mute state
+                // If user hasn't interacted yet, this is the moment we can enable sound
                 video.muted = globalMuted; 
+                
+                // Catch potential AbortError on manual toggle too
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
                         playIcon.style.opacity = '0';
                     }).catch(e => {
+                        // Handle interruption gracefully
                         console.log("Manual play interrupted", e);
                     });
                 }
@@ -735,8 +747,11 @@
             const video = container.querySelector('video');
             const icon = btn.querySelector('i');
 
+            // Toggle state
             const newMuteState = !video.muted;
             video.muted = newMuteState;
+            
+            // Update GLOBAL state so next videos follow suit
             globalMuted = newMuteState;
 
             updateMuteIcon(icon, newMuteState);
@@ -769,6 +784,7 @@
             currentY = e.touches[0].clientY;
             const deltaY = currentY - startY;
 
+            // Only allow dragging down
             if (deltaY > 0) {
                 modalPanel.style.transform = `translateY(${deltaY}px)`;
             }
@@ -779,11 +795,14 @@
             isDragging = false;
             const deltaY = currentY - startY;
 
+            // Threshold to close (e.g., 100px)
             if (deltaY > 100) {
                 closeModal();
             } else {
+                // Reset position
                 modalPanel.style.transform = '';
             }
+            // Reset vars
             startY = 0;
             currentY = 0;
         });
@@ -796,8 +815,10 @@
             icon.classList.add('fas'); 
             btn.classList.add('liked');
 
-            const specialMessage = "We glad you loved this one! We can do one for you. Drop us your Telegram handle and project X handle - and we'll drop you the quote!";
-            openModal('Liked Project', specialMessage);
+            // Delay before opening modal (800ms)
+            setTimeout(() => {
+                openModal();
+            }, 800);
         }
 
         // --- INFINITE SCROLL LOGIC ---
@@ -811,42 +832,34 @@
         });
 
         function addMoreContent() {
-            const originalArticles = document.querySelectorAll('.video-article'); 
+            const originalArticles = document.querySelectorAll('.video-article'); // Select only original articles class
             
+            // Clone only the first 3 to create loop effect without massive DOM
             for (let i = 0; i < originalArticles.length; i++) {
                 const clone = originalArticles[i].cloneNode(true);
                 feedContainer.appendChild(clone);
+                // Observe the new clone
                 observer.observe(clone);
             }
         }
 
         // --- MODAL LOGIC ---
         const modal = document.getElementById('contactModal');
-        const subjectInput = document.getElementById('subjectInput');
-        const modalMessage = document.getElementById('modalMessage');
-        const defaultMessage = "Let's create something visually stunning. Tell us about your project.";
-
-        function openModal(projectInterest = '', customMsg = '') {
+        
+        function openModal() {
             modal.classList.remove('hidden');
-            if (customMsg) {
-                modalMessage.innerText = customMsg;
-            } else {
-                modalMessage.innerText = defaultMessage;
-            }
+            
+            // Remove inline transform style from swipe logic if exists
             modalPanel.style.transform = ''; 
             
             setTimeout(() => { modalPanel.classList.remove('translate-y-full'); }, 10);
             
-            if(projectInterest) {
-                subjectInput.value = `Inquiry: ${projectInterest}`;
-            } else {
-                subjectInput.value = '';
-            }
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
             modalPanel.classList.add('translate-y-full');
+            // Reset transform after animation
             setTimeout(() => { 
                 modal.classList.add('hidden'); 
                 modalPanel.style.transform = '';
