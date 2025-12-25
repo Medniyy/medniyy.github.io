@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATH | Visual Production</title>
+    
+    <!-- Иконка сайта (Favicon) - ищет файл logo.png в той же папке -->
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Убираем скроллбар */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Видео 4:5 (вертикальное) */
+        .video-container {
+            position: relative;
+            padding-bottom: 125%; 
+            background: #111;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Анимация стрелки */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(10px); opacity: 1; }
+        }
+        .scroll-hint {
+            animation: bounce 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center">
+
+    <!-- Верхнее меню -->
+    <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center max-w-2xl mx-auto left-0 right-0 border-x border-neutral-900">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
+                <!-- Логотип -->
+                <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
+            </div>
+            <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
+        </div>
+        <button onclick="openModal()" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
+            Contact
+        </button>
+    </nav>
+
+    <!-- Основная лента -->
+    <main class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
+        
+        <!-- Профиль -->
+        <div class="px-4 mb-6 flex items-start gap-5">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-600 p-0.5 shrink-0">
+                <div class="w-full h-full bg-black rounded-full overflow-hidden">
+                    <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
+                </div>
+            </div>
+            <div class="flex-1 pt-1">
+                <h1 class="text-xl font-extrabold tracking-tight">ATH Production</h1>
+                <p class="text-white font-medium text-sm mt-1">Bangers Only.</p>
+                <p class="text-neutral-400 text-sm mt-0.5">
+                    Cinematic | Trending | Exclusive
+                </p>
+                <div class="flex gap-4 mt-3">
+                    <a href="https://x.com/athcamera" target="_blank" class="text-sm font-semibold text-blue-400 hover:text-white transition flex items-center gap-2">
+                        <i class="fa-brands fa-x-twitter"></i> x.com/athcamera
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Фильтры (декор) -->
+        <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
+            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎬</div>
+                <span class="text-xs text-neutral-400">Backstage</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🚁</div>
+                <span class="text-xs text-neutral-400">Drone</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎨</div>
+                <span class="text-xs text-neutral-400">Color</span>
+            </div>
+        </div>
+
+        <div class="flex justify-center mb-6 text-neutral-600 text-xs uppercase tracking-widest scroll-hint">
+            <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
+        </div>
+
+        <!-- ПОСТ 1 -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Automotive Edit</p>
+                        <p class="text-xs text-neutral-500">Tokyo, Japan</p>
+                    </div>
+                </div>
+                <button class="text-neutral-500 hover:text-white"><i class="fas fa-ellipsis-h"></i></button>
+            </div>
+
+            <!-- Видео -->
+            <div class="relative group">
+                <div class="video-container">
+                    <!-- 
+                         ВАЖНО: Если ты загрузил свое видео, поменяй src="video1.mp4" 
+                         Если нет, оставь эту ссылку, она для примера.
+                    -->
+                    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7">
+                        <source src="https://joy1.videvo.net/videvo_files/video/free/2019-01/large_watermarked/181015_13_Venice_Beach_Drone_002_preview.mp4" type="video/mp4">
+                    </video>
+
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Automotive Edit')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">
+                            DISCUSS PROJECT
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопки -->
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Automotive Edit')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                    <button class="hover:text-white transition"><i class="far fa-paper-plane"></i></button>
+                </div>
+                <button onclick="openModal('Automotive Edit')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">
+                    CONTACT
+                </button>
+            </div>
+            <div class="px-4">
+                <p class="text-sm leading-relaxed">
+                    <span class="font-bold mr-1">ath.camera</span>
+                    Night rides in Tokyo. Speed, neon, and raw power. 
+                    <br><span class="text-blue-400">#automotive #cinematic #jdm</span>
+                </p>
+            </div>
+        </article>
+
+        <!-- ПОСТ 2 -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                         <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Streetwear Visuals</p>
+                        <p class="text-xs text-neutral-500">Kyiv, UA</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative group">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f">
+                        <source src="https://joy1.videvo.net/videvo_files/video/free/2019-09/large_watermarked/190828_27_Supermarket_music_03_preview.mp4" type="video/mp4">
+                    </video>
+
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Streetwear Visuals')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">
+                            DISCUSS PROJECT
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Streetwear')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                    <button class="hover:text-white transition"><i class="far fa-paper-plane"></i></button>
+                </div>
+                <button onclick="openModal('Streetwear')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">
+                    CONTACT
+                </button>
+            </div>
+            <div class="px-4">
+                <p class="text-sm leading-relaxed">
+                    <span class="font-bold mr-1">ath.camera</span>
+                    Urban aesthetics. Glitch effects and fast cuts.
+                    <br><span class="text-blue-400">#fashion #streetwear #edit</span>
+                </p>
+            </div>
+        </article>
+
+        <!-- Загрузка -->
+        <div class="flex justify-center py-8">
+            <div class="w-8 h-8 border-4 border-neutral-800 border-t-white rounded-full animate-spin"></div>
+        </div>
+    </main>
+
+    <!-- Модальное окно -->
+    <div id="contactModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full" id="modalPanel">
+            <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-white">Work with ATH</h2>
+                <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            
+            <form action="mailto:info@ath.camera" method="GET" class="space-y-4">
+                <input type="text" placeholder="Subject / Project Type" id="subjectInput" name="subject" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition">
+                <textarea placeholder="Describe your vision..." name="body" rows="4" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition"></textarea>
+                <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2">
+                    SEND REQUEST <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('contactModal');
+        const modalPanel = document.getElementById('modalPanel');
+        const subjectInput = document.getElementById('subjectInput');
+
+        function openModal(projectInterest = '') {
+            modal.classList.remove('hidden');
+            setTimeout(() => { modalPanel.classList.remove('translate-y-full'); }, 10);
+            if(projectInterest) subjectInput.value = `Inquiry: ${projectInterest}`;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modalPanel.classList.add('translate-y-full');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => { if (e.key === "Escape") closeModal(); });
+    </script>
+</body>
+</html>
