@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATH | Visual Production</title>
     
-    <!-- Иконка сайта (Favicon) - ищет файл logo.png в той же папке -->
+    <!-- Site Icon (Favicon) - looks for logo.png in the same folder -->
     <link rel="icon" type="image/png" href="logo.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +20,7 @@
             color: #fff;
         }
 
-        /* Убираем скроллбар */
+        /* Hide scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -30,7 +30,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Видео 4:5 (вертикальное) */
+        /* Video 4:5 (vertical) */
         .video-container {
             position: relative;
             padding-bottom: 125%; 
@@ -48,7 +48,7 @@
             object-fit: cover;
         }
 
-        /* Анимация стрелки */
+        /* Arrow animation */
         @keyframes bounce {
             0%, 100% { transform: translateY(0); opacity: 0.5; }
             50% { transform: translateY(10px); opacity: 1; }
@@ -60,11 +60,11 @@
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center">
 
-    <!-- Верхнее меню -->
+    <!-- Top Menu -->
     <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center max-w-2xl mx-auto left-0 right-0 border-x border-neutral-900">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
-                <!-- Логотип -->
+                <!-- Logo -->
                 <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
             </div>
             <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
@@ -74,10 +74,10 @@
         </button>
     </nav>
 
-    <!-- Основная лента -->
+    <!-- Main Feed -->
     <main class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
         
-        <!-- Профиль -->
+        <!-- Profile -->
         <div class="px-4 mb-6 flex items-start gap-5">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-600 p-0.5 shrink-0">
                 <div class="w-full h-full bg-black rounded-full overflow-hidden">
@@ -98,7 +98,7 @@
             </div>
         </div>
 
-        <!-- Фильтры (декор) -->
+        <!-- Filters (decorative) -->
         <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
             <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
                 <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎬</div>
@@ -118,7 +118,7 @@
             <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
         </div>
 
-        <!-- ПОСТ 1 -->
+        <!-- POST 1 -->
         <article class="mb-12 border-b border-neutral-900 pb-8">
             <div class="flex items-center justify-between px-4 py-3">
                 <div class="flex items-center gap-2">
@@ -133,12 +133,12 @@
                 <button class="text-neutral-500 hover:text-white"><i class="fas fa-ellipsis-h"></i></button>
             </div>
 
-            <!-- Видео -->
+            <!-- Video -->
             <div class="relative group">
                 <div class="video-container">
                     <!-- 
-                         ВАЖНО: Если ты загрузил свое видео, поменяй src="video1.mp4" 
-                         Если нет, оставь эту ссылку, она для примера.
+                         IMPORTANT: If you uploaded your own video, change src="video1.mp4".
+                         If not, keep this link as an example.
                     -->
                     <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7">
                         <source src="https://joy1.videvo.net/videvo_files/video/free/2019-01/large_watermarked/181015_13_Venice_Beach_Drone_002_preview.mp4" type="video/mp4">
@@ -152,7 +152,7 @@
                 </div>
             </div>
 
-            <!-- Кнопки -->
+            <!-- Buttons -->
             <div class="px-4 py-3 flex justify-between items-center">
                 <div class="flex gap-5 text-2xl text-neutral-300">
                     <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
@@ -172,7 +172,7 @@
             </div>
         </article>
 
-        <!-- ПОСТ 2 -->
+        <!-- POST 2 -->
         <article class="mb-12 border-b border-neutral-900 pb-8">
             <div class="flex items-center justify-between px-4 py-3">
                 <div class="flex items-center gap-2">
@@ -219,13 +219,13 @@
             </div>
         </article>
 
-        <!-- Загрузка -->
+        <!-- Loading -->
         <div class="flex justify-center py-8">
             <div class="w-8 h-8 border-4 border-neutral-800 border-t-white rounded-full animate-spin"></div>
         </div>
     </main>
 
-    <!-- Модальное окно -->
+    <!-- Modal Window -->
     <div id="contactModal" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
         <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full" id="modalPanel">
