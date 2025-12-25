@@ -37,6 +37,7 @@
             background: #111;
             overflow: hidden;
             border-radius: 4px;
+            cursor: pointer;
         }
 
         /* Vertical 9:16 (Stories/Reels) */
@@ -51,6 +52,55 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Center Play Icon */
+        .play-icon-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: opacity 0.2s;
+            background: rgba(0,0,0,0.5);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mute Button */
+        .mute-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 8px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s;
+        }
+        .mute-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Like Animation */
+        @keyframes likeHeart {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+        .liked {
+            color: #ef4444 !important; /* Tailwind red-500 */
+            animation: likeHeart 0.4s ease-in-out;
         }
 
         @keyframes bounce {
@@ -76,7 +126,7 @@
         </button>
     </nav>
 
-    <main class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
+    <main id="feed-container" class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
         
         <!-- Profile Header -->
         <div class="px-4 mb-6 flex items-start gap-5">
@@ -99,342 +149,341 @@
             </div>
         </div>
 
+        <!-- Restored Highlights -->
+        <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
+            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎬</div>
+                <span class="text-xs text-neutral-400">Backstage</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🚁</div>
+                <span class="text-xs text-neutral-400">Drone</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎨</div>
+                <span class="text-xs text-neutral-400">Color</span>
+            </div>
+        </div>
+
         <div class="flex justify-center mb-6 text-neutral-600 text-xs uppercase tracking-widest scroll-hint">
             <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
         </div>
 
-        <!-- 1. ATH Creative Agency (Vertical) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Creative Agency</p>
-                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+        <!-- ARTICLES WRAPPER (For cloning) -->
+        <div id="articles-wrapper">
+
+            <!-- 1. ATH Creative Agency (Vertical) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Creative Agency</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container vertical">
-                    <video autoplay loop muted playsinline>
+                <!-- Video Block -->
+                <div class="video-container vertical" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="ATHCreativeAgency.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Creative Agency')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <!-- Play Overlay -->
+                    <div class="play-icon-overlay">
+                        <i class="fas fa-play text-2xl"></i>
+                    </div>
+                    <!-- Mute Button -->
+                    <div class="mute-btn" onclick="toggleMute(event, this)">
+                        <i class="fas fa-volume-xmark"></i>
                     </div>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Creative Agency')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                <!-- Actions -->
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Creative Agency')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                    </div>
+                    <button onclick="openModal('Creative Agency')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-                <button onclick="openModal('Creative Agency')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Agency promo visuals.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Agency promo visuals. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 2. ATH Global Competition (Horizontal) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Global Competition</p>
-                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+            <!-- 2. ATH Global Competition (Horizontal) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Global Competition</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="ATHGlobalCompetition.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Global Competition')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Global Competition')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Global Competition')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Global Competition')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Global Competition')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Global event highlights.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Global event highlights. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 3. ATH Jupiter (Horizontal) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Jupiter</p>
-                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+            <!-- 3. ATH Jupiter (Horizontal) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Jupiter</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="ATHJupiter.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Jupiter')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Jupiter')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Jupiter')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Jupiter')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Jupiter')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Jupiter project visuals.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Jupiter project visuals. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 4. ATH Series (Horizontal) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">ATH Series</p>
-                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+            <!-- 4. ATH Series (Horizontal) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">ATH Series</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="ATHSeries.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('ATH Series')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('ATH Series')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('ATH Series')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('ATH Series')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('ATH Series')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Exclusive series production.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Exclusive series production. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 5. ATH Solana Summit (Horizontal) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Solana Summit</p>
-                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+            <!-- 5. ATH Solana Summit (Horizontal) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Solana Summit</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="ATHSolanaSummit.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solana Summit')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Solana Summit')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Solana Summit')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Solana Summit')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Solana Summit')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Summit event coverage.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Summit event coverage. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 6. Solflare sink (Vertical) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Solflare Sink</p>
-                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+            <!-- 6. Solflare sink (Vertical) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Solflare Sink</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container vertical">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container vertical" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="Solflaresink.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solflare Sink')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Solflare Sink')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Solflare Sink')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Solflare Sink')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Solflare Sink')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Creative production.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Creative production. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 7. Solflare viral (Vertical) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Solflare Viral</p>
-                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+            <!-- 7. Solflare viral (Vertical) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Solflare Viral</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container vertical">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container vertical" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="Solflareviral.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solflare Viral')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Solflare Viral')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Solflare Viral')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Solflare Viral')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Solflare Viral')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Viral campaign.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Viral campaign. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 8. Better call ath (Vertical) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Better Call ATH</p>
-                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+            <!-- 8. Better call ath (Vertical) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Better Call ATH</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container vertical">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container vertical" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="bettercallath.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Better Call ATH')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Better Call ATH')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Better Call ATH')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Better Call ATH')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Better Call ATH')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Narrative content.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Narrative content. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 9. Polaris (Horizontal) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Polaris</p>
-                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+            <!-- 9. Polaris (Horizontal) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Polaris</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="polaris.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Polaris')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Polaris')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Polaris')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Polaris')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Polaris')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Cinematic production.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Cinematic production. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- 10. Solflare shield (Horizontal) -->
-        <article class="mb-12 border-b border-neutral-900 pb-8">
-            <div class="flex items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Solflare Shield</p>
-                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+            <!-- 10. Solflare shield (Horizontal) -->
+            <article class="mb-12 border-b border-neutral-900 pb-8">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                            <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">Solflare Shield</p>
+                            <p class="text-xs text-neutral-500">ATH Creative Agency</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative group">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
+                <div class="video-container" onclick="togglePlay(this)">
+                    <video loop muted playsinline>
                         <source src="solflareshield.mp4" type="video/mp4">
                     </video>
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solflare Shield')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+                    <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                </div>
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex gap-5 text-2xl text-neutral-300">
+                        <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
+                        <button onclick="openModal('Solflare Shield')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                     </div>
+                    <button onclick="openModal('Solflare Shield')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
                 </div>
-            </div>
-            <div class="px-4 py-3 flex justify-between items-center">
-                <div class="flex gap-5 text-2xl text-neutral-300">
-                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Solflare Shield')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                </div>
-                <button onclick="openModal('Solflare Shield')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
-            </div>
-            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Product visual shield.</p></div>
-        </article>
+                <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Product visual shield. <span class="text-blue-400">#BetterCallATH</span></p></div>
+            </article>
 
-        <!-- Loading -->
-        <div class="flex justify-center py-8">
+        </div>
+
+        <!-- Loading / Infinite Scroll Marker -->
+        <div id="loading-marker" class="flex justify-center py-8">
             <div class="w-8 h-8 border-4 border-neutral-800 border-t-white rounded-full animate-spin"></div>
         </div>
     </main>
@@ -449,6 +498,8 @@
                 <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             
+            <p id="modalMessage" class="text-neutral-400 text-sm mb-6">Let's create something visually stunning. Tell us about your project.</p>
+            
             <form action="mailto:info@ath.camera" method="GET" class="space-y-4">
                 <input type="text" placeholder="Subject / Project Type" id="subjectInput" name="subject" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition">
                 <textarea placeholder="Describe your vision..." name="body" rows="4" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition"></textarea>
@@ -460,14 +511,113 @@
     </div>
 
     <script>
+        // --- VIDEO CONTROLS LOGIC ---
+        function togglePlay(container) {
+            const video = container.querySelector('video');
+            const playIcon = container.querySelector('.play-icon-overlay');
+            const muteBtnIcon = container.querySelector('.mute-btn i');
+            
+            if (video.paused) {
+                video.play();
+                // When playing from click, ensure sound is ON
+                video.muted = false;
+                playIcon.style.opacity = '0';
+                // Update mute icon to show sound is on
+                muteBtnIcon.classList.remove('fa-volume-xmark');
+                muteBtnIcon.classList.add('fa-volume-high');
+            } else {
+                video.pause();
+                playIcon.style.opacity = '1';
+            }
+        }
+
+        function toggleMute(event, btn) {
+            // Prevent triggering the parent togglePlay event
+            event.stopPropagation();
+            
+            const container = btn.closest('.video-container');
+            const video = container.querySelector('video');
+            const icon = btn.querySelector('i');
+
+            video.muted = !video.muted;
+            
+            if (video.muted) {
+                icon.classList.remove('fa-volume-high');
+                icon.classList.add('fa-volume-xmark');
+            } else {
+                icon.classList.remove('fa-volume-xmark');
+                icon.classList.add('fa-volume-high');
+            }
+        }
+
+
+        // --- LIKE BUTTON LOGIC ---
+        function handleLike(btn) {
+            // 1. Visual Animation
+            const icon = btn.querySelector('i');
+            icon.classList.remove('far'); // Outline
+            icon.classList.add('fas'); // Solid
+            btn.classList.add('liked');
+
+            // 2. Open Modal with special message
+            const specialMessage = "We glad you loved this one! We can do one for you. Drop us your Telegram handle and project X handle - and we'll drop you the quote!";
+            openModal('Liked Project', specialMessage);
+        }
+
+
+        // --- INFINITE SCROLL LOGIC ---
+        const feedContainer = document.getElementById('articles-wrapper');
+        const loadingMarker = document.getElementById('loading-marker');
+
+        window.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            
+            // If scrolled near bottom (within 100px)
+            if (scrollTop + clientHeight >= scrollHeight - 100) {
+                addMoreContent();
+            }
+        });
+
+        function addMoreContent() {
+            // Simple clone of existing content to simulate infinite feed
+            // In a real app, this would fetch new data
+            const originalArticles = document.querySelectorAll('article');
+            
+            // Limit clone to first 5 to avoid massive DOM quickly, or clone all
+            // Let's clone all current original articles to loop them
+            originalArticles.forEach(article => {
+                const clone = article.cloneNode(true);
+                // Note: inline onclick handlers (togglePlay, handleLike) work on clones automatically
+                feedContainer.appendChild(clone);
+            });
+        }
+
+
+        // --- MODAL LOGIC ---
         const modal = document.getElementById('contactModal');
         const modalPanel = document.getElementById('modalPanel');
         const subjectInput = document.getElementById('subjectInput');
+        const modalMessage = document.getElementById('modalMessage');
+        const defaultMessage = "Let's create something visually stunning. Tell us about your project.";
 
-        function openModal(projectInterest = '') {
+        function openModal(projectInterest = '', customMsg = '') {
             modal.classList.remove('hidden');
+            
+            // Update message if custom, else default
+            if (customMsg) {
+                modalMessage.innerText = customMsg;
+            } else {
+                modalMessage.innerText = defaultMessage;
+            }
+
             setTimeout(() => { modalPanel.classList.remove('translate-y-full'); }, 10);
-            if(projectInterest) subjectInput.value = `Inquiry: ${projectInterest}`;
+            
+            if(projectInterest) {
+                subjectInput.value = `Inquiry: ${projectInterest}`;
+            } else {
+                subjectInput.value = '';
+            }
+            
             document.body.style.overflow = 'hidden';
         }
 
