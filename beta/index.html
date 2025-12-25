@@ -32,7 +32,7 @@
 
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
             background: #111;
             overflow: hidden;
             border-radius: 4px;
@@ -40,7 +40,7 @@
         }
 
         .video-container.vertical {
-            padding-bottom: 177.77%; /* 9:16 */
+            padding-bottom: 177.77%; /* 9:16 Aspect Ratio */
         }
         
         .video-container video {
@@ -73,7 +73,7 @@
         /* Mute Button */
         .mute-btn {
             position: absolute;
-            bottom: 15px;
+            bottom: 25px; /* Raised slightly to avoid overlapping the progress bar */
             right: 15px;
             background: rgba(0,0,0,0.6);
             padding: 8px;
@@ -89,6 +89,29 @@
         }
         .mute-btn:hover {
             background: rgba(255,255,255,0.2);
+        }
+
+        /* --- PROGRESS BAR STYLES --- */
+        .video-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px; /* Thin line */
+            background: rgba(255, 255, 255, 0.2); /* Transparent track background */
+            cursor: pointer;
+            z-index: 20;
+            transition: height 0.1s ease;
+        }
+        /* Increase click/hover area for usability */
+        .video-progress:hover {
+            height: 8px;
+        }
+        .video-progress-fill {
+            height: 100%;
+            background: #fff; /* White fill color */
+            width: 0%;
+            transition: width 0.1s linear;
         }
 
         @keyframes likeHeart {
@@ -112,6 +135,7 @@
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center">
 
+    <!-- NAVIGATION BAR -->
     <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center max-w-2xl mx-auto left-0 right-0 border-x border-neutral-900">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
@@ -119,12 +143,13 @@
             </div>
             <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
         </div>
-        <!-- Кнопка Contact заменена на BOOK A CALL -->
+        <!-- Booking Button -->
         <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
             BOOK A CALL
         </a>
     </nav>
 
+    <!-- MAIN CONTENT AREA -->
     <main id="feed-container" class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
         
         <!-- Profile Header -->
@@ -148,12 +173,13 @@
             </div>
         </div>
 
-        <!-- Links / Highlights (UPDATED) -->
+        <!-- Social Links / Highlights -->
         <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
             <!-- Join us on X -->
             <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition min-w-[64px]">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">
-                    <i class="fa-brands fa-x-twitter"></i>
+                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center overflow-hidden">
+                    <!-- Image xlogo.jpg instead of icon -->
+                    <img src="xlogo.jpg" class="w-full h-full object-cover" alt="X">
                 </div>
                 <span class="text-xs text-neutral-400 text-center">Join us on X</span>
             </a>
@@ -173,11 +199,12 @@
             </a>
         </div>
 
+        <!-- Scroll Hint -->
         <div class="flex justify-center mb-6 text-neutral-600 text-xs uppercase tracking-widest scroll-hint">
             <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
         </div>
 
-        <!-- ARTICLES WRAPPER -->
+        <!-- VIDEO FEED -->
         <div id="articles-wrapper">
 
             <!-- 1. ATH Creative Agency (Vertical) -->
@@ -194,17 +221,23 @@
                     </div>
                 </div>
                 <div class="video-container vertical" onclick="toggleManualPlay(this)">
-                    <!-- preload="metadata" помогает загрузить превью -->
-                    <video loop muted playsinline preload="metadata">
+                    <!-- preload="metadata" helps load the preview -->
+                    <!-- ontimeupdate updates the progress bar -->
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="ATHCreativeAgency.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
                         <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                        <!-- Кнопка комментария теперь ведет на X -->
+                        <!-- Comment button now leads to X -->
                         <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
                     </div>
                     <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK A CALL</a>
@@ -226,11 +259,15 @@
                     </div>
                 </div>
                 <div class="video-container" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="ATHGlobalCompetition.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -256,11 +293,15 @@
                     </div>
                 </div>
                 <div class="video-container" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="ATHJupiter.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -286,11 +327,15 @@
                     </div>
                 </div>
                 <div class="video-container" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="ATHSeries.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -316,11 +361,15 @@
                     </div>
                 </div>
                 <div class="video-container" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="ATHSolanaSummit.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -346,11 +395,15 @@
                     </div>
                 </div>
                 <div class="video-container vertical" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="Solflaresink.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -376,11 +429,15 @@
                     </div>
                 </div>
                 <div class="video-container vertical" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="Solflareviral.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -406,11 +463,15 @@
                     </div>
                 </div>
                 <div class="video-container vertical" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="bettercallath.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -436,11 +497,15 @@
                     </div>
                 </div>
                 <div class="video-container" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="polaris.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -466,11 +531,15 @@
                     </div>
                 </div>
                 <div class="video-container" onclick="toggleManualPlay(this)">
-                    <video loop muted playsinline preload="metadata">
+                    <video loop muted playsinline preload="metadata" ontimeupdate="updateProgress(this)">
                         <source src="solflareshield.mp4" type="video/mp4">
                     </video>
                     <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
                     <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
+                    <!-- Progress Bar -->
+                    <div class="video-progress" onclick="seekVideo(event, this)">
+                        <div class="video-progress-fill"></div>
+                    </div>
                 </div>
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex gap-5 text-2xl text-neutral-300">
@@ -547,14 +616,18 @@
                             // Play successful
                             playIcon.style.opacity = '0';
                         }).catch(error => {
-                            // Auto-play was prevented (likely due to sound)
-                            // Fallback: Mute and play
-                            console.log("Autoplay with sound blocked. Muting...");
-                            video.muted = true;
-                            globalMuted = true; // Force global mute if browser blocked sound
-                            updateMuteIcon(muteBtnIcon, true);
-                            video.play();
-                            playIcon.style.opacity = '0';
+                            // Check for AbortError (interruption) or NotAllowedError (autoplay policy)
+                            if (error.name === 'AbortError') {
+                                // Silent ignore - video was paused intentionally
+                            } else {
+                                // Auto-play was prevented (likely due to sound)
+                                console.log("Autoplay with sound blocked. Muting...");
+                                video.muted = true;
+                                globalMuted = true; // Force global mute if browser blocked sound
+                                updateMuteIcon(muteBtnIcon, true);
+                                video.play().catch(e => { /* Ignore secondary errors */ });
+                                playIcon.style.opacity = '0';
+                            }
                         });
                     }
                 } else {
@@ -569,6 +642,36 @@
         document.querySelectorAll('article').forEach(article => observer.observe(article));
 
 
+        // --- PROGRESS BAR LOGIC ---
+        function updateProgress(video) {
+            // Calculate percentage
+            if (!video.duration) return;
+            const container = video.closest('.video-container');
+            const barFill = container.querySelector('.video-progress-fill');
+            const percent = (video.currentTime / video.duration) * 100;
+            barFill.style.width = `${percent}%`;
+        }
+
+        function seekVideo(event, progressBar) {
+            // Prevent toggling play/pause on container click
+            event.stopPropagation();
+            
+            const container = progressBar.closest('.video-container');
+            const video = container.querySelector('video');
+            
+            // Calculate click position
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            
+            // Set video time
+            if (video.duration) {
+                video.currentTime = percent * video.duration;
+            }
+        }
+
+
         // --- MANUAL CONTROLS ---
 
         function toggleManualPlay(container) {
@@ -579,8 +682,17 @@
                 // When manually playing, we try to use current global mute state
                 // If user hasn't interacted yet, this is the moment we can enable sound
                 video.muted = globalMuted; 
-                video.play();
-                playIcon.style.opacity = '0';
+                
+                // Catch potential AbortError on manual toggle too
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        playIcon.style.opacity = '0';
+                    }).catch(e => {
+                        // Handle interruption gracefully
+                        console.log("Manual play interrupted", e);
+                    });
+                }
             } else {
                 video.pause();
                 playIcon.style.opacity = '1';
