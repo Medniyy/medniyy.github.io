@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATH | Visual Production</title>
     
-    <!-- Site Icon (Favicon) - looks for logo.png in the same folder -->
     <link rel="icon" type="image/png" href="logo.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +19,6 @@
             color: #fff;
         }
 
-        /* Hide scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -30,14 +28,20 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Video 16:9 (Cinematic Widescreen) */
+        /* --- VIDEO CONTAINERS --- */
+
+        /* Standard 16:9 (Horizontal) */
         .video-container {
             position: relative;
-            /* 56.25% = 16:9 Aspect Ratio. This fits standard cinematic video perfectly without cropping */
             padding-bottom: 56.25%; 
             background: #111;
             overflow: hidden;
             border-radius: 4px;
+        }
+
+        /* Vertical 9:16 (Stories/Reels) */
+        .video-container.vertical {
+            padding-bottom: 177.77%; 
         }
         
         .video-container video {
@@ -49,7 +53,6 @@
             object-fit: cover;
         }
 
-        /* Arrow animation */
         @keyframes bounce {
             0%, 100% { transform: translateY(0); opacity: 0.5; }
             50% { transform: translateY(10px); opacity: 1; }
@@ -61,11 +64,9 @@
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center">
 
-    <!-- Top Menu -->
     <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center max-w-2xl mx-auto left-0 right-0 border-x border-neutral-900">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
-                <!-- Logo -->
                 <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
             </div>
             <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
@@ -75,10 +76,9 @@
         </button>
     </nav>
 
-    <!-- Main Feed -->
     <main class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
         
-        <!-- Profile -->
+        <!-- Profile Header -->
         <div class="px-4 mb-6 flex items-start gap-5">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-600 p-0.5 shrink-0">
                 <div class="w-full h-full bg-black rounded-full overflow-hidden">
@@ -99,27 +99,11 @@
             </div>
         </div>
 
-        <!-- Filters (decorative) -->
-        <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
-            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎬</div>
-                <span class="text-xs text-neutral-400">Backstage</span>
-            </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🚁</div>
-                <span class="text-xs text-neutral-400">Drone</span>
-            </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl">🎨</div>
-                <span class="text-xs text-neutral-400">Color</span>
-            </div>
-        </div>
-
         <div class="flex justify-center mb-6 text-neutral-600 text-xs uppercase tracking-widest scroll-hint">
             <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
         </div>
 
-        <!-- POST 1 -->
+        <!-- 1. ATH Creative Agency (Vertical) -->
         <article class="mb-12 border-b border-neutral-900 pb-8">
             <div class="flex items-center justify-between px-4 py-3">
                 <div class="flex items-center gap-2">
@@ -127,97 +111,326 @@
                         <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-white">Automotive Edit</p>
-                        <p class="text-xs text-neutral-500">Tokyo, Japan</p>
+                        <p class="text-sm font-semibold">Creative Agency</p>
+                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
                     </div>
                 </div>
-                <button class="text-neutral-500 hover:text-white"><i class="fas fa-ellipsis-h"></i></button>
             </div>
-
-            <!-- Video -->
             <div class="relative group">
-                <div class="video-container">
-                    <!-- 
-                         IMPORTANT: If you uploaded your own video, change src="video1.mp4".
-                         If not, keep this link as an example.
-                    -->
-                    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7">
-                        <source src="https://joy1.videvo.net/videvo_files/video/free/2019-01/large_watermarked/181015_13_Venice_Beach_Drone_002_preview.mp4" type="video/mp4">
+                <div class="video-container vertical">
+                    <video autoplay loop muted playsinline>
+                        <source src="ATHCreativeAgency.mp4" type="video/mp4">
                     </video>
-
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Automotive Edit')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">
-                            DISCUSS PROJECT
-                        </button>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Creative Agency')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Buttons -->
             <div class="px-4 py-3 flex justify-between items-center">
                 <div class="flex gap-5 text-2xl text-neutral-300">
                     <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Automotive Edit')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                    <button class="hover:text-white transition"><i class="far fa-paper-plane"></i></button>
+                    <button onclick="openModal('Creative Agency')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                 </div>
-                <button onclick="openModal('Automotive Edit')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">
-                    CONTACT
-                </button>
+                <button onclick="openModal('Creative Agency')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
             </div>
-            <div class="px-4">
-                <p class="text-sm leading-relaxed">
-                    <span class="font-bold mr-1">ath.camera</span>
-                    Night rides in Tokyo. Speed, neon, and raw power. 
-                    <br><span class="text-blue-400">#automotive #cinematic #jdm</span>
-                </p>
-            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Agency promo visuals.</p></div>
         </article>
 
-        <!-- POST 2 -->
+        <!-- 2. ATH Global Competition (Horizontal) -->
         <article class="mb-12 border-b border-neutral-900 pb-8">
             <div class="flex items-center justify-between px-4 py-3">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                         <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <p class="text-sm font-semibold">Streetwear Visuals</p>
-                        <p class="text-xs text-neutral-500">Kyiv, UA</p>
+                        <p class="text-sm font-semibold">Global Competition</p>
+                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
                     </div>
                 </div>
             </div>
-
             <div class="relative group">
                 <div class="video-container">
-                    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f">
-                        <source src="https://joy1.videvo.net/videvo_files/video/free/2019-09/large_watermarked/190828_27_Supermarket_music_03_preview.mp4" type="video/mp4">
+                    <video autoplay loop muted playsinline>
+                        <source src="ATHGlobalCompetition.mp4" type="video/mp4">
                     </video>
-
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Streetwear Visuals')">
-                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">
-                            DISCUSS PROJECT
-                        </button>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Global Competition')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
                     </div>
                 </div>
             </div>
-
             <div class="px-4 py-3 flex justify-between items-center">
                 <div class="flex gap-5 text-2xl text-neutral-300">
                     <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <button onclick="openModal('Streetwear')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
-                    <button class="hover:text-white transition"><i class="far fa-paper-plane"></i></button>
+                    <button onclick="openModal('Global Competition')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
                 </div>
-                <button onclick="openModal('Streetwear')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">
-                    CONTACT
-                </button>
+                <button onclick="openModal('Global Competition')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
             </div>
-            <div class="px-4">
-                <p class="text-sm leading-relaxed">
-                    <span class="font-bold mr-1">ath.camera</span>
-                    Urban aesthetics. Glitch effects and fast cuts.
-                    <br><span class="text-blue-400">#fashion #streetwear #edit</span>
-                </p>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Global event highlights.</p></div>
+        </article>
+
+        <!-- 3. ATH Jupiter (Horizontal) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Jupiter</p>
+                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+                    </div>
+                </div>
             </div>
+            <div class="relative group">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="ATHJupiter.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Jupiter')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Jupiter')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Jupiter')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Jupiter project visuals.</p></div>
+        </article>
+
+        <!-- 4. ATH Series (Horizontal) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">ATH Series</p>
+                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="ATHSeries.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('ATH Series')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('ATH Series')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('ATH Series')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Exclusive series production.</p></div>
+        </article>
+
+        <!-- 5. ATH Solana Summit (Horizontal) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Solana Summit</p>
+                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="ATHSolanaSummit.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solana Summit')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Solana Summit')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Solana Summit')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Summit event coverage.</p></div>
+        </article>
+
+        <!-- 6. Solflare sink (Vertical) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Solflare Sink</p>
+                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container vertical">
+                    <video autoplay loop muted playsinline>
+                        <source src="Solflaresink.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solflare Sink')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Solflare Sink')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Solflare Sink')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Creative production.</p></div>
+        </article>
+
+        <!-- 7. Solflare viral (Vertical) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Solflare Viral</p>
+                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container vertical">
+                    <video autoplay loop muted playsinline>
+                        <source src="Solflareviral.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solflare Viral')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Solflare Viral')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Solflare Viral')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Viral campaign.</p></div>
+        </article>
+
+        <!-- 8. Better call ath (Vertical) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Better Call ATH</p>
+                        <p class="text-xs text-neutral-500">Vertical 1080x1920</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container vertical">
+                    <video autoplay loop muted playsinline>
+                        <source src="bettercallath.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Better Call ATH')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Better Call ATH')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Better Call ATH')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Narrative content.</p></div>
+        </article>
+
+        <!-- 9. Polaris (Horizontal) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Polaris</p>
+                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="polaris.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Polaris')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Polaris')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Polaris')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Cinematic production.</p></div>
+        </article>
+
+        <!-- 10. Solflare shield (Horizontal) -->
+        <article class="mb-12 border-b border-neutral-900 pb-8">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
+                        <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Solflare Shield</p>
+                        <p class="text-xs text-neutral-500">Cinematic 1280x720</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="solflareshield.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm cursor-pointer" onclick="openModal('Solflare Shield')">
+                        <button class="bg-white text-black px-6 py-3 rounded-full font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition duration-300 shadow-lg">DISCUSS PROJECT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-3 flex justify-between items-center">
+                <div class="flex gap-5 text-2xl text-neutral-300">
+                    <button class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                    <button onclick="openModal('Solflare Shield')" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></button>
+                </div>
+                <button onclick="openModal('Solflare Shield')" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">CONTACT</button>
+            </div>
+            <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> Product visual shield.</p></div>
         </article>
 
         <!-- Loading -->
