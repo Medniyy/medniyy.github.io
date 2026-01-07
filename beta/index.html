@@ -71,15 +71,15 @@
             object-fit: cover;
         }
 
-        /* Play Icon */
+        /* Play/Pause Icon */
         .play-icon-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            transition: opacity 0.3s;
-            background: rgba(0,0,0,0.6);
+            transition: opacity 0.2s ease;
+            background: rgba(0,0,0,0.7);
             width: 70px;
             height: 70px;
             border-radius: 50%;
@@ -87,10 +87,15 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
+            z-index: 5;
         }
 
         .video-container.paused .play-icon-overlay {
             opacity: 1;
+        }
+
+        .video-container:hover .play-icon-overlay {
+            opacity: 0.8;
         }
 
         /* Mute Button */
@@ -134,7 +139,7 @@
         }
         .video-progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            background: linear-gradient(90deg, #0CC453, #0A9AD5);
             width: 0%;
             transition: width 0.1s linear;
         }

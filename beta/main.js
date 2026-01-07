@@ -178,6 +178,35 @@ function toggleManualPlay(container) {
     }
 }
 
+// Show play icon on hover for playing videos
+document.addEventListener('DOMContentLoaded', () => {
+    const containers = document.querySelectorAll('.video-container');
+    containers.forEach(container => {
+        container.addEventListener('mouseenter', () => {
+            const video = container.querySelector('video');
+            const playIcon = container.querySelector('.play-icon-overlay');
+            // Show pause icon (change to pause symbol) when video is playing
+            if (!video.paused) {
+                playIcon.innerHTML = '<i class="fas fa-pause text-2xl"></i>';
+                playIcon.style.opacity = '0.8';
+            }
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            const video = container.querySelector('video');
+            const playIcon = container.querySelector('.play-icon-overlay');
+            // Hide icon when not hovering and video is playing
+            if (!video.paused) {
+                playIcon.style.opacity = '0';
+                // Reset to play icon for when it pauses
+                setTimeout(() => {
+                    playIcon.innerHTML = '<i class="fas fa-play text-2xl"></i>';
+                }, 300);
+            }
+        });
+    });
+});
+
 // MUTE/UNMUTE
 function toggleMute(event, btn) {
     event.stopPropagation();

@@ -13,171 +13,327 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800;900&display=swap');
         
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #000;
             color: #fff;
+            overflow-x: hidden;
         }
 
         .mono { font-family: 'Space Mono', monospace; }
 
+        /* Glass Nav */
         .glass-nav {
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Hero Section */
-        .hero-gradient {
-            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #0f0f23 100%);
+        /* Hero Section - Full Screen Vertical Scroll Style */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
             overflow: hidden;
         }
 
-        .hero-gradient::before {
-            content: '';
+        .hero-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-            animation: gradientShift 10s ease infinite;
+                radial-gradient(circle at 20% 50%, rgba(12, 196, 83, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(10, 154, 213, 0.15) 0%, transparent 50%),
+                #000;
+            animation: gradientPulse 8s ease infinite;
         }
 
-        @keyframes gradientShift {
+        @keyframes gradientPulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.8; }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        /* Animated Grid Background */
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(12, 196, 83, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(10, 154, 213, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
         }
 
-        .float-animation {
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Elements */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        .float-element {
             animation: float 6s ease-in-out infinite;
         }
 
-        /* Service Cards */
-        .service-card {
-            background: rgba(255, 255, 255, 0.03);
+        /* Card Sections - TikTok Style */
+        .snap-section {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            padding: 4rem 1rem;
+        }
+
+        .card-3d {
+            background: linear-gradient(135deg, rgba(12, 196, 83, 0.1), rgba(10, 154, 213, 0.1));
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .service-card::before {
+        .card-3d::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .service-card:hover::before {
-            left: 100%;
-        }
-
-        .service-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-5px);
-        }
-
-        /* Stats Counter */
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Process Timeline */
-        .timeline-item {
-            position: relative;
-            padding-left: 60px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 30px;
-            bottom: -30px;
-            width: 2px;
-            background: linear-gradient(180deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.5));
-        }
-
-        .timeline-item:last-child::before {
-            display: none;
-        }
-
-        .timeline-number {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        /* Text Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-up {
+            inset: 0;
+            background: linear-gradient(135deg, rgba(12, 196, 83, 0.2), rgba(10, 154, 213, 0.2));
             opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
+            transition: opacity 0.5s;
         }
 
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-        .delay-4 { animation-delay: 0.8s; }
+        .card-3d:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(12, 196, 83, 0.5);
+            box-shadow: 0 30px 60px rgba(12, 196, 83, 0.3);
+        }
+
+        .card-3d:hover::before {
+            opacity: 1;
+        }
 
         /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        /* CTA Section */
-        .cta-glow {
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        .gradient-text-alt {
+            background: linear-gradient(90deg, #0CC453, #0A9AD5, #0CC453);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        /* Service Icons */
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(12, 196, 83, 0.2), rgba(10, 154, 213, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .service-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-icon:hover::before {
+            opacity: 0.3;
+        }
+
+        .service-icon i {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stats Counter */
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            background: rgba(12, 196, 83, 0.1);
+            border-color: rgba(12, 196, 83, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Process Timeline - Vertical Mobile Style */
+        .timeline {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-number {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            box-shadow: 0 10px 30px rgba(12, 196, 83, 0.5);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .timeline-content:hover {
+            background: rgba(12, 196, 83, 0.1);
+            border-color: rgba(12, 196, 83, 0.5);
+            transform: translateX(10px);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            border: none;
+            padding: 1.25rem 3rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(12, 196, 83, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0A9AD5, #0CC453);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(12, 196, 83, 0.6);
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Scroll Indicator */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .stat-number { font-size: 2.5rem; }
+            .card-3d { padding: 2rem; }
+            .timeline-number { width: 50px; height: 50px; font-size: 1.25rem; }
+        }
+
+        /* Reveal on Scroll Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Parallax Elements */
+        .parallax {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
     </style>
 </head>
-<body class="bg-black text-white">
+<body>
 
-    <!-- NAVIGATION BAR -->
-    <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center">
-        <div class="container mx-auto flex justify-between items-center">
+    <!-- NAVIGATION -->
+    <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4">
+        <div class="container mx-auto flex justify-between items-center max-w-6xl">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
                     <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
@@ -185,68 +341,94 @@
                 <a href="index.html" class="font-bold tracking-widest text-lg mono">ATH.CAMERA</a>
             </div>
             <div class="flex items-center gap-4">
-                <a href="index.html" class="text-sm hover:text-blue-400 transition">Portfolio</a>
-                <a href="about.html" class="text-sm text-blue-400">About</a>
+                <a href="index.html" class="text-sm hover:text-[#0CC453] transition">Portfolio</a>
+                <a href="about.html" class="text-sm text-[#0CC453]">About</a>
                 <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
-                    BOOK A CALL
+                    BOOK
                 </a>
             </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <section class="hero-gradient min-h-screen flex items-center justify-center pt-20 relative">
-        <div class="container mx-auto px-4 text-center z-10">
-            <div class="fade-in-up">
-                <h1 class="text-6xl md:text-8xl font-extrabold mb-6 leading-tight">
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="grid-bg"></div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="reveal active">
+                <div class="inline-block mb-6">
+                    <div class="w-24 h-24 mx-auto float-element">
+                        <img src="logo.png" class="w-full h-full object-contain opacity-80">
+                    </div>
+                </div>
+                <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">
                     ATTENTION<br>
-                    <span class="gradient-text">ENGINEERS</span>
+                    <span class="gradient-text-alt">ENGINEERS</span>
                 </h1>
-            </div>
-            <div class="fade-in-up delay-1">
-                <p class="text-xl md:text-2xl text-neutral-300 mb-8 max-w-3xl mx-auto">
-                    We don't just make videos.<br>
-                    We engineer the moments that make people stop scrolling.
+                <p class="text-xl md:text-2xl text-neutral-300 mb-8 max-w-2xl mx-auto font-light">
+                    We engineer the moments that make people<br class="hidden md:block">
+                    <span class="gradient-text font-semibold">stop scrolling.</span>
                 </p>
-            </div>
-            <div class="fade-in-up delay-2">
-                <div class="flex gap-4 justify-center flex-wrap">
-                    <a href="https://calendly.com/athcamera" target="_blank" class="bg-white text-black px-8 py-4 rounded-lg font-bold hover:bg-neutral-200 transition">
-                        Start a Project
+                <div class="flex gap-4 justify-center flex-wrap mb-16">
+                    <a href="https://calendly.com/athcamera" target="_blank" class="cta-button">
+                        <span>Start a Project</span>
                     </a>
-                    <a href="index.html" class="border border-white/20 px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition">
+                    <a href="index.html" class="border-2 border-[#0CC453] text-white px-8 py-4 rounded-full font-bold hover:bg-[#0CC453]/10 transition">
                         View Work
                     </a>
                 </div>
             </div>
             
-            <!-- Floating Logo -->
-            <div class="mt-16 float-animation fade-in-up delay-3">
-                <div class="w-32 h-32 mx-auto opacity-20">
-                    <img src="logo.png" class="w-full h-full object-contain">
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator absolute bottom-8 left-1/2 transform -translate-x-1/2">
+                <div class="flex flex-col items-center gap-2 text-neutral-500">
+                    <span class="text-xs uppercase tracking-widest mono">Scroll</span>
+                    <i class="fas fa-chevron-down text-xl"></i>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- PHILOSOPHY SECTION -->
-    <section class="py-24 bg-black">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="text-5xl font-bold mb-8 text-center">Our Philosophy</h2>
-                <div class="text-xl text-neutral-300 space-y-6 leading-relaxed">
-                    <p>
-                        In a world where attention is the most valuable currency, we've mastered the science of capturing it.
-                    </p>
-                    <p>
-                        Every frame is calculated. Every transition engineered. Every second optimized to keep eyes glued to screens.
-                    </p>
-                    <p>
-                        We're not videographers. We're <span class="text-blue-400 font-semibold">Attention Engineers</span> — 
-                        combining cinematic artistry with viral mechanics to create content that doesn't just look good, 
-                        but performs.
-                    </p>
-                    <p class="text-2xl font-bold gradient-text text-center mt-12">
+    <section class="snap-section bg-black">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-[#0CC453]/20 rounded-full mb-4">
+                        <span class="text-[#0CC453] font-bold text-sm uppercase tracking-wider mono">Our Philosophy</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-8">Why We're Different</h2>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="card-3d text-center">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <h3 class="text-xl font-bold mb-3 gradient-text">Data-Driven</h3>
+                        <p class="text-neutral-400 leading-relaxed">
+                            Every frame is calculated based on engagement metrics and platform algorithms.
+                        </p>
+                    </div>
+                    
+                    <div class="card-3d text-center">
+                        <div class="text-5xl mb-4">⚡</div>
+                        <h3 class="text-xl font-bold mb-3 gradient-text">Hook in 3s</h3>
+                        <p class="text-neutral-400 leading-relaxed">
+                            We know you have 3 seconds to capture attention. We make every millisecond count.
+                        </p>
+                    </div>
+                    
+                    <div class="card-3d text-center">
+                        <div class="text-5xl mb-4">🔥</div>
+                        <h3 class="text-xl font-bold mb-3 gradient-text">Viral Mechanics</h3>
+                        <p class="text-neutral-400 leading-relaxed">
+                            Combining cinematic quality with viral content formulas for maximum reach.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <p class="text-3xl md:text-4xl font-bold gradient-text-alt">
                         "Bangers Only."
                     </p>
                 </div>
@@ -255,202 +437,272 @@
     </section>
 
     <!-- SERVICES SECTION -->
-    <section class="py-24 bg-gradient-to-b from-black to-neutral-950">
-        <div class="container mx-auto px-4">
-            <h2 class="text-5xl font-bold mb-16 text-center">What We Do</h2>
-            
-            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                <!-- Service 1 -->
-                <div class="service-card rounded-2xl p-8">
-                    <div class="text-5xl mb-6">🎬</div>
-                    <h3 class="text-2xl font-bold mb-4">Viral Content</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Short-form content designed to stop the scroll. Every video is optimized for maximum engagement and shareability.
-                    </p>
+    <section class="snap-section bg-black">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-[#0A9AD5]/20 rounded-full mb-4">
+                        <span class="text-[#0A9AD5] font-bold text-sm uppercase tracking-wider mono">What We Do</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-4">Services</h2>
                 </div>
-
-                <!-- Service 2 -->
-                <div class="service-card rounded-2xl p-8">
-                    <div class="text-5xl mb-6">🎪</div>
-                    <h3 class="text-2xl font-bold mb-4">Event Coverage</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Capture the energy, emotion, and essence of your events with cinematic coverage that tells the full story.
-                    </p>
-                </div>
-
-                <!-- Service 3 -->
-                <div class="service-card rounded-2xl p-8">
-                    <div class="text-5xl mb-6">🚀</div>
-                    <h3 class="text-2xl font-bold mb-4">Brand Campaigns</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        End-to-end creative campaigns that build brand identity and drive results. From concept to delivery.
-                    </p>
-                </div>
-
-                <!-- Service 4 -->
-                <div class="service-card rounded-2xl p-8">
-                    <div class="text-5xl mb-6">✨</div>
-                    <h3 class="text-2xl font-bold mb-4">Creative Direction</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Strategic creative vision that aligns with your brand goals and resonates with your audience.
-                    </p>
-                </div>
-
-                <!-- Service 5 -->
-                <div class="service-card rounded-2xl p-8">
-                    <div class="text-5xl mb-6">🎭</div>
-                    <h3 class="text-2xl font-bold mb-4">Production</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Full production services from pre-production planning to post-production polish. We handle everything.
-                    </p>
-                </div>
-
-                <!-- Service 6 -->
-                <div class="service-card rounded-2xl p-8">
-                    <div class="text-5xl mb-6">📊</div>
-                    <h3 class="text-2xl font-bold mb-4">Performance Analysis</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Data-driven insights to optimize content performance. We measure what matters and iterate constantly.
-                    </p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Viral Content Creation</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            Short-form videos engineered for maximum engagement. TikTok, Instagram Reels, YouTube Shorts.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">15-60s clips</span>
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">Hook optimization</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-camera-retro"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Event Coverage</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            Capture your events with cinematic quality. Live coverage, highlight reels, behind-the-scenes.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Full-day shoots</span>
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Fast turnaround</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Brand Campaigns</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            End-to-end creative campaigns that build brand identity and drive measurable results.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">Multi-platform</span>
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">A/B testing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Content Strategy</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            Data-driven content planning. We analyze what works and create strategies that perform.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Analytics</span>
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Optimization</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- STATS SECTION -->
-    <section class="py-24 bg-black">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-4 gap-12 max-w-5xl mx-auto text-center">
-                <div>
-                    <div class="stat-number">50M+</div>
-                    <p class="text-neutral-400 text-lg mt-2">Total Views</p>
+    <section class="snap-section bg-gradient-to-b from-black to-neutral-950">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-6xl font-black mb-4">By The Numbers</h2>
+                    <p class="text-xl text-neutral-400">Real results, real impact</p>
                 </div>
-                <div>
-                    <div class="stat-number">200+</div>
-                    <p class="text-neutral-400 text-lg mt-2">Projects Delivered</p>
-                </div>
-                <div>
-                    <div class="stat-number">98%</div>
-                    <p class="text-neutral-400 text-lg mt-2">Client Satisfaction</p>
-                </div>
-                <div>
-                    <div class="stat-number">24/7</div>
-                    <p class="text-neutral-400 text-lg mt-2">Creative Mode</p>
+                
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="stat-item">
+                        <div class="stat-number">50M+</div>
+                        <p class="text-neutral-400 font-semibold">Total Views</p>
+                        <p class="text-xs text-neutral-600 mt-1">Across all platforms</p>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <p class="text-neutral-400 font-semibold">Projects</p>
+                        <p class="text-xs text-neutral-600 mt-1">Successfully delivered</p>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">8.5%</div>
+                        <p class="text-neutral-400 font-semibold">Avg Engagement</p>
+                        <p class="text-xs text-neutral-600 mt-1">3x industry standard</p>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">24h</div>
+                        <p class="text-neutral-400 font-semibold">Turnaround</p>
+                        <p class="text-xs text-neutral-600 mt-1">For urgent projects</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- PROCESS SECTION -->
-    <section class="py-24 bg-gradient-to-b from-black to-neutral-950">
-        <div class="container mx-auto px-4">
-            <h2 class="text-5xl font-bold mb-16 text-center">Our Process</h2>
-            
-            <div class="max-w-3xl mx-auto space-y-12">
-                <!-- Step 1 -->
-                <div class="timeline-item">
-                    <div class="timeline-number">1</div>
-                    <h3 class="text-2xl font-bold mb-3">Discovery & Strategy</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        We start by understanding your brand, audience, and goals. Deep research informs our creative strategy.
-                    </p>
+    <section class="snap-section bg-black">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-[#0CC453]/20 rounded-full mb-4">
+                        <span class="text-[#0CC453] font-bold text-sm uppercase tracking-wider mono">How We Work</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-4">Our Process</h2>
                 </div>
-
-                <!-- Step 2 -->
-                <div class="timeline-item">
-                    <div class="timeline-number">2</div>
-                    <h3 class="text-2xl font-bold mb-3">Concept Development</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Our team crafts unique concepts tailored to your vision. We present mood boards, storyboards, and scripts.
-                    </p>
+                
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-number">1</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Discovery Call</h3>
+                            <p class="text-neutral-400">
+                                15-min call to understand your brand, goals, and audience. We analyze your current content performance.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">2</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Strategy & Concept</h3>
+                            <p class="text-neutral-400">
+                                We develop viral content strategies backed by data. Present concepts, scripts, and mood boards.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">3</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Production</h3>
+                            <p class="text-neutral-400">
+                                Professional crews, cinema-grade equipment. We handle everything from pre-production to final delivery.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">4</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Post & Optimization</h3>
+                            <p class="text-neutral-400">
+                                Editing, color grading, sound design. We create multiple formats optimized for each platform.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">5</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Launch & Analyze</h3>
+                            <p class="text-neutral-400">
+                                Deliver final assets with posting recommendations. Track performance and iterate for next projects.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Step 3 -->
-                <div class="timeline-item">
-                    <div class="timeline-number">3</div>
-                    <h3 class="text-2xl font-bold mb-3">Production</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Lights, camera, action. We bring concepts to life with professional crews, equipment, and attention to detail.
-                    </p>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="timeline-item">
-                    <div class="timeline-number">4</div>
-                    <h3 class="text-2xl font-bold mb-3">Post-Production</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Editing, color grading, sound design, and VFX. We polish every frame until it's perfect.
-                    </p>
-                </div>
-
-                <!-- Step 5 -->
-                <div class="timeline-item">
-                    <div class="timeline-number">5</div>
-                    <h3 class="text-2xl font-bold mb-3">Delivery & Optimization</h3>
-                    <p class="text-neutral-400 leading-relaxed">
-                        Final delivery in all required formats. We also provide performance insights and optimization recommendations.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CLIENT LOGOS / TESTIMONIALS (Optional - can be populated later) -->
-    <section class="py-24 bg-black">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-12">Trusted By Industry Leaders</h2>
-            <div class="flex flex-wrap justify-center gap-8 items-center opacity-50">
-                <p class="text-xl text-neutral-500">Solflare</p>
-                <p class="text-xl text-neutral-500">Jupiter</p>
-                <p class="text-xl text-neutral-500">Solana Foundation</p>
-                <p class="text-xl text-neutral-500">And Many More...</p>
             </div>
         </div>
     </section>
 
     <!-- CTA SECTION -->
-    <section class="py-32 bg-gradient-to-b from-neutral-950 to-black relative overflow-hidden">
+    <section class="snap-section bg-gradient-to-b from-neutral-950 to-black relative overflow-hidden">
         <div class="absolute inset-0 opacity-20">
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0CC453] rounded-full blur-3xl"></div>
+            <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-[#0A9AD5] rounded-full blur-3xl"></div>
         </div>
         
         <div class="container mx-auto px-4 text-center relative z-10">
-            <h2 class="text-5xl md:text-6xl font-bold mb-6">
-                Ready to Engineer<br>
-                <span class="gradient-text">Attention?</span>
-            </h2>
-            <p class="text-xl text-neutral-300 mb-12 max-w-2xl mx-auto">
-                Let's create content that doesn't just exist — it dominates.
-            </p>
-            
-            <div class="flex gap-6 justify-center flex-wrap">
-                <a href="https://calendly.com/athcamera" target="_blank" class="bg-white text-black px-10 py-5 rounded-lg font-bold text-lg hover:bg-neutral-200 transition cta-glow">
-                    Book a Call
-                </a>
-                <a href="https://x.com/athcamera" target="_blank" class="border border-white/20 px-10 py-5 rounded-lg font-bold text-lg hover:bg-white/10 transition flex items-center gap-3">
-                    <i class="fa-brands fa-x-twitter"></i>
-                    Follow on X
-                </a>
-            </div>
-            
-            <div class="mt-16 flex justify-center gap-8 text-neutral-400">
-                <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="hover:text-white transition">
-                    <i class="fa-regular fa-envelope text-2xl"></i>
-                </a>
-                <a href="https://x.com/athcamera" target="_blank" class="hover:text-white transition">
-                    <i class="fa-brands fa-x-twitter text-2xl"></i>
-                </a>
+            <div class="reveal max-w-3xl mx-auto">
+                <h2 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                    Ready to Go<br>
+                    <span class="gradient-text-alt">Viral?</span>
+                </h2>
+                <p class="text-xl md:text-2xl text-neutral-300 mb-12 leading-relaxed">
+                    Let's engineer content that doesn't just exist<br class="hidden md:block">
+                    — it <span class="font-bold text-[#0CC453]">dominates</span>.
+                </p>
+                
+                <div class="flex gap-6 justify-center flex-wrap mb-12">
+                    <a href="https://calendly.com/athcamera" target="_blank" class="cta-button">
+                        <span>Book a Call →</span>
+                    </a>
+                    <a href="https://x.com/athcamera" target="_blank" class="border-2 border-white/20 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition flex items-center gap-3">
+                        <i class="fa-brands fa-x-twitter"></i>
+                        Follow on X
+                    </a>
+                </div>
+                
+                <div class="flex justify-center gap-8 text-neutral-500 text-sm">
+                    <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="hover:text-[#0CC453] transition">
+                        <i class="fa-regular fa-envelope text-xl"></i>
+                    </a>
+                    <a href="https://x.com/athcamera" target="_blank" class="hover:text-[#0CC453] transition">
+                        <i class="fa-brands fa-x-twitter text-xl"></i>
+                    </a>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="hover:text-[#0CC453] transition">
+                        <i class="fas fa-calendar text-xl"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="bg-black border-t border-neutral-900 py-8">
-        <div class="container mx-auto px-4 text-center text-neutral-500 text-sm">
-            <p class="mono">© 2025 ATH.CAMERA — Attention Engineers</p>
-            <p class="mt-2">Bangers Only.</p>
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-neutral-600 text-sm mono">© 2025 ATH.CAMERA — Attention Engineers</p>
+            <p class="text-neutral-700 text-xs mt-2">Bangers Only.</p>
         </div>
     </footer>
 
+    <script>
+        // Reveal on Scroll Animation
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        });
+        
+        reveals.forEach(reveal => {
+            revealObserver.observe(reveal);
+        });
+
+        // Parallax Effect on Scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            parallaxElements.forEach(element => {
+                const speed = element.dataset.speed || 0.5;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
