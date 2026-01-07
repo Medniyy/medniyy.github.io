@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - ATH | Attention Engineers</title>
+    
+    <meta name="description" content="ATH Production - Attention Engineers. We don't just make videos, we engineer attention.">
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .mono { font-family: 'Space Mono', monospace; }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero-gradient {
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #0f0f23 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Service Cards */
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* Stats Counter */
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Process Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 30px;
+            bottom: -30px;
+            width: 2px;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.5));
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Text Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* CTA Section */
+        .cta-glow {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
+                    <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
+                </div>
+                <a href="index.html" class="font-bold tracking-widest text-lg mono">ATH.CAMERA</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-sm hover:text-blue-400 transition">Portfolio</a>
+                <a href="about.html" class="text-sm text-blue-400">About</a>
+                <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
+                    BOOK A CALL
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-gradient min-h-screen flex items-center justify-center pt-20 relative">
+        <div class="container mx-auto px-4 text-center z-10">
+            <div class="fade-in-up">
+                <h1 class="text-6xl md:text-8xl font-extrabold mb-6 leading-tight">
+                    ATTENTION<br>
+                    <span class="gradient-text">ENGINEERS</span>
+                </h1>
+            </div>
+            <div class="fade-in-up delay-1">
+                <p class="text-xl md:text-2xl text-neutral-300 mb-8 max-w-3xl mx-auto">
+                    We don't just make videos.<br>
+                    We engineer the moments that make people stop scrolling.
+                </p>
+            </div>
+            <div class="fade-in-up delay-2">
+                <div class="flex gap-4 justify-center flex-wrap">
+                    <a href="https://calendly.com/athcamera" target="_blank" class="bg-white text-black px-8 py-4 rounded-lg font-bold hover:bg-neutral-200 transition">
+                        Start a Project
+                    </a>
+                    <a href="index.html" class="border border-white/20 px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition">
+                        View Work
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Floating Logo -->
+            <div class="mt-16 float-animation fade-in-up delay-3">
+                <div class="w-32 h-32 mx-auto opacity-20">
+                    <img src="logo.png" class="w-full h-full object-contain">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHILOSOPHY SECTION -->
+    <section class="py-24 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-5xl font-bold mb-8 text-center">Our Philosophy</h2>
+                <div class="text-xl text-neutral-300 space-y-6 leading-relaxed">
+                    <p>
+                        In a world where attention is the most valuable currency, we've mastered the science of capturing it.
+                    </p>
+                    <p>
+                        Every frame is calculated. Every transition engineered. Every second optimized to keep eyes glued to screens.
+                    </p>
+                    <p>
+                        We're not videographers. We're <span class="text-blue-400 font-semibold">Attention Engineers</span> — 
+                        combining cinematic artistry with viral mechanics to create content that doesn't just look good, 
+                        but performs.
+                    </p>
+                    <p class="text-2xl font-bold gradient-text text-center mt-12">
+                        "Bangers Only."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section class="py-24 bg-gradient-to-b from-black to-neutral-950">
+        <div class="container mx-auto px-4">
+            <h2 class="text-5xl font-bold mb-16 text-center">What We Do</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Service 1 -->
+                <div class="service-card rounded-2xl p-8">
+                    <div class="text-5xl mb-6">🎬</div>
+                    <h3 class="text-2xl font-bold mb-4">Viral Content</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Short-form content designed to stop the scroll. Every video is optimized for maximum engagement and shareability.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card rounded-2xl p-8">
+                    <div class="text-5xl mb-6">🎪</div>
+                    <h3 class="text-2xl font-bold mb-4">Event Coverage</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Capture the energy, emotion, and essence of your events with cinematic coverage that tells the full story.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card rounded-2xl p-8">
+                    <div class="text-5xl mb-6">🚀</div>
+                    <h3 class="text-2xl font-bold mb-4">Brand Campaigns</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        End-to-end creative campaigns that build brand identity and drive results. From concept to delivery.
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card rounded-2xl p-8">
+                    <div class="text-5xl mb-6">✨</div>
+                    <h3 class="text-2xl font-bold mb-4">Creative Direction</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Strategic creative vision that aligns with your brand goals and resonates with your audience.
+                    </p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card rounded-2xl p-8">
+                    <div class="text-5xl mb-6">🎭</div>
+                    <h3 class="text-2xl font-bold mb-4">Production</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Full production services from pre-production planning to post-production polish. We handle everything.
+                    </p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card rounded-2xl p-8">
+                    <div class="text-5xl mb-6">📊</div>
+                    <h3 class="text-2xl font-bold mb-4">Performance Analysis</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Data-driven insights to optimize content performance. We measure what matters and iterate constantly.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="py-24 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-12 max-w-5xl mx-auto text-center">
+                <div>
+                    <div class="stat-number">50M+</div>
+                    <p class="text-neutral-400 text-lg mt-2">Total Views</p>
+                </div>
+                <div>
+                    <div class="stat-number">200+</div>
+                    <p class="text-neutral-400 text-lg mt-2">Projects Delivered</p>
+                </div>
+                <div>
+                    <div class="stat-number">98%</div>
+                    <p class="text-neutral-400 text-lg mt-2">Client Satisfaction</p>
+                </div>
+                <div>
+                    <div class="stat-number">24/7</div>
+                    <p class="text-neutral-400 text-lg mt-2">Creative Mode</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS SECTION -->
+    <section class="py-24 bg-gradient-to-b from-black to-neutral-950">
+        <div class="container mx-auto px-4">
+            <h2 class="text-5xl font-bold mb-16 text-center">Our Process</h2>
+            
+            <div class="max-w-3xl mx-auto space-y-12">
+                <!-- Step 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-number">1</div>
+                    <h3 class="text-2xl font-bold mb-3">Discovery & Strategy</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        We start by understanding your brand, audience, and goals. Deep research informs our creative strategy.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-number">2</div>
+                    <h3 class="text-2xl font-bold mb-3">Concept Development</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Our team crafts unique concepts tailored to your vision. We present mood boards, storyboards, and scripts.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-number">3</div>
+                    <h3 class="text-2xl font-bold mb-3">Production</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Lights, camera, action. We bring concepts to life with professional crews, equipment, and attention to detail.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-number">4</div>
+                    <h3 class="text-2xl font-bold mb-3">Post-Production</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Editing, color grading, sound design, and VFX. We polish every frame until it's perfect.
+                    </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="timeline-item">
+                    <div class="timeline-number">5</div>
+                    <h3 class="text-2xl font-bold mb-3">Delivery & Optimization</h3>
+                    <p class="text-neutral-400 leading-relaxed">
+                        Final delivery in all required formats. We also provide performance insights and optimization recommendations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLIENT LOGOS / TESTIMONIALS (Optional - can be populated later) -->
+    <section class="py-24 bg-black">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-12">Trusted By Industry Leaders</h2>
+            <div class="flex flex-wrap justify-center gap-8 items-center opacity-50">
+                <p class="text-xl text-neutral-500">Solflare</p>
+                <p class="text-xl text-neutral-500">Jupiter</p>
+                <p class="text-xl text-neutral-500">Solana Foundation</p>
+                <p class="text-xl text-neutral-500">And Many More...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="py-32 bg-gradient-to-b from-neutral-950 to-black relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="text-5xl md:text-6xl font-bold mb-6">
+                Ready to Engineer<br>
+                <span class="gradient-text">Attention?</span>
+            </h2>
+            <p class="text-xl text-neutral-300 mb-12 max-w-2xl mx-auto">
+                Let's create content that doesn't just exist — it dominates.
+            </p>
+            
+            <div class="flex gap-6 justify-center flex-wrap">
+                <a href="https://calendly.com/athcamera" target="_blank" class="bg-white text-black px-10 py-5 rounded-lg font-bold text-lg hover:bg-neutral-200 transition cta-glow">
+                    Book a Call
+                </a>
+                <a href="https://x.com/athcamera" target="_blank" class="border border-white/20 px-10 py-5 rounded-lg font-bold text-lg hover:bg-white/10 transition flex items-center gap-3">
+                    <i class="fa-brands fa-x-twitter"></i>
+                    Follow on X
+                </a>
+            </div>
+            
+            <div class="mt-16 flex justify-center gap-8 text-neutral-400">
+                <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="hover:text-white transition">
+                    <i class="fa-regular fa-envelope text-2xl"></i>
+                </a>
+                <a href="https://x.com/athcamera" target="_blank" class="hover:text-white transition">
+                    <i class="fa-brands fa-x-twitter text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-neutral-900 py-8">
+        <div class="container mx-auto px-4 text-center text-neutral-500 text-sm">
+            <p class="mono">© 2025 ATH.CAMERA — Attention Engineers</p>
+            <p class="mt-2">Bangers Only.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
