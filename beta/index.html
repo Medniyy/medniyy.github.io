@@ -7,21 +7,11 @@
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="ATH Production - Attention Engineers creating cinematic, trending, and exclusive video content. Bangers Only.">
-    <meta name="keywords" content="video production, cinematic videos, content creation, ATH, creative agency">
-    
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ath.camera/">
     <meta property="og:title" content="ATH | Visual Production - Attention Engineers">
     <meta property="og:description" content="Cinematic, Trending, Exclusive video production. Bangers Only.">
     <meta property="og:image" content="https://ath.camera/logo.png">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://ath.camera/">
-    <meta property="twitter:title" content="ATH | Visual Production">
-    <meta property="twitter:description" content="Cinematic, Trending, Exclusive video production. Bangers Only.">
-    <meta property="twitter:image" content="https://ath.camera/logo.png">
     
     <link rel="icon" type="image/png" href="logo.png">
     
@@ -31,9 +21,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap');
         
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: 'Outfit', sans-serif;
@@ -43,7 +31,6 @@
         }
 
         .mono { font-family: 'Space Mono', monospace; }
-
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -53,7 +40,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* VIDEO CONTAINERS */
+        /* VIDEO CONTAINER - FEED */
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
@@ -63,9 +50,7 @@
             cursor: pointer;
         }
 
-        .video-container.vertical {
-            padding-bottom: 177.77%;
-        }
+        .video-container.vertical { padding-bottom: 177.77%; }
         
         .video-container video {
             position: absolute;
@@ -76,14 +61,12 @@
             object-fit: cover;
         }
 
-        /* Play Icon - Always controlled by JS */
         .play-icon-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            transition: opacity 0.3s;
             background: rgba(0,0,0,0.6);
             width: 70px;
             height: 70px;
@@ -92,210 +75,196 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
+            transition: opacity 0.2s;
             z-index: 5;
         }
 
-        .video-container.is-paused .play-icon-overlay {
-            opacity: 1;
-        }
-
-        /* Mute Button - Smaller in feed */
         .mute-btn {
             position: absolute;
-            bottom: 25px; 
+            bottom: 20px;
             right: 15px;
             background: rgba(0,0,0,0.6);
-            padding: 6px;
+            padding: 8px;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 10;
             transition: all 0.3s;
-            font-size: 14px;
         }
         .mute-btn:hover {
             background: rgba(255,255,255,0.2);
             transform: scale(1.1);
         }
 
-        /* Progress Bar */
         .video-progress {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 6px; 
-            background: rgba(255, 255, 255, 0.2); 
-            cursor: pointer;
-            z-index: 20;
-            transition: height 0.1s ease;
-            touch-action: none;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 5;
         }
         
-        .video-progress:hover {
-            height: 10px;
-        }
         .video-progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #3b82f6, #8b5cf6);
             width: 0%;
-            transition: width 0.05s linear;
+            transition: width 0.1s linear;
         }
 
-        /* INSTAGRAM FOCUS MODE */
-        .focus-overlay {
+        /* REELS MODE */
+        .reels-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.95);
+            background: #000;
             z-index: 200;
             display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            overflow: hidden;
         }
 
-        .focus-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        .reels-overlay.active { display: block; }
 
-        .focus-container {
+        .reels-container {
             position: relative;
             width: 100%;
             height: 100%;
+            overflow: hidden;
+        }
+
+        .reels-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reel-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            touch-action: none;
+            align-items: center;
+            justify-content: center;
+            background: #000;
         }
 
-        .focus-overlay.active .focus-container {
-            transform: translateY(0);
+        .reel-video {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
 
-        .focus-header {
+        .reels-header {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             z-index: 210;
-            padding: 20px;
+            padding: env(safe-area-inset-top, 20px) 20px 20px 20px;
             background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: opacity 0.3s;
         }
 
-        .focus-close {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+        .reels-header.hide { opacity: 0; pointer-events: none; }
 
-        .focus-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-        }
-
-        .focus-video-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 60px 0;
-        }
-
-        .focus-video-container {
-            position: relative;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-        }
-
-        .focus-video-container video {
-            max-width: 100vw;
-            max-height: calc(100vh - 120px);
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        .focus-video-container.vertical video {
-            max-width: min(100vw, 500px);
-        }
-
-        /* Focus Progress Bar */
-        .focus-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            z-index: 5;
-        }
-
-        .focus-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            width: 0%;
-            transition: width 0.05s linear;
-        }
-
-        .focus-info {
+        .reels-footer {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             z-index: 210;
-            padding: 20px;
+            padding: 20px 20px calc(env(safe-area-inset-bottom, 20px) + 20px) 20px;
             background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+            transition: opacity 0.3s;
         }
 
-        .focus-actions {
+        .reels-footer.hide { opacity: 0; pointer-events: none; }
+
+        .reels-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 205;
+            cursor: pointer;
+        }
+
+        .reels-progress-fill {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .reels-progress-handle {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translate(50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .reels-progress:active .reels-progress-handle,
+        .reels-progress.dragging .reels-progress-handle { opacity: 1; }
+
+        .reels-play-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            justify-content: center;
+            font-size: 32px;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 209;
+            transition: opacity 0.2s;
         }
 
-        .focus-actions-left {
-            display: flex;
-            gap: 24px;
-            font-size: 28px;
-        }
+        .reels-play-indicator.show { opacity: 1; }
 
-        .focus-actions-left button,
-        .focus-actions-left a {
+        .category-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
             transition: all 0.3s;
+            white-space: nowrap;
         }
 
-        .focus-actions-left button:hover,
-        .focus-actions-left a:hover {
-            transform: scale(1.1);
+        .category-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .category-btn.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
         }
 
-        .focus-description {
-            font-size: 14px;
-            line-height: 1.5;
-            color: #e5e5e5;
-        }
-
-        /* Like Animation */
         @keyframes likeHeart {
             0% { transform: scale(1); }
             50% { transform: scale(1.4); }
@@ -306,25 +275,15 @@
             animation: likeHeart 0.4s ease-in-out;
         }
 
-        /* Scroll Hint */
         @keyframes bounce {
             0%, 100% { transform: translateY(0); opacity: 0.5; }
             50% { transform: translateY(10px); opacity: 1; }
         }
-        .scroll-hint {
-            animation: bounce 2s infinite;
-        }
+        .scroll-hint { animation: bounce 2s infinite; }
 
-        /* Fade In Animation */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .video-article {
@@ -336,7 +295,30 @@
         .video-article:nth-child(2) { animation-delay: 0.2s; }
         .video-article:nth-child(3) { animation-delay: 0.3s; }
 
-        /* Scroll to Top Button */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loading-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading-text { animation: pulse 2s infinite; }
+
         .scroll-top-btn {
             position: fixed;
             bottom: 30px;
@@ -366,107 +348,11 @@
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-5px);
         }
-
-        /* Share Button Styles */
-        .share-btn {
-            transition: all 0.3s;
-        }
-        .share-btn:hover {
-            transform: scale(1.1);
-            color: #22c55e !important;
-        }
-
-        /* View Counter */
-        .view-counter {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.875rem;
-            color: #a3a3a3;
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s;
-        }
-
-        .loading-overlay.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .loading-text {
-            animation: pulse 2s infinite;
-        }
-
-        /* Category Filter */
-        .category-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: transparent;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .category-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .category-btn.active {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-        }
-
-        /* Swipe Indicator */
-        .swipe-indicator {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
-            z-index: 220;
-        }
-
-        /* Muted indicator in feed */
-        .muted-indicator {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 8;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center">
 
-    <!-- Loading Overlay -->
+    <!-- Loading -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="w-16 h-16 mb-4">
             <img src="logo.png" class="w-full h-full object-contain animate-pulse">
@@ -474,7 +360,7 @@
         <p class="mono text-xl loading-text">LOADING EXPERIENCE...</p>
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- NAV -->
     <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4 flex justify-between items-center max-w-2xl mx-auto left-0 right-0 border-x border-neutral-900">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
@@ -484,16 +370,14 @@
         </div>
         <div class="flex items-center gap-3">
             <a href="about.html" class="text-xs font-bold hover:text-blue-400 transition uppercase hidden sm:block">About</a>
-            <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
-                BOOK A CALL
-            </a>
+            <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">BOOK A CALL</a>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- MAIN -->
     <main id="feed-container" class="w-full max-w-xl mt-20 mb-24 px-0 sm:px-4">
         
-        <!-- Profile Header -->
+        <!-- Profile -->
         <div class="px-4 mb-6 flex items-start gap-5">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-600 p-0.5 shrink-0">
                 <div class="w-full h-full bg-black rounded-full overflow-hidden">
@@ -503,9 +387,7 @@
             <div class="flex-1 pt-1">
                 <h1 class="text-xl font-extrabold tracking-tight">ATH Production</h1>
                 <p class="text-white font-medium text-sm mt-1">Attention Engineers.</p>
-                <p class="text-neutral-400 text-sm mt-0.5">
-                    Cinematic | Trending | Exclusive
-                </p>
+                <p class="text-neutral-400 text-sm mt-0.5">Cinematic | Trending | Exclusive</p>
                 <div class="flex gap-4 mt-3">
                     <a href="https://x.com/athcamera" target="_blank" class="text-sm font-semibold text-blue-400 hover:text-white transition flex items-center gap-2">
                         <i class="fa-brands fa-x-twitter"></i> x.com/athcamera
@@ -514,7 +396,7 @@
             </div>
         </div>
 
-        <!-- Social Links / Highlights -->
+        <!-- Social Links -->
         <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-8 pb-2">
             <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition min-w-[64px]">
                 <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center overflow-hidden">
@@ -536,7 +418,7 @@
             </a>
         </div>
 
-        <!-- Category Filter -->
+        <!-- Categories -->
         <div class="flex gap-3 overflow-x-auto no-scrollbar px-4 mb-6 pb-2">
             <button class="category-btn active" data-category="all">All</button>
             <button class="category-btn" data-category="agency">Agency</button>
@@ -550,99 +432,75 @@
             <i class="fas fa-chevron-down mb-1"></i> Scroll Feed <i class="fas fa-chevron-down mb-1"></i>
         </div>
 
-        <!-- VIDEO FEED -->
-        <div id="articles-wrapper">
-
-            <!-- Videos will be dynamically managed by JS -->
-            <!-- Each video has data-video-id for tracking -->
-
-        </div>
+        <!-- Feed -->
+        <div id="articles-wrapper"></div>
 
     </main>
 
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- Scroll Top -->
+    <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
-    <!-- INSTAGRAM FOCUS MODE -->
-    <div class="focus-overlay" id="focusOverlay">
-        <div class="swipe-indicator"></div>
-        <div class="focus-container" id="focusContainer">
-            <!-- Header -->
-            <div class="focus-header">
+    <!-- REELS -->
+    <div class="reels-overlay" id="reelsOverlay">
+        <div class="reels-container">
+            <div class="reels-slider" id="reelsSlider"></div>
+            
+            <div class="reels-header" id="reelsHeader">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full overflow-hidden border border-neutral-700">
                         <img src="logo.png" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <p class="font-bold text-sm" id="focusTitle">Video Title</p>
-                        <p class="text-xs text-neutral-400" id="focusSubtitle">ATH Creative Agency</p>
+                        <p class="font-bold text-sm" id="reelsTitle">Video</p>
+                        <p class="text-xs text-neutral-400" id="reelsSubtitle">ATH</p>
                     </div>
                 </div>
-                <button class="focus-close" onclick="closeFocusMode()">
+                <button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center" onclick="closeReels()">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
-            <!-- Video Wrapper -->
-            <div class="focus-video-wrapper">
-                <div class="focus-video-container" id="focusVideoContainer">
-                    <video id="focusVideo" playsinline webkit-playsinline disableRemotePlayback>
-                        <source src="" type="video/mp4">
-                    </video>
-                    <div class="focus-progress" id="focusProgress">
-                        <div class="focus-progress-fill" id="focusProgressFill"></div>
+            <div class="reels-footer" id="reelsFooter">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex gap-5 text-2xl text-white">
+                        <button id="reelsLikeBtn"><i class="far fa-heart"></i></button>
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank"><i class="far fa-comment"></i></a>
+                        <button id="reelsShareBtn"><i class="fas fa-share-nodes"></i></button>
                     </div>
+                    <div class="text-sm text-neutral-400">
+                        <i class="fas fa-eye"></i> <span id="reelsViews">0</span>
+                    </div>
+                </div>
+                <p class="text-sm"><span class="font-bold">ath.camera</span> <span id="reelsDescription">Description</span></p>
+            </div>
+
+            <div class="reels-progress" id="reelsProgress">
+                <div class="reels-progress-fill" id="reelsProgressFill">
+                    <div class="reels-progress-handle"></div>
                 </div>
             </div>
 
-            <!-- Info Footer -->
-            <div class="focus-info">
-                <div class="focus-actions">
-                    <div class="focus-actions-left text-neutral-300">
-                        <button class="hover:text-red-500 transition" id="focusLikeBtn">
-                            <i class="far fa-heart"></i>
-                        </button>
-                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition">
-                            <i class="far fa-comment"></i>
-                        </a>
-                        <button class="hover:text-green-500 transition" id="focusShareBtn">
-                            <i class="fas fa-share-nodes"></i>
-                        </button>
-                    </div>
-                    <div class="view-counter">
-                        <i class="fas fa-eye"></i>
-                        <span id="focusViews">0</span>
-                    </div>
-                </div>
-                <div class="focus-description">
-                    <span class="font-bold">ath.camera</span> <span id="focusDescription">Description here</span>
-                </div>
+            <div class="reels-play-indicator" id="reelsPlayIndicator">
+                <i class="fas fa-play"></i>
             </div>
         </div>
     </div>
 
-    <!-- Modal Window (for likes) -->
+    <!-- Modal -->
     <div id="contactModal" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full touch-pan-y" id="modalPanel">
-            
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full" id="modalPanel">
             <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
-
             <div class="flex justify-end items-center mb-2">
                 <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
-            
             <div class="text-center pb-8">
                 <div class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-red-500">
                     <i class="fas fa-heart"></i>
                 </div>
-                
-                <p id="modalMessage" class="text-neutral-300 text-lg font-medium mb-8 leading-relaxed px-4">
+                <p class="text-neutral-300 text-lg font-medium mb-8 leading-relaxed px-4">
                     Enjoyed this video and want outstanding videos for your project?
                 </p>
-                
                 <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2 mx-auto">
                     <i class="fa-brands fa-x-twitter"></i> Let's chat on X
                 </a>
@@ -651,634 +509,7 @@
     </div>
 
     <script>
-// ========================================
-// ATH PRODUCTION - MAIN SCRIPT V2
-// With Instagram Focus Mode & Bug Fixes
-// ========================================
-
-// VIDEO DATA
-const videosData = [
-    {
-        id: 1,
-        title: "Creative Agency",
-        subtitle: "ATH Creative Agency",
-        videoFile: "ATHCreativeAgency.mp4",
-        category: "agency",
-        orientation: "vertical",
-        views: "2.4K",
-        description: "Agency promo visuals. #BetterCallATH"
-    },
-    {
-        id: 2,
-        title: "Global Competition",
-        subtitle: "ATH Creative Agency",
-        videoFile: "ATHGlobalCompetition.mp4",
-        category: "event",
-        orientation: "horizontal",
-        views: "3.1K",
-        description: "Global event highlights. #BetterCallATH"
-    },
-    {
-        id: 3,
-        title: "Jupiter",
-        subtitle: "ATH Creative Agency",
-        videoFile: "ATHJupiter.mp4",
-        category: "campaign",
-        orientation: "horizontal",
-        views: "1.8K",
-        description: "Jupiter project visuals. #BetterCallATH"
-    },
-    {
-        id: 4,
-        title: "ATH Series",
-        subtitle: "ATH Creative Agency",
-        videoFile: "ATHSeries.mp4",
-        category: "creative",
-        orientation: "horizontal",
-        views: "4.2K",
-        description: "Exclusive series production. #BetterCallATH"
-    },
-    {
-        id: 5,
-        title: "Solana Summit",
-        subtitle: "ATH Creative Agency",
-        videoFile: "ATHSolanaSummit.mp4",
-        category: "event",
-        orientation: "horizontal",
-        views: "5.7K",
-        description: "Summit event coverage. #BetterCallATH"
-    },
-    {
-        id: 6,
-        title: "Solflare Sink",
-        subtitle: "ATH Creative Agency",
-        videoFile: "Solflaresink.mp4",
-        category: "campaign",
-        orientation: "vertical",
-        views: "2.9K",
-        description: "Creative production. #BetterCallATH"
-    },
-    {
-        id: 7,
-        title: "Solflare Viral",
-        subtitle: "ATH Creative Agency",
-        videoFile: "Solflareviral.mp4",
-        category: "campaign",
-        orientation: "vertical",
-        views: "8.3K",
-        description: "Viral campaign. #BetterCallATH"
-    },
-    {
-        id: 8,
-        title: "Better Call ATH",
-        subtitle: "ATH Creative Agency",
-        videoFile: "bettercallath.mp4",
-        category: "creative",
-        orientation: "vertical",
-        views: "6.1K",
-        description: "Narrative content. #BetterCallATH"
-    },
-    {
-        id: 9,
-        title: "Polaris",
-        subtitle: "ATH Creative Agency",
-        videoFile: "polaris.mp4",
-        category: "creative",
-        orientation: "horizontal",
-        views: "3.5K",
-        description: "Cinematic production. #BetterCallATH"
-    },
-    {
-        id: 10,
-        title: "Solflare Shield",
-        subtitle: "ATH Creative Agency",
-        videoFile: "solflareshield.mp4",
-        category: "campaign",
-        orientation: "horizontal",
-        views: "4.7K",
-        description: "Product visual shield. #BetterCallATH"
-    }
-];
-
-// GLOBAL STATE
-let currentPlayingVideo = null;
-let currentCategory = 'all';
-let focusModeActive = false;
-let currentFocusVideoId = null;
-
-// INITIALIZATION
-window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('video').forEach(video => {
-        video.pause();
-        video.currentTime = 0;
-        video.muted = true;
-    });
-    
-    renderFeed();
-    
-    setTimeout(() => {
-        document.getElementById('loadingOverlay').classList.add('hide');
-    }, 800);
-});
-
-// FEED RENDERING
-function renderFeed() {
-    const wrapper = document.getElementById('articles-wrapper');
-    wrapper.innerHTML = '';
-    
-    const filteredVideos = currentCategory === 'all' 
-        ? videosData 
-        : videosData.filter(v => v.category === currentCategory);
-    
-    filteredVideos.forEach(video => {
-        const article = createVideoArticle(video);
-        wrapper.appendChild(article);
-    });
-    
-    setupIntersectionObserver();
-}
-
-function createVideoArticle(video) {
-    const article = document.createElement('article');
-    article.className = 'mb-12 border-b border-neutral-900 pb-8 video-article';
-    article.dataset.category = video.category;
-    article.dataset.videoId = video.id;
-    
-    article.innerHTML = `
-        <div class="flex items-center justify-between px-4 py-3">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800">
-                    <img src="logo.png" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-cover">
-                </div>
-                <div>
-                    <p class="text-sm font-semibold">${video.title}</p>
-                    <p class="text-xs text-neutral-500">${video.subtitle}</p>
-                </div>
-            </div>
-        </div>
-        <div class="video-container ${video.orientation === 'vertical' ? 'vertical' : ''} is-paused" data-video-id="${video.id}">
-            <video loop muted playsinline webkit-playsinline preload="none" disableRemotePlayback>
-                <source src="${video.videoFile}" type="video/mp4">
-            </video>
-            <div class="muted-indicator">
-                <i class="fas fa-volume-xmark"></i>
-                <span class="text-xs">Tap to view</span>
-            </div>
-            <div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
-            <div class="mute-btn" onclick="toggleMute(event, this)"><i class="fas fa-volume-xmark"></i></div>
-            <div class="video-progress">
-                <div class="video-progress-fill"></div>
-            </div>
-        </div>
-        <div class="px-4 py-3 flex justify-between items-center">
-            <div class="flex gap-5 text-2xl text-neutral-300">
-                <button class="hover:text-red-500 transition like-btn" onclick="handleLike(this)"><i class="far fa-heart"></i></button>
-                <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
-                <button class="share-btn" onclick="shareVideo(${video.id})"><i class="fas fa-share-nodes"></i></button>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="view-counter">
-                    <i class="fas fa-eye"></i>
-                    <span class="view-count">${video.views}</span>
-                </div>
-                <a href="https://calendly.com/athcamera" target="_blank" class="md:hidden bg-white text-black text-xs px-4 py-1.5 rounded-full font-bold">BOOK</a>
-            </div>
-        </div>
-        <div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> ${video.description}</p></div>
-    `;
-    
-    const videoContainer = article.querySelector('.video-container');
-    videoContainer.addEventListener('click', (e) => {
-        if (e.target.closest('.mute-btn') || e.target.closest('.video-progress')) {
-            return;
-        }
-        openFocusMode(video.id);
-    });
-    
-    return article;
-}
-
-// INTERSECTION OBSERVER
-function setupIntersectionObserver() {
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: [0, 0.5, 0.75, 0.85]
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const container = entry.target;
-            const video = container.querySelector('video');
-            
-            if (!video) return;
-            
-            const isVertical = container.classList.contains('vertical');
-            const requiredThreshold = isVertical ? 0.75 : 0.85;
-            
-            const rect = container.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
-            const percentOfViewport = visibleHeight / viewportHeight;
-            
-            if (entry.isIntersecting && 
-                entry.intersectionRatio >= requiredThreshold && 
-                percentOfViewport > 0.4) {
-                
-                if (currentPlayingVideo && currentPlayingVideo !== video) {
-                    pauseVideo(currentPlayingVideo);
-                }
-                
-                playVideo(video, container);
-            } else {
-                pauseVideo(video);
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.video-container').forEach(container => {
-        observer.observe(container);
-    });
-}
-
-function playVideo(video, container) {
-    if (!video || focusModeActive) return;
-    
-    video.muted = true;
-    
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            container.classList.remove('is-paused');
-            currentPlayingVideo = video;
-        }).catch(error => {
-            if (error.name !== 'AbortError') {
-                console.log('Autoplay prevented:', error);
-            }
-        });
-    }
-}
-
-function pauseVideo(video) {
-    if (!video) return;
-    
-    video.pause();
-    const container = video.closest('.video-container');
-    if (container) {
-        container.classList.add('is-paused');
-    }
-    
-    if (currentPlayingVideo === video) {
-        currentPlayingVideo = null;
-    }
-}
-
-// VIDEO PROGRESS
-document.addEventListener('timeupdate', (e) => {
-    if (e.target.tagName === 'VIDEO' && !focusModeActive) {
-        updateVideoProgress(e.target);
-    }
-}, true);
-
-function updateVideoProgress(video) {
-    if (!video.duration) return;
-    
-    const container = video.closest('.video-container');
-    if (!container) return;
-    
-    const progressFill = container.querySelector('.video-progress-fill');
-    if (progressFill) {
-        const percent = (video.currentTime / video.duration) * 100;
-        progressFill.style.width = `${percent}%`;
-    }
-}
-
-// MUTE/UNMUTE
-function toggleMute(event, btn) {
-    event.stopPropagation();
-    
-    const container = btn.closest('.video-container');
-    const video = container.querySelector('video');
-    const icon = btn.querySelector('i');
-    const mutedIndicator = container.querySelector('.muted-indicator');
-    
-    video.muted = !video.muted;
-    
-    if (video.muted) {
-        icon.classList.remove('fa-volume-high');
-        icon.classList.add('fa-volume-xmark');
-        if (mutedIndicator) mutedIndicator.style.display = 'flex';
-    } else {
-        icon.classList.remove('fa-volume-xmark');
-        icon.classList.add('fa-volume-high');
-        if (mutedIndicator) mutedIndicator.style.display = 'none';
-    }
-}
-
-// INSTAGRAM FOCUS MODE
-function openFocusMode(videoId) {
-    const video = videosData.find(v => v.id === videoId);
-    if (!video) return;
-    
-    focusModeActive = true;
-    currentFocusVideoId = videoId;
-    
-    if (currentPlayingVideo) {
-        pauseVideo(currentPlayingVideo);
-    }
-    
-    const overlay = document.getElementById('focusOverlay');
-    const focusVideo = document.getElementById('focusVideo');
-    const focusVideoContainer = document.getElementById('focusVideoContainer');
-    
-    document.getElementById('focusTitle').textContent = video.title;
-    document.getElementById('focusSubtitle').textContent = video.subtitle;
-    document.getElementById('focusDescription').textContent = video.description;
-    document.getElementById('focusViews').textContent = video.views;
-    
-    focusVideo.querySelector('source').src = video.videoFile;
-    focusVideo.load();
-    
-    if (video.orientation === 'vertical') {
-        focusVideoContainer.classList.add('vertical');
-    } else {
-        focusVideoContainer.classList.remove('vertical');
-    }
-    
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    setTimeout(() => {
-        focusVideo.muted = false;
-        focusVideo.play().catch(e => console.log('Focus play error:', e));
-    }, 300);
-    
-    setupFocusProgress();
-    setupFocusSwipe();
-}
-
-function closeFocusMode() {
-    const overlay = document.getElementById('focusOverlay');
-    const focusVideo = document.getElementById('focusVideo');
-    const container = document.getElementById('focusContainer');
-    
-    focusVideo.pause();
-    focusVideo.currentTime = 0;
-    
-    container.style.transform = 'translateY(100%)';
-    
-    setTimeout(() => {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-        focusModeActive = false;
-        currentFocusVideoId = null;
-        container.style.transform = '';
-    }, 300);
-}
-
-function setupFocusProgress() {
-    const focusVideo = document.getElementById('focusVideo');
-    const progressFill = document.getElementById('focusProgressFill');
-    
-    focusVideo.addEventListener('timeupdate', () => {
-        if (focusVideo.duration) {
-            const percent = (focusVideo.currentTime / focusVideo.duration) * 100;
-            progressFill.style.width = `${percent}%`;
-        }
-    });
-    
-    const progressBar = document.getElementById('focusProgress');
-    progressBar.addEventListener('click', (e) => {
-        const rect = progressBar.getBoundingClientRect();
-        const percent = (e.clientX - rect.left) / rect.width;
-        focusVideo.currentTime = percent * focusVideo.duration;
-    });
-}
-
-// SWIPE TO CLOSE
-function setupFocusSwipe() {
-    const container = document.getElementById('focusContainer');
-    let startY = 0;
-    let currentY = 0;
-    let isDragging = false;
-    
-    container.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-        isDragging = true;
-    }, { passive: true });
-    
-    container.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        
-        currentY = e.touches[0].clientY;
-        const deltaY = currentY - startY;
-        
-        if (deltaY > 0) {
-            container.style.transform = `translateY(${deltaY}px)`;
-            const overlay = document.getElementById('focusOverlay');
-            const opacity = Math.max(0.3, 1 - (deltaY / 500));
-            overlay.style.background = `rgba(0, 0, 0, ${opacity * 0.95})`;
-        }
-    }, { passive: true });
-    
-    container.addEventListener('touchend', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const deltaY = currentY - startY;
-        
-        if (deltaY > 150) {
-            closeFocusMode();
-        } else {
-            container.style.transform = '';
-            const overlay = document.getElementById('focusOverlay');
-            overlay.style.background = 'rgba(0, 0, 0, 0.95)';
-        }
-        
-        startY = 0;
-        currentY = 0;
-    });
-}
-
-document.getElementById('focusLikeBtn').addEventListener('click', function() {
-    const icon = this.querySelector('i');
-    icon.classList.remove('far');
-    icon.classList.add('fas');
-    this.classList.add('liked');
-    
-    setTimeout(() => {
-        openModal();
-    }, 800);
-});
-
-document.getElementById('focusShareBtn').addEventListener('click', function() {
-    if (currentFocusVideoId) {
-        shareVideo(currentFocusVideoId);
-    }
-});
-
-// CATEGORY FILTERING
-document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        currentCategory = btn.dataset.category;
-        
-        if (currentPlayingVideo) {
-            pauseVideo(currentPlayingVideo);
-        }
-        
-        renderFeed();
-    });
-});
-
-// SHARE
-function shareVideo(videoId) {
-    const video = videosData.find(v => v.id === videoId);
-    if (!video) return;
-    
-    const url = `${window.location.origin}${window.location.pathname}#video-${videoId}`;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: `ATH Production - ${video.title}`,
-            text: `Check out this video from ATH Production!`,
-            url: url
-        }).catch(err => console.log('Share cancelled'));
-    } else {
-        navigator.clipboard.writeText(url).then(() => {
-            alert('Link copied to clipboard!');
-        });
-    }
-}
-
-// LIKE
-function handleLike(btn) {
-    const icon = btn.querySelector('i');
-    icon.classList.remove('far');
-    icon.classList.add('fas');
-    btn.classList.add('liked');
-    
-    setTimeout(() => {
-        openModal();
-    }, 800);
-}
-
-// SCROLL TO TOP
-const scrollTopBtn = document.getElementById('scrollTopBtn');
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 500) {
-        scrollTopBtn.classList.add('visible');
-    } else {
-        scrollTopBtn.classList.remove('visible');
-    }
-});
-
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-// MODAL
-const modal = document.getElementById('contactModal');
-const modalPanel = document.getElementById('modalPanel');
-
-function openModal() {
-    modal.classList.remove('hidden');
-    modalPanel.style.transform = '';
-    setTimeout(() => {
-        modalPanel.classList.remove('translate-y-full');
-    }, 10);
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-    modalPanel.classList.add('translate-y-full');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-        modalPanel.style.transform = '';
-    }, 300);
-    document.body.style.overflow = '';
-}
-
-let modalStartY = 0;
-let modalCurrentY = 0;
-let modalDragging = false;
-
-modalPanel.addEventListener('touchstart', (e) => {
-    modalStartY = e.touches[0].clientY;
-    modalDragging = true;
-}, { passive: true });
-
-modalPanel.addEventListener('touchmove', (e) => {
-    if (!modalDragging) return;
-    modalCurrentY = e.touches[0].clientY;
-    const deltaY = modalCurrentY - modalStartY;
-    
-    if (deltaY > 0) {
-        modalPanel.style.transform = `translateY(${deltaY}px)`;
-    }
-}, { passive: true });
-
-modalPanel.addEventListener('touchend', () => {
-    if (!modalDragging) return;
-    modalDragging = false;
-    const deltaY = modalCurrentY - modalStartY;
-    
-    if (deltaY > 100) {
-        closeModal();
-    } else {
-        modalPanel.style.transform = '';
-    }
-    
-    modalStartY = 0;
-    modalCurrentY = 0;
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (focusModeActive) {
-            closeFocusMode();
-        } else {
-            closeModal();
-        }
-    }
-});
-
-// DEEP LINKING
-window.addEventListener('load', () => {
-    const hash = window.location.hash;
-    if (hash.startsWith('#video-')) {
-        const videoId = parseInt(hash.replace('#video-', ''));
-        setTimeout(() => {
-            openFocusMode(videoId);
-        }, 1000);
-    }
-});
-
-// SAFARI FIX
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        document.querySelectorAll('video').forEach(video => {
-            video.pause();
-        });
-        
-        if (currentPlayingVideo) {
-            pauseVideo(currentPlayingVideo);
-        }
-    }
-});
-
-window.addEventListener('beforeunload', () => {
-    document.querySelectorAll('video').forEach(video => {
-        video.pause();
-        video.currentTime = 0;
-    });
-});
+const videosData=[{id:1,title:"Creative Agency",subtitle:"ATH Creative Agency",videoFile:"ATHCreativeAgency.mp4",category:"agency",orientation:"vertical",views:"2.4K",description:"Agency promo visuals. #BetterCallATH"},{id:2,title:"Global Competition",subtitle:"ATH Creative Agency",videoFile:"ATHGlobalCompetition.mp4",category:"event",orientation:"horizontal",views:"3.1K",description:"Global event highlights. #BetterCallATH"},{id:3,title:"Jupiter",subtitle:"ATH Creative Agency",videoFile:"ATHJupiter.mp4",category:"campaign",orientation:"horizontal",views:"1.8K",description:"Jupiter project visuals. #BetterCallATH"},{id:4,title:"ATH Series",subtitle:"ATH Creative Agency",videoFile:"ATHSeries.mp4",category:"creative",orientation:"horizontal",views:"4.2K",description:"Exclusive series production. #BetterCallATH"},{id:5,title:"Solana Summit",subtitle:"ATH Creative Agency",videoFile:"ATHSolanaSummit.mp4",category:"event",orientation:"horizontal",views:"5.7K",description:"Summit event coverage. #BetterCallATH"},{id:6,title:"Solflare Sink",subtitle:"ATH Creative Agency",videoFile:"Solflaresink.mp4",category:"campaign",orientation:"vertical",views:"2.9K",description:"Creative production. #BetterCallATH"},{id:7,title:"Solflare Viral",subtitle:"ATH Creative Agency",videoFile:"Solflareviral.mp4",category:"campaign",orientation:"vertical",views:"8.3K",description:"Viral campaign. #BetterCallATH"},{id:8,title:"Better Call ATH",subtitle:"ATH Creative Agency",videoFile:"bettercallath.mp4",category:"creative",orientation:"vertical",views:"6.1K",description:"Narrative content. #BetterCallATH"},{id:9,title:"Polaris",subtitle:"ATH Creative Agency",videoFile:"polaris.mp4",category:"creative",orientation:"horizontal",views:"3.5K",description:"Cinematic production. #BetterCallATH"},{id:10,title:"Solflare Shield",subtitle:"ATH Creative Agency",videoFile:"solflareshield.mp4",category:"campaign",orientation:"horizontal",views:"4.7K",description:"Product visual shield. #BetterCallATH"}];let currentPlayingVideo=null,currentCategory='all',reelsMode=false,currentReelIndex=0,reelsVideos=[],isDraggingProgress=false,uiVisible=true,uiHideTimeout=null;window.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('video').forEach(v=>{v.pause();v.currentTime=0;v.muted=true;});renderFeed();setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hide'),800);});function renderFeed(){const wrapper=document.getElementById('articles-wrapper');wrapper.innerHTML='';const filtered=currentCategory==='all'?videosData:videosData.filter(v=>v.category===currentCategory);filtered.forEach(video=>wrapper.appendChild(createVideoArticle(video)));setupIntersectionObserver();}function createVideoArticle(video){const article=document.createElement('article');article.className='mb-12 border-b border-neutral-900 pb-8 video-article';article.dataset.videoId=video.id;article.innerHTML=`<div class="flex items-center justify-between px-4 py-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full overflow-hidden bg-neutral-800"><img src="logo.png" class="w-full h-full object-cover"></div><div><p class="text-sm font-semibold">${video.title}</p><p class="text-xs text-neutral-500">${video.subtitle}</p></div></div></div><div class="video-container ${video.orientation==='vertical'?'vertical':''}" data-video-id="${video.id}"><video loop muted playsinline webkit-playsinline preload="none"><source src="${video.videoFile}" type="video/mp4"></video><div class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div><div class="mute-btn"><i class="fas fa-volume-xmark"></i></div><div class="video-progress"><div class="video-progress-fill"></div></div></div><div class="px-4 py-3 flex justify-between items-center"><div class="flex gap-5 text-2xl text-neutral-300"><button class="hover:text-red-500 transition like-btn"><i class="far fa-heart"></i></button><a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a><button class="hover:text-green-500 transition share-btn"><i class="fas fa-share-nodes"></i></button></div><div class="text-sm text-neutral-400"><i class="fas fa-eye"></i> ${video.views}</div></div><div class="px-4"><p class="text-sm"><span class="font-bold mr-1">ath.camera</span> ${video.description}</p></div>`;const container=article.querySelector('.video-container');container.addEventListener('click',()=>openReels(video.id));const muteBtn=article.querySelector('.mute-btn');muteBtn.addEventListener('click',(e)=>{e.stopPropagation();const video=container.querySelector('video');video.muted=!video.muted;muteBtn.querySelector('i').className=video.muted?'fas fa-volume-xmark':'fas fa-volume-high';});article.querySelector('.like-btn').addEventListener('click',handleLike);article.querySelector('.share-btn').addEventListener('click',()=>shareVideo(video.id));return article;}function setupIntersectionObserver(){const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{const container=entry.target;const video=container.querySelector('video');if(!video)return;const isVertical=container.classList.contains('vertical');const threshold=isVertical?0.75:0.85;const rect=container.getBoundingClientRect();const vh=window.innerHeight;const visible=Math.min(rect.bottom,vh)-Math.max(rect.top,0);const percent=visible/vh;if(entry.isIntersecting&&entry.intersectionRatio>=threshold&&percent>0.4){if(currentPlayingVideo&&currentPlayingVideo!==video){currentPlayingVideo.pause();currentPlayingVideo.closest('.video-container').querySelector('.play-icon-overlay').style.opacity='1';}video.muted=true;video.play().then(()=>{currentPlayingVideo=video;container.querySelector('.play-icon-overlay').style.opacity='0';}).catch(()=>{});}else{video.pause();container.querySelector('.play-icon-overlay').style.opacity='1';if(currentPlayingVideo===video)currentPlayingVideo=null;}});},{threshold:[0,0.5,0.75,0.85]});document.querySelectorAll('.video-container').forEach(c=>observer.observe(c));}document.addEventListener('timeupdate',(e)=>{if(e.target.tagName==='VIDEO'&&!reelsMode&&e.target.duration){const container=e.target.closest('.video-container');if(container){const fill=container.querySelector('.video-progress-fill');if(fill)fill.style.width=`${(e.target.currentTime/e.target.duration)*100}%`;}}},true);document.querySelectorAll('.category-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.category-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentCategory=btn.dataset.category;if(currentPlayingVideo)currentPlayingVideo.pause();renderFeed();});});function shareVideo(id){const video=videosData.find(v=>v.id===id);const url=`${window.location.origin}${window.location.pathname}#video-${id}`;if(navigator.share){navigator.share({title:`ATH - ${video.title}`,text:'Check this out!',url}).catch(()=>{});}else{navigator.clipboard.writeText(url);alert('Link copied!');}}function handleLike(e){const icon=e.currentTarget.querySelector('i');icon.classList.remove('far');icon.classList.add('fas');e.currentTarget.classList.add('liked');setTimeout(openModal,800);}function openModal(){const modal=document.getElementById('contactModal');const panel=document.getElementById('modalPanel');modal.classList.remove('hidden');setTimeout(()=>panel.classList.remove('translate-y-full'),10);document.body.style.overflow='hidden';}function closeModal(){const modal=document.getElementById('contactModal');const panel=document.getElementById('modalPanel');panel.classList.add('translate-y-full');setTimeout(()=>{modal.classList.add('hidden');document.body.style.overflow='';},300);}const scrollTopBtn=document.getElementById('scrollTopBtn');window.addEventListener('scroll',()=>{scrollTopBtn.classList.toggle('visible',window.scrollY>500);});scrollTopBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});function openReels(videoId){if(currentPlayingVideo)currentPlayingVideo.pause();reelsVideos=currentCategory==='all'?videosData:videosData.filter(v=>v.category===currentCategory);currentReelIndex=reelsVideos.findIndex(v=>v.id===videoId);reelsMode=true;document.getElementById('reelsOverlay').classList.add('active');document.body.style.overflow='hidden';renderReels();playCurrentReel();setupReelsControls();}function closeReels(){reelsMode=false;const video=getCurrentReelVideo();if(video)video.pause();document.getElementById('reelsOverlay').classList.remove('active');document.body.style.overflow='';}function renderReels(){const slider=document.getElementById('reelsSlider');slider.innerHTML='';reelsVideos.forEach((video,index)=>{const item=document.createElement('div');item.className='reel-item';item.style.transform=`translateY(${(index-currentReelIndex)*100}%)`;item.innerHTML=`<video class="reel-video" loop playsinline webkit-playsinline preload="auto"><source src="${video.videoFile}" type="video/mp4"></video>`;slider.appendChild(item);});updateReelsInfo();}function updateReelsInfo(){const video=reelsVideos[currentReelIndex];document.getElementById('reelsTitle').textContent=video.title;document.getElementById('reelsSubtitle').textContent=video.subtitle;document.getElementById('reelsDescription').textContent=video.description;document.getElementById('reelsViews').textContent=video.views;}function playCurrentReel(){const video=getCurrentReelVideo();if(video){video.currentTime=0;video.muted=false;video.play().catch(()=>{});startProgressTracking();}}function getCurrentReelVideo(){const items=document.querySelectorAll('.reel-item');return items[currentReelIndex]?.querySelector('video');}function navigateReels(direction){const video=getCurrentReelVideo();if(video)video.pause();const newIndex=currentReelIndex+direction;if(newIndex<0){closeReels();return;}if(newIndex>=reelsVideos.length)return;currentReelIndex=newIndex;const items=document.querySelectorAll('.reel-item');items.forEach((item,index)=>{item.style.transform=`translateY(${(index-currentReelIndex)*100}%)`;});updateReelsInfo();setTimeout(playCurrentReel,300);}function setupReelsControls(){const overlay=document.getElementById('reelsOverlay');const progress=document.getElementById('reelsProgress');let startY=0;let startX=0;let moved=false;overlay.addEventListener('click',(e)=>{if(moved||isDraggingProgress)return;if(e.target.closest('.reels-header')||e.target.closest('.reels-footer')||e.target.closest('.reels-progress'))return;const video=getCurrentReelVideo();if(!video)return;if(video.paused){video.play();showPlayIndicator(false);}else{video.pause();showPlayIndicator(true);}});overlay.addEventListener('touchstart',(e)=>{startY=e.touches[0].clientY;startX=e.touches[0].clientX;moved=false;},{passive:true});overlay.addEventListener('touchmove',(e)=>{moved=true;},{passive:true});overlay.addEventListener('touchend',(e)=>{if(!moved)return;const endY=e.changedTouches[0].clientY;const endX=e.changedTouches[0].clientX;const deltaY=startY-endY;const deltaX=Math.abs(startX-endX);if(Math.abs(deltaY)>50&&deltaX<30){if(deltaY>0){navigateReels(1);}else{navigateReels(-1);}}moved=false;});progress.addEventListener('mousedown',startProgressDrag);progress.addEventListener('touchstart',startProgressDrag);function startProgressDrag(e){e.preventDefault();e.stopPropagation();isDraggingProgress=true;progress.classList.add('dragging');const video=getCurrentReelVideo();if(video)video.pause();handleProgressMove(e);document.addEventListener('mousemove',handleProgressMove);document.addEventListener('touchmove',handleProgressMove);document.addEventListener('mouseup',stopProgressDrag);document.addEventListener('touchend',stopProgressDrag);}function handleProgressMove(e){if(!isDraggingProgress)return;const clientX=e.type.startsWith('touch')?e.touches[0].clientX:e.clientX;const rect=progress.getBoundingClientRect();let percent=(clientX-rect.left)/rect.width;percent=Math.max(0,Math.min(1,percent));const video=getCurrentReelVideo();if(video&&video.duration){video.currentTime=percent*video.duration;document.getElementById('reelsProgressFill').style.width=`${percent*100}%`;}}function stopProgressDrag(){isDraggingProgress=false;progress.classList.remove('dragging');const video=getCurrentReelVideo();if(video)video.play();document.removeEventListener('mousemove',handleProgressMove);document.removeEventListener('touchmove',handleProgressMove);document.removeEventListener('mouseup',stopProgressDrag);document.removeEventListener('touchend',stopProgressDrag);}document.getElementById('reelsLikeBtn').addEventListener('click',()=>{const icon=document.querySelector('#reelsLikeBtn i');icon.classList.remove('far');icon.classList.add('fas');document.getElementById('reelsLikeBtn').classList.add('liked');setTimeout(openModal,800);});document.getElementById('reelsShareBtn').addEventListener('click',()=>{shareVideo(reelsVideos[currentReelIndex].id);});resetUITimeout();overlay.addEventListener('touchstart',resetUITimeout);overlay.addEventListener('mousemove',resetUITimeout);}function startProgressTracking(){const video=getCurrentReelVideo();if(!video)return;video.addEventListener('timeupdate',()=>{if(isDraggingProgress||!reelsMode)return;if(video.duration){const percent=(video.currentTime/video.duration)*100;document.getElementById('reelsProgressFill').style.width=`${percent}%`;}});}function showPlayIndicator(paused){const indicator=document.getElementById('reelsPlayIndicator');indicator.querySelector('i').className=paused?'fas fa-play':'fas fa-pause';indicator.classList.add('show');setTimeout(()=>indicator.classList.remove('show'),400);}function resetUITimeout(){clearTimeout(uiHideTimeout);showUI();uiHideTimeout=setTimeout(hideUI,3000);}function showUI(){uiVisible=true;document.getElementById('reelsHeader').classList.remove('hide');document.getElementById('reelsFooter').classList.remove('hide');}function hideUI(){uiVisible=false;document.getElementById('reelsHeader').classList.add('hide');document.getElementById('reelsFooter').classList.add('hide');}document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){if(reelsMode)closeReels();else closeModal();}if(reelsMode){if(e.key==='ArrowUp')navigateReels(1);if(e.key==='ArrowDown')navigateReels(-1);if(e.key===' '){e.preventDefault();const video=getCurrentReelVideo();if(video){if(video.paused)video.play();else video.pause();}}}});document.addEventListener('visibilitychange',()=>{if(document.hidden){if(currentPlayingVideo)currentPlayingVideo.pause();const reelVideo=getCurrentReelVideo();if(reelVideo)reelVideo.pause();}});
     </script>
 </body>
 </html>
