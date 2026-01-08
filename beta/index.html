@@ -18,12 +18,14 @@
             background-color: #000;
             color: #fff;
             overscroll-behavior-y: none; /* Prevent pull-to-refresh */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .touch-pan-y { touch-action: pan-y; }
+        .text-shadow { text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         /* Loading Screen */
         #loading-screen {
@@ -94,6 +96,24 @@
             font-size: 10px;
             font-weight: 600;
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            z-index: 10;
+        }
+        /* Just Viewed Overlay Styles */
+        .just-viewed-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .grid-item.viewed .just-viewed-overlay {
+            opacity: 1;
         }
 
         /* Search Bar */
@@ -136,18 +156,18 @@
         .viewer-video-wrapper video {
             max-height: 100%;
             max-width: 100%;
-            width: 100%; /* Force width for verticals */
-            object-fit: contain; /* Keep aspect ratio */
+            width: 100%; 
+            object-fit: contain; 
         }
         
         /* Viewer UI Controls */
         .viewer-right-actions {
             position: absolute;
-            right: 10px;
-            bottom: 80px; /* Above timeline */
+            right: 12px;
+            bottom: 100px; /* Shifted up slightly */
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
             align-items: center;
             z-index: 20;
         }
@@ -158,16 +178,26 @@
             gap: 4px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        .action-btn i { font-size: 24px; }
-        .action-btn span { font-size: 12px; font-weight: 600; }
+        .action-btn i { font-size: 26px; }
+        .action-btn span { font-size: 13px; font-weight: 600; }
 
         .viewer-bottom-info {
             position: absolute;
-            bottom: 40px; /* Above timeline */
-            left: 10px;
-            right: 60px; /* Space for right actions */
+            bottom: 45px; 
+            left: 12px;
+            right: 70px;
             z-index: 20;
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        
+        /* Larger text for mobile */
+        .viewer-desc {
+            font-size: 15px; 
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         /* Timeline / Scrubber */
@@ -176,40 +206,104 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 30px; /* Big hit area */
-            z-index: 30;
+            height: 40px; /* Large touch area */
+            z-index: 50; /* Top z-index to prevent conflict */
             display: flex;
             align-items: center;
             cursor: pointer;
+            touch-action: none; /* Crucial: stops scroll/swipe on timeline */
         }
         .viewer-timeline-bg {
             width: 100%;
-            height: 4px; /* Visible line thickness */
+            height: 4px; 
             background: rgba(255, 255, 255, 0.3);
             position: relative;
+            margin: 0 10px; /* Side margins */
+            border-radius: 2px;
         }
+        /* Active scrubbing visual */
+        .viewer-timeline-area:active .viewer-timeline-bg { height: 8px; }
+        
         .viewer-timeline-fill {
             height: 100%;
             background: #fff;
             width: 0%;
             position: absolute;
             top: 0; left: 0;
+            border-radius: 2px;
         }
-        /* Make thumb visual */
+        /* Thumb */
         .viewer-timeline-fill::after {
             content: '';
             position: absolute;
-            right: -4px;
-            top: -2px;
-            width: 8px;
-            height: 8px;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
             background: #fff;
             border-radius: 50%;
-            transform: scale(0);
-            transition: transform 0.1s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
-        .viewer-timeline-area:active .viewer-timeline-fill::after {
-            transform: scale(1.5);
+
+        /* Center Play Icon - Perfect Circle */
+        .play-icon-overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            background: rgba(0,0,0,0.5);
+            width: 70px;
+            height: 70px;
+            min-width: 70px; /* Prevent squishing */
+            min-height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; 
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        /* Speed Overlay */
+        .speed-overlay {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 30;
+            backdrop-filter: blur(4px);
+        }
+        .speed-overlay.visible { opacity: 1; }
+
+        /* Notification Badge */
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid black;
         }
 
         /* Runaway Button */
@@ -261,7 +355,10 @@
             <button onclick="toggleSearch()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</button>
             <button onclick="switchView('reels')" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</button>
             <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-envelope"></i> Messages</a>
-            <button onclick="showNotification()" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-heart"></i> Notifications</button>
+            <button onclick="showNotification()" class="flex items-center gap-4 hover:text-gray-300 relative">
+                <i class="far fa-heart"></i> Notifications
+                <div class="notif-badge" style="right: auto; left: 22px; top: 0;">1</div>
+            </button>
             <div class="flex items-center gap-4 font-bold mt-4"><img src="logo.png" class="w-6 h-6 rounded-full"> Profile</div>
         </nav>
     </aside>
@@ -285,12 +382,15 @@
             <div class="md:hidden flex justify-between items-center px-4 py-2 border-b border-neutral-800 mb-2">
                 <span class="font-bold text-lg">ath.camera</span>
                 <div class="flex gap-4 text-xl">
-                    <button onclick="showNotification()"><i class="far fa-heart"></i></button>
+                    <button onclick="showNotification()" class="relative">
+                        <i class="far fa-heart"></i>
+                        <div class="notif-badge">1</div>
+                    </button>
                     <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank"><i class="fab fa-facebook-messenger"></i></a>
                 </div>
             </div>
 
-            <!-- Profile Info (Mobile Layout mimic) -->
+            <!-- Profile Info -->
             <div class="px-4 mb-4">
                 <div class="flex items-center justify-between mb-4">
                     <!-- Avatar -->
@@ -348,13 +448,13 @@
 
             <!-- THE GRID -->
             <div id="grid-container" class="grid grid-cols-3 gap-0.5">
-                <!-- Javascript populates this -->
+                <!-- JS Populated -->
             </div>
         </div>
 
         <!-- REELS FEED VIEW (Hidden by default) -->
         <div id="view-reels" class="hidden h-[calc(100vh-50px)] overflow-y-scroll snap-y snap-mandatory">
-            <!-- Javascript populates this -->
+            <!-- JS Populated -->
         </div>
 
     </div>
@@ -371,10 +471,12 @@
     <div id="video-viewer">
         <div class="viewer-video-wrapper">
             
-            <!-- Video -->
-            <video id="viewer-video" playsinline loop onclick="toggleViewerPlay()">
-                <source src="" type="video/mp4">
-            </video>
+            <!-- Video Container for Event Listeners -->
+            <div id="video-touch-area" class="relative w-full h-full flex items-center justify-center">
+                <video id="viewer-video" playsinline loop>
+                    <source src="" type="video/mp4">
+                </video>
+            </div>
 
             <!-- Close / Back Button -->
             <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md">
@@ -386,12 +488,17 @@
                 <i id="mute-icon" class="fas fa-volume-xmark"></i>
             </button>
 
-            <!-- Play Icon (Center) -->
-            <div id="center-play" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity">
-                <div class="bg-black/50 rounded-full p-6"><i class="fas fa-play text-4xl"></i></div>
+            <!-- Speed 2x Overlay -->
+            <div id="speed-overlay" class="speed-overlay">
+                <i class="fas fa-forward"></i> Speed 2x
             </div>
 
-            <!-- Right Actions (Like Reels) -->
+            <!-- Play Icon (Center) -->
+            <div id="center-play" class="play-icon-overlay">
+                <i class="fas fa-play text-3xl ml-1"></i>
+            </div>
+
+            <!-- Right Actions -->
             <div class="viewer-right-actions">
                 <button class="action-btn" onclick="handleLike()">
                     <i id="viewer-heart" class="far fa-heart"></i>
@@ -414,9 +521,11 @@
                 <div class="flex items-center gap-2 mb-2">
                     <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
                     <span class="font-bold text-sm">ath.camera</span>
-                    <button class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded">Follow</button>
+                    <!-- Follow button leads to X -->
+                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white">Follow</a>
                 </div>
-                <p class="text-sm line-clamp-2" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
+                <!-- Increased text size for mobile -->
+                <p class="viewer-desc text-gray-100" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
                 <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
             </div>
 
@@ -441,7 +550,26 @@
         </div>
     </div>
 
-    <!-- DATA & LOGIC -->
+    <!-- Like Modal -->
+    <div id="contactModal" class="fixed inset-0 z-[110] hidden">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full touch-pan-y" id="modalPanel">
+            <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
+            <div class="text-center pb-8">
+                <div class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-red-500">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <p class="text-neutral-300 text-lg font-medium mb-8 leading-relaxed px-4">
+                    Enjoyed this video and want outstanding videos for your project?
+                </p>
+                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2 mx-auto">
+                    <i class="fa-brands fa-x-twitter"></i> Let's chat on X
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
     <script>
         // --- DATA ---
         const videos = [
@@ -456,6 +584,9 @@
             { file: 'polaris.mp4', title: 'Polaris', views: '9.2K', vertical: false, desc: 'Cinematic production. #BetterCallATH' },
             { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' }
         ];
+
+        // Track Viewed Videos
+        const viewedVideos = new Set();
 
         // --- INIT ---
         function initSite() {
@@ -474,13 +605,21 @@
             data.forEach((vid, index) => {
                 const div = document.createElement('div');
                 div.className = 'grid-item';
+                div.id = `grid-item-${index}`; // ID for updates
                 div.onclick = () => openViewer(index);
-                // Using preload auto to ensure previews load
+                
+                // Check if viewed
+                const viewedClass = viewedVideos.has(index) ? 'viewed' : '';
+
                 div.innerHTML = `
-                    <video muted playsinline preload="auto" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+                    <video muted playsinline preload="auto">
                         <source src="${vid.file}#t=0.1" type="video/mp4">
                     </video>
                     <div class="views-badge"><i class="fas fa-play text-[8px]"></i> ${vid.views}</div>
+                    <div class="just-viewed-overlay ${viewedClass}">
+                        <i class="far fa-eye text-2xl mb-1"></i>
+                        <span class="text-xs font-bold uppercase">Just Viewed</span>
+                    </div>
                 `;
                 grid.appendChild(div);
             });
@@ -489,7 +628,6 @@
         function renderReelsFeed() {
             const container = document.getElementById('view-reels');
             videos.forEach((vid, index) => {
-                // Simplified reel item for feed mode
                 const div = document.createElement('div');
                 div.className = 'w-full h-full snap-start relative bg-black flex items-center justify-center';
                 div.innerHTML = `
@@ -511,7 +649,6 @@
             } else if (view === 'reels') {
                 document.getElementById('view-profile').classList.add('hidden');
                 document.getElementById('view-reels').classList.remove('hidden');
-                // Auto play first reel logic could go here
             }
         }
 
@@ -540,6 +677,7 @@
         const vVideo = document.getElementById('viewer-video');
         const vFill = document.getElementById('viewer-fill');
         const vHeart = document.getElementById('viewer-heart');
+        const touchArea = document.getElementById('video-touch-area');
         let isMuted = false;
 
         function openViewer(index) {
@@ -555,18 +693,16 @@
             vVideo.load();
             vVideo.play().catch(e => console.log("Autoplay blocked"));
             
-            // Update UI
-            document.getElementById('viewer-likes').innerText = data.views; // Using views as fake likes count
+            document.getElementById('viewer-likes').innerText = data.views;
             document.getElementById('viewer-desc').innerText = data.desc;
-            vHeart.className = 'far fa-heart'; // Reset like
+            vHeart.className = 'far fa-heart';
             vHeart.parentElement.classList.remove('liked');
 
-            // Handle Aspect Ratio
-            const wrapper = document.querySelector('.viewer-video-wrapper video');
+            // Aspect Ratio
             if (data.vertical) {
-                wrapper.style.objectFit = 'cover'; // Fill screen for vertical
+                vVideo.style.objectFit = 'cover';
             } else {
-                wrapper.style.objectFit = 'contain'; // Fit for horizontal
+                vVideo.style.objectFit = 'contain';
             }
         }
 
@@ -574,16 +710,11 @@
             viewer.classList.remove('active');
             vVideo.pause();
             vVideo.src = "";
-        }
-
-        function toggleViewerPlay() {
-            if(vVideo.paused) {
-                vVideo.play();
-                document.getElementById('center-play').style.opacity = '0';
-            } else {
-                vVideo.pause();
-                document.getElementById('center-play').style.opacity = '1';
-            }
+            
+            // Mark as viewed
+            viewedVideos.add(currentIndex);
+            const gridItem = document.getElementById(`grid-item-${currentIndex}`);
+            if(gridItem) gridItem.classList.add('viewed');
         }
 
         function toggleMute() {
@@ -595,32 +726,90 @@
         function handleLike() {
             vHeart.className = 'fas fa-heart';
             vHeart.parentElement.classList.add('liked');
-            // Show custom dialog logic here if needed, or just notification
-            setTimeout(showNotification, 500);
+            setTimeout(() => {
+                const modal = document.getElementById('contactModal');
+                const panel = document.getElementById('modalPanel');
+                modal.classList.remove('hidden');
+                setTimeout(() => panel.classList.remove('translate-y-full'), 10);
+            }, 800);
         }
 
-        // --- VIEWER SWIPE LOGIC (UP/DOWN) ---
+        function closeModal() {
+            const modal = document.getElementById('contactModal');
+            const panel = document.getElementById('modalPanel');
+            panel.classList.add('translate-y-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // --- LONG PRESS & TOUCH LOGIC ---
+        let longPressTimer;
+        let isLongPress = false;
         let touchStartY = 0;
-        
-        viewer.addEventListener('touchstart', e => touchStartY = e.touches[0].clientY);
-        
-        viewer.addEventListener('touchend', e => {
+
+        // Use touchArea for gestures to avoid conflicting with controls
+        touchArea.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            isLongPress = false;
+            
+            // Start Long Press Timer (300ms)
+            longPressTimer = setTimeout(() => {
+                isLongPress = true;
+                vVideo.playbackRate = 2.0;
+                document.getElementById('speed-overlay').classList.add('visible');
+            }, 300);
+        }, {passive: true});
+
+        touchArea.addEventListener('touchend', (e) => {
+            clearTimeout(longPressTimer); // Cancel if lifted early
+            document.getElementById('speed-overlay').classList.remove('visible');
+            vVideo.playbackRate = 1.0;
+
             const touchEndY = e.changedTouches[0].clientY;
             const diff = touchStartY - touchEndY;
 
-            if (Math.abs(diff) > 50) { // Threshold
+            // If it was a swipe (vertical move > 150px)
+            if (Math.abs(diff) > 150) { 
                 if (diff > 0) {
-                    // Swipe UP -> Next Video
+                    // Swipe Up (Next)
                     if (currentIndex < videos.length - 1) {
                         loadVideoInViewer(currentIndex + 1);
                         currentIndex++;
                     }
                 } else {
-                    // Swipe DOWN -> Close viewer
+                    // Swipe Down (Close)
                     closeViewer();
+                }
+                return; // Stop further processing
+            }
+
+            // If simple tap (not long press, not swipe)
+            if (!isLongPress && Math.abs(diff) < 10) {
+                if(vVideo.paused) {
+                    vVideo.play();
+                    document.getElementById('center-play').style.opacity = '0';
+                } else {
+                    vVideo.pause();
+                    document.getElementById('center-play').style.opacity = '1';
                 }
             }
         });
+        
+        // Mouse support for testing on PC
+        touchArea.addEventListener('mousedown', () => {
+            longPressTimer = setTimeout(() => {
+                vVideo.playbackRate = 2.0;
+                document.getElementById('speed-overlay').classList.add('visible');
+            }, 300);
+        });
+        touchArea.addEventListener('mouseup', () => {
+            clearTimeout(longPressTimer);
+            document.getElementById('speed-overlay').classList.remove('visible');
+            vVideo.playbackRate = 1.0;
+        });
+        touchArea.addEventListener('click', () => {
+             // Simple click fallback if needed, but handled by touchend mostly
+        });
+
 
         // --- SCRUBBER LOGIC ---
         vVideo.ontimeupdate = () => {
@@ -631,7 +820,7 @@
         };
 
         function startScrub(e) {
-            e.stopPropagation(); // Don't trigger click/swipe
+            e.stopPropagation(); // Stop swipe/close logic
             const update = (evt) => {
                 const rect = document.querySelector('.viewer-timeline-area').getBoundingClientRect();
                 const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
@@ -641,7 +830,7 @@
                 vVideo.currentTime = pct * vVideo.duration;
             };
             
-            update(e); // Initial jump
+            update(e);
             
             const move = (evt) => { evt.preventDefault(); update(evt); };
             const up = () => {
@@ -666,6 +855,19 @@
         };
         btn.onmouseover = run;
         btn.ontouchstart = (e) => { e.preventDefault(); run(); };
+
+        // Modal Swipe
+        const modalPanel = document.getElementById('modalPanel');
+        let mStartY = 0;
+        modalPanel.addEventListener('touchstart', e => mStartY = e.touches[0].clientY);
+        modalPanel.addEventListener('touchmove', e => {
+            const delta = e.touches[0].clientY - mStartY;
+            if(delta > 0) modalPanel.style.transform = `translateY(${delta}px)`;
+        });
+        modalPanel.addEventListener('touchend', e => {
+            if((e.changedTouches[0].clientY - mStartY) > 100) closeModal();
+            else modalPanel.style.transform = '';
+        });
 
     </script>
 </body>
