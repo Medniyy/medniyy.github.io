@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,18 +11,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
             background-color: #000;
             color: #fff;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overscroll-behavior-y: none; /* Prevent pull-to-refresh */
         }
 
-        /* Hide Scrollbar */
+        /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .touch-pan-y { touch-action: pan-y; }
 
         /* Loading Screen */
         #loading-screen {
@@ -50,14 +51,8 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
 
-        /* Navigation Styles (Responsive) */
-        .sidebar {
-            display: none; /* Hidden on mobile */
-        }
-        .bottom-nav {
-            display: flex; /* Visible on mobile */
-        }
-
+        /* Sidebar (Desktop) */
+        .sidebar { display: none; }
         @media (min-width: 768px) {
             .sidebar {
                 display: flex;
@@ -72,45 +67,45 @@
                 flex-direction: column;
                 padding: 2rem;
             }
-            .bottom-nav { display: none; }
-            .main-content { margin-left: 240px; } /* Push content for sidebar */
+            .main-content { margin-left: 240px; }
+            .bottom-nav { display: none !important; }
         }
 
-        /* Grid Item Overlay */
+        /* Grid Layout */
         .grid-item {
             position: relative;
-            padding-bottom: 100%; /* 1:1 Aspect Ratio for Grid */
+            padding-bottom: 100%; /* Square */
             background: #111;
-            overflow: hidden;
             cursor: pointer;
+            overflow: hidden;
         }
-        .grid-item img, .grid-item video {
+        .grid-item video {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
-        .grid-item:hover img {
-            transform: scale(1.05);
-        }
-        .views-overlay {
+        .views-badge {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 8px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            bottom: 5px;
+            left: 5px;
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        /* Full Screen Video Viewer (Modal) */
+        /* Search Bar */
+        #search-overlay {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease;
+            background: #000;
+        }
+        #search-overlay.open { height: 60px; }
+
+        /* Video Viewer (Modal) */
         #video-viewer {
             position: fixed;
             inset: 0;
@@ -118,549 +113,559 @@
             z-index: 100;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
         #video-viewer.active {
             opacity: 1;
             pointer-events: auto;
+            transform: translateY(0);
         }
 
-        /* Player Controls inside Viewer */
-        .viewer-container {
-            width: 100%;
-            max-width: 500px; /* Mobile width feel */
+        .viewer-video-wrapper {
             position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: #000;
         }
         
-        /* Runaway Button Logic */
-        .runaway-btn {
-            position: relative;
-            transition: all 0.2s ease;
+        .viewer-video-wrapper video {
+            max-height: 100%;
+            max-width: 100%;
+            width: 100%; /* Force width for verticals */
+            object-fit: contain; /* Keep aspect ratio */
         }
-
-        /* Standard Video Controls (reused from previous design) */
-        .play-icon-overlay {
+        
+        /* Viewer UI Controls */
+        .viewer-right-actions {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            background: rgba(0,0,0,0.5);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; 
-            transition: opacity 0.2s;
-        }
-        .mute-btn {
-            position: absolute;
-            bottom: 60px;
-            right: 15px;
-            background: rgba(0,0,0,0.6);
-            padding: 8px;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-        }
-        /* Custom Progress Bar */
-        .video-progress {
-            position: absolute;
-            bottom: 45px;
-            left: 10px;
             right: 10px;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-            cursor: pointer;
+            bottom: 80px; /* Above timeline */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
             z-index: 20;
         }
-        .video-progress:hover { height: 8px; }
-        .video-progress-fill {
-            height: 100%;
-            background: #fff;
-            width: 0%;
-            border-radius: 2px;
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .action-btn i { font-size: 24px; }
+        .action-btn span { font-size: 12px; font-weight: 600; }
+
+        .viewer-bottom-info {
+            position: absolute;
+            bottom: 40px; /* Above timeline */
+            left: 10px;
+            right: 60px; /* Space for right actions */
+            z-index: 20;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        /* Viewer Header/Footer */
-        .viewer-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 16px;
-            z-index: 30;
-            display: flex;
-            justify-content: space-between;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
-        }
-        .viewer-actions {
+        /* Timeline / Scrubber */
+        .viewer-timeline-area {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 16px;
+            height: 30px; /* Big hit area */
             z-index: 30;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+        }
+        .viewer-timeline-bg {
+            width: 100%;
+            height: 4px; /* Visible line thickness */
+            background: rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+        .viewer-timeline-fill {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        /* Make thumb visual */
+        .viewer-timeline-fill::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: -2px;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.1s;
+        }
+        .viewer-timeline-area:active .viewer-timeline-fill::after {
+            transform: scale(1.5);
         }
 
-        @keyframes likeHeart {
-            0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); }
-        }
+        /* Runaway Button */
+        .runaway-btn { transition: transform 0.15s ease-out; }
+
+        /* Animations */
+        @keyframes likeHeart { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
         .liked { color: #ef4444 !important; animation: likeHeart 0.4s ease-in-out; }
+
+        /* Notifications Modal */
+        #notif-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #333;
+            padding: 16px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 200;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #notif-toast.show { transform: translateX(-50%) translateY(0); }
 
     </style>
 </head>
-<body onload="initSite()">
+<body class="text-white bg-black" onload="initSite()">
 
-    <!-- 1. LOADING SCREEN -->
+    <!-- LOADING SCREEN -->
     <div id="loading-screen">
-        <div class="pulse-logo">
-            <img src="logo.png" class="w-full h-full object-cover">
-        </div>
+        <div class="pulse-logo"><img src="logo.png" class="w-full h-full object-cover"></div>
     </div>
 
-    <!-- 2. DESKTOP SIDEBAR -->
+    <!-- SIDEBAR (Desktop) -->
     <aside class="sidebar">
         <div class="flex items-center gap-3 mb-10">
             <img src="logo.png" class="w-8 h-8 rounded-full">
             <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
         </div>
         <nav class="flex flex-col gap-6 text-lg">
-            <a href="#" class="flex items-center gap-4 font-bold hover:text-gray-300"><i class="fas fa-home"></i> Home</a>
-            <a href="#" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</a>
-            <a href="#" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-compass"></i> Explore</a>
-            <a href="#" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</a>
-            <a href="https://x.com/athcamera" target="_blank" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-envelope"></i> Messages</a>
-            <a href="#" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-heart"></i> Notifications</a>
-            <a href="#" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-plus-square"></i> Create</a>
+            <button onclick="switchView('grid')" class="flex items-center gap-4 font-bold hover:text-gray-300"><i class="fas fa-home"></i> Home</button>
+            <button onclick="toggleSearch()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</button>
+            <button onclick="switchView('reels')" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</button>
+            <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-envelope"></i> Messages</a>
+            <button onclick="showNotification()" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-heart"></i> Notifications</button>
             <div class="flex items-center gap-4 font-bold mt-4"><img src="logo.png" class="w-6 h-6 rounded-full"> Profile</div>
         </nav>
     </aside>
 
-    <!-- 3. MAIN CONTENT (PROFILE & GRID) -->
-    <div class="main-content min-h-screen pb-20 md:pb-0">
+    <!-- MAIN CONTENT -->
+    <div class="main-content min-h-screen pb-20 md:pb-0 relative">
         
-        <div class="max-w-4xl mx-auto pt-4 md:pt-10">
+        <!-- SEARCH OVERLAY -->
+        <div id="search-overlay" class="px-4 flex items-center">
+            <div class="bg-neutral-800 rounded-lg flex items-center px-3 py-2 w-full">
+                <i class="fas fa-search text-gray-400 mr-2"></i>
+                <input type="text" id="search-input" placeholder="Search videos..." class="bg-transparent outline-none w-full text-sm text-white" oninput="handleSearch(this.value)">
+                <button onclick="toggleSearch()" class="text-gray-400"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <!-- PROFILE VIEW (Grid) -->
+        <div id="view-profile" class="max-w-2xl mx-auto pt-2 md:pt-10 transition-opacity duration-300">
             
-            <!-- Profile Header -->
-            <div class="px-4 md:px-8 mb-8">
-                <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <!-- Mobile Header -->
+            <div class="md:hidden flex justify-between items-center px-4 py-2 border-b border-neutral-800 mb-2">
+                <span class="font-bold text-lg">ath.camera</span>
+                <div class="flex gap-4 text-xl">
+                    <button onclick="showNotification()"><i class="far fa-heart"></i></button>
+                    <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank"><i class="fab fa-facebook-messenger"></i></a>
+                </div>
+            </div>
+
+            <!-- Profile Info (Mobile Layout mimic) -->
+            <div class="px-4 mb-4">
+                <div class="flex items-center justify-between mb-4">
                     <!-- Avatar -->
-                    <div class="w-20 h-20 md:w-36 md:h-36 rounded-full p-0.5 bg-gradient-to-tr from-yellow-400 to-fuchsia-600 shrink-0">
-                        <div class="w-full h-full bg-black rounded-full overflow-hidden border-4 border-black">
+                    <div class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 to-fuchsia-600 shrink-0 mr-4">
+                        <div class="w-full h-full bg-black rounded-full overflow-hidden border-2 border-black">
                             <img src="logo.png" class="w-full h-full object-cover">
                         </div>
                     </div>
-                    
-                    <!-- Info -->
-                    <div class="flex-1">
-                        <div class="flex flex-wrap items-center gap-4 mb-4">
-                            <h1 class="text-xl md:text-2xl font-bold">ath.camera</h1>
-                            
-                            <!-- Action Buttons -->
-                            <div class="flex gap-2 relative">
-                                <!-- About Us -->
-                                <a href="about.html" class="bg-neutral-800 hover:bg-neutral-700 px-4 py-1.5 rounded-lg text-sm font-semibold transition">
-                                    About Us
-                                </a>
-                                <!-- Runaway Button -->
-                                <button id="runaway-btn" class="runaway-btn bg-white text-black px-4 py-1.5 rounded-lg text-sm font-bold">
-                                    Book a Call
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Stats (Visual only) -->
-                        <div class="flex gap-6 mb-4 text-sm md:text-base">
-                            <span><span class="font-bold">10</span> posts</span>
-                            <span><span class="font-bold">12.5K</span> followers</span>
-                            <span><span class="font-bold">42</span> following</span>
-                        </div>
-
-                        <!-- Bio -->
-                        <div class="text-sm">
-                            <p class="font-bold">ATH Production</p>
-                            <p class="text-neutral-300">Bangers Only. 🎬</p>
-                            <p class="text-neutral-400">Cinematic | Trending | Exclusive</p>
-                            <a href="https://x.com/athcamera" target="_blank" class="text-blue-400 hover:underline flex items-center gap-1 mt-1">
-                                <i class="fa-brands fa-x-twitter"></i> x.com/athcamera
-                            </a>
-                        </div>
+                    <!-- Stats -->
+                    <div class="flex-1 flex justify-around text-center">
+                        <div><div class="font-bold text-lg">10</div><div class="text-xs">Posts</div></div>
+                        <div><div class="font-bold text-lg">12.5K</div><div class="text-xs">Followers</div></div>
+                        <div><div class="font-bold text-lg">42</div><div class="text-xs">Following</div></div>
                     </div>
                 </div>
 
-                <!-- Story Highlights (Circles) -->
-                <div class="flex gap-6 overflow-x-auto no-scrollbar mt-8 pb-2">
-                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="flex flex-col items-center gap-2 cursor-pointer min-w-[70px]">
-                        <div class="w-16 h-16 rounded-full border border-neutral-800 p-0.5"><img src="xlogo.jpg" class="w-full h-full rounded-full object-cover"></div>
+                <!-- Bio -->
+                <div class="text-sm mb-4">
+                    <p class="font-bold">ATH Production</p>
+                    <p class="text-neutral-200">Bangers Only. 🎬</p>
+                    <p class="text-neutral-400">Cinematic | Trending | Exclusive</p>
+                    <a href="https://x.com/athcamera" target="_blank" class="text-blue-400 flex items-center gap-1 mt-1">
+                        <i class="fa-brands fa-x-twitter"></i> x.com/athcamera
+                    </a>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2 mb-6">
+                    <a href="about.html" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center">About Us</a>
+                    <button id="runaway-btn" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center">Book a Call</button>
+                </div>
+
+                <!-- Highlights -->
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2 mb-2">
+                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border border-neutral-700 p-[2px]"><div class="w-full h-full rounded-full overflow-hidden bg-neutral-900"><img src="xlogo.jpg" class="w-full h-full object-cover"></div></div>
                         <span class="text-xs">Join us</span>
                     </a>
-                    <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="flex flex-col items-center gap-2 cursor-pointer min-w-[70px]">
-                        <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl"><i class="fa-regular fa-envelope"></i></div>
+                    <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border border-neutral-700 bg-neutral-900 flex items-center justify-center text-xl"><i class="fa-regular fa-envelope"></i></div>
                         <span class="text-xs">DM us</span>
                     </a>
-                    <a href="https://x.com/athcamera/highlights" target="_blank" class="flex flex-col items-center gap-2 cursor-pointer min-w-[70px]">
-                        <div class="w-16 h-16 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-xl"><i class="fa-solid fa-star"></i></div>
+                    <a href="https://x.com/athcamera/highlights" target="_blank" class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border border-neutral-700 bg-neutral-900 flex items-center justify-center text-xl"><i class="fa-solid fa-star"></i></div>
                         <span class="text-xs">Highlights</span>
                     </a>
                 </div>
             </div>
 
-            <!-- Tab Switcher (Visual) -->
-            <div class="border-t border-neutral-800 flex justify-center gap-12 text-xs font-bold tracking-widest uppercase mb-1">
-                <div class="border-t-2 border-white py-4 flex items-center gap-2"><i class="fas fa-th"></i> Posts</div>
-                <div class="border-t-2 border-transparent py-4 flex items-center gap-2 text-neutral-500 hover:text-white cursor-pointer"><i class="fas fa-video"></i> Reels</div>
-                <div class="border-t-2 border-transparent py-4 flex items-center gap-2 text-neutral-500 hover:text-white cursor-pointer"><i class="far fa-bookmark"></i> Saved</div>
+            <!-- Tabs -->
+            <div class="flex justify-around border-t border-neutral-800 text-2xl text-gray-500">
+                <button class="flex-1 py-2 border-b-2 border-white text-white"><i class="fas fa-th"></i></button>
+                <button class="flex-1 py-2" onclick="switchView('reels')"><i class="fas fa-video"></i></button>
             </div>
 
-            <!-- 4. VIDEO GRID (3 Columns) -->
-            <div class="grid grid-cols-3 gap-1 md:gap-4" id="video-grid">
-                <!-- Grid Items generated by JS or hardcoded below -->
-                
-                <!-- 1. ATHCreativeAgency -->
-                <div class="grid-item" onclick="openViewer('ATHCreativeAgency.mp4', true)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="ATHCreativeAgency.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 15.2K</div>
-                </div>
-
-                <!-- 2. ATHGlobalCompetition -->
-                <div class="grid-item" onclick="openViewer('ATHGlobalCompetition.mp4', false)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="ATHGlobalCompetition.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 8.9K</div>
-                </div>
-
-                <!-- 3. ATHJupiter -->
-                <div class="grid-item" onclick="openViewer('ATHJupiter.mp4', false)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="ATHJupiter.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 12K</div>
-                </div>
-
-                <!-- 4. ATHSeries -->
-                <div class="grid-item" onclick="openViewer('ATHSeries.mp4', false)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="ATHSeries.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 22.1K</div>
-                </div>
-
-                <!-- 5. ATHSolanaSummit -->
-                <div class="grid-item" onclick="openViewer('ATHSolanaSummit.mp4', false)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="ATHSolanaSummit.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 5.4K</div>
-                </div>
-
-                <!-- 6. Solflaresink -->
-                <div class="grid-item" onclick="openViewer('Solflaresink.mp4', true)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="Solflaresink.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 34K</div>
-                </div>
-
-                <!-- 7. Solflareviral -->
-                <div class="grid-item" onclick="openViewer('Solflareviral.mp4', true)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="Solflareviral.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 18.7K</div>
-                </div>
-
-                <!-- 8. Better Call ATH -->
-                <div class="grid-item" onclick="openViewer('bettercallath.mp4', true)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="bettercallath.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 41K</div>
-                </div>
-
-                <!-- 9. Polaris -->
-                <div class="grid-item" onclick="openViewer('polaris.mp4', false)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="polaris.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 9.2K</div>
-                </div>
-
-                <!-- 10. Solflare Shield -->
-                <div class="grid-item" onclick="openViewer('solflareshield.mp4', false)">
-                    <video muted playsinline class="pointer-events-none">
-                        <source src="solflareshield.mp4" type="video/mp4">
-                    </video>
-                    <div class="views-overlay"><i class="fas fa-play"></i> 11.3K</div>
-                </div>
-
+            <!-- THE GRID -->
+            <div id="grid-container" class="grid grid-cols-3 gap-0.5">
+                <!-- Javascript populates this -->
             </div>
         </div>
+
+        <!-- REELS FEED VIEW (Hidden by default) -->
+        <div id="view-reels" class="hidden h-[calc(100vh-50px)] overflow-y-scroll snap-y snap-mandatory">
+            <!-- Javascript populates this -->
+        </div>
+
     </div>
 
-    <!-- 5. MOBILE BOTTOM NAVIGATION -->
-    <nav class="bottom-nav fixed bottom-0 left-0 w-full bg-black border-t border-neutral-800 z-50 justify-around items-center py-3 pb-safe">
-        <a href="#" class="text-white text-xl"><i class="fas fa-home"></i></a>
-        <a href="#" class="text-neutral-500 text-xl hover:text-white"><i class="fas fa-search"></i></a>
-        <a href="#" class="text-neutral-500 text-xl hover:text-white"><i class="far fa-plus-square"></i></a>
-        <a href="#" class="text-neutral-500 text-xl hover:text-white"><i class="fas fa-film"></i></a>
-        <div class="w-6 h-6 rounded-full overflow-hidden border border-white">
-            <img src="logo.png" class="w-full h-full object-cover">
-        </div>
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="bottom-nav fixed bottom-0 w-full bg-black border-t border-neutral-800 z-50 flex justify-around items-center py-3 pb-safe">
+        <button onclick="switchView('grid')" class="text-white text-2xl"><i class="fas fa-home"></i></button>
+        <button onclick="toggleSearch()" class="text-neutral-500 text-2xl"><i class="fas fa-search"></i></button>
+        <button onclick="switchView('reels')" class="text-neutral-500 text-2xl"><i class="fas fa-film"></i></button>
+        <a href="https://x.com/athcamera" target="_blank" class="text-neutral-500 text-2xl"><i class="far fa-user"></i></a>
     </nav>
 
-    <!-- 6. MODAL VIDEO VIEWER -->
+    <!-- FULLSCREEN VIEWER (Overlay) -->
     <div id="video-viewer">
-        <div class="viewer-container h-full md:h-[90vh] md:rounded-lg overflow-hidden flex items-center justify-center bg-neutral-900 relative">
+        <div class="viewer-video-wrapper">
             
-            <!-- Header (Close Button) -->
-            <div class="viewer-header">
-                <button class="text-white text-shadow" onclick="closeViewer()"><i class="fas fa-chevron-left"></i> Back</button>
-                <span class="font-bold">Reels</span>
-                <div class="w-6"></div> <!-- Spacer -->
-            </div>
-
-            <!-- Video Player -->
-            <video id="active-video" class="w-full h-full object-cover" playsinline loop onclick="togglePlayState()">
-                <!-- Source injected by JS -->
+            <!-- Video -->
+            <video id="viewer-video" playsinline loop onclick="toggleViewerPlay()">
+                <source src="" type="video/mp4">
             </video>
 
-            <!-- Play Icon Center -->
-            <div id="viewer-play-icon" class="play-icon-overlay"><i class="fas fa-play text-2xl"></i></div>
+            <!-- Close / Back Button -->
+            <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md">
+                <i class="fas fa-chevron-left"></i>
+            </button>
 
-            <!-- Progress Bar -->
-            <div class="video-progress" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
-                <div class="video-progress-fill" id="viewer-progress-fill"></div>
+            <!-- Mute Toggle -->
+            <button onclick="toggleMute()" class="absolute top-4 right-4 z-40 text-white text-xl bg-black/50 p-2 rounded-full backdrop-blur-sm">
+                <i id="mute-icon" class="fas fa-volume-xmark"></i>
+            </button>
+
+            <!-- Play Icon (Center) -->
+            <div id="center-play" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity">
+                <div class="bg-black/50 rounded-full p-6"><i class="fas fa-play text-4xl"></i></div>
             </div>
 
-            <!-- Action Buttons Overlay -->
-            <div class="viewer-actions">
-                <div class="flex gap-4 text-2xl">
-                    <button onclick="handleLike(this)" class="hover:text-red-500 transition"><i class="far fa-heart"></i></button>
-                    <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="hover:text-blue-500 transition"><i class="far fa-comment"></i></a>
-                    <button class="hover:text-green-500 transition"><i class="far fa-paper-plane"></i></button>
-                </div>
-                <button class="mute-btn" onclick="toggleViewerMute(event, this)">
-                    <i class="fas fa-volume-high"></i>
+            <!-- Right Actions (Like Reels) -->
+            <div class="viewer-right-actions">
+                <button class="action-btn" onclick="handleLike()">
+                    <i id="viewer-heart" class="far fa-heart"></i>
+                    <span id="viewer-likes">12K</span>
+                </button>
+                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn">
+                    <i class="far fa-comment-dots"></i>
+                    <span>DM</span>
+                </a>
+                <button class="action-btn">
+                    <i class="far fa-paper-plane"></i>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-ellipsis-h"></i>
                 </button>
             </div>
 
-        </div>
-    </div>
-
-    <!-- Like Modal Logic (Same as before) -->
-    <div id="contactModal" class="fixed inset-0 z-[110] hidden">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full touch-pan-y" id="modalPanel">
-            <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
-            <div class="text-center pb-8">
-                <div class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-red-500">
-                    <i class="fas fa-heart"></i>
+            <!-- Bottom Info -->
+            <div class="viewer-bottom-info">
+                <div class="flex items-center gap-2 mb-2">
+                    <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
+                    <span class="font-bold text-sm">ath.camera</span>
+                    <button class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded">Follow</button>
                 </div>
-                <p class="text-neutral-300 text-lg font-medium mb-8 leading-relaxed px-4">
-                    Enjoyed this video and want outstanding videos for your project?
-                </p>
-                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2 mx-auto">
-                    <i class="fa-brands fa-x-twitter"></i> Let's chat on X
-                </a>
+                <p class="text-sm line-clamp-2" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
+                <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
             </div>
+
+            <!-- Timeline -->
+            <div class="viewer-timeline-area" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
+                <div class="viewer-timeline-bg">
+                    <div class="viewer-timeline-fill" id="viewer-fill"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
+    <!-- NOTIFICATION TOAST -->
+    <div id="notif-toast">
+        <div class="w-10 h-10 bg-gradient-to-tr from-yellow-400 to-fuchsia-600 rounded-full flex items-center justify-center shrink-0">
+            <i class="fas fa-heart text-white"></i>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm">ATH Team</h4>
+            <p class="text-xs text-gray-300 mt-1">Hey, we're attention engineers! Check stories to learn about us or click messages to DM us! ❤️</p>
+        </div>
+    </div>
+
+    <!-- DATA & LOGIC -->
     <script>
-        // --- 1. LOADING SCREEN ---
+        // --- DATA ---
+        const videos = [
+            { file: 'ATHCreativeAgency.mp4', title: 'Creative Agency', views: '15.2K', vertical: true, desc: 'Agency promo visuals. #BetterCallATH' },
+            { file: 'ATHGlobalCompetition.mp4', title: 'Global Competition', views: '8.9K', vertical: false, desc: 'Global event highlights. #BetterCallATH' },
+            { file: 'ATHJupiter.mp4', title: 'Jupiter', views: '12K', vertical: false, desc: 'Jupiter project visuals. #BetterCallATH' },
+            { file: 'ATHSeries.mp4', title: 'ATH Series', views: '22.1K', vertical: false, desc: 'Exclusive series production. #BetterCallATH' },
+            { file: 'ATHSolanaSummit.mp4', title: 'Solana Summit', views: '5.4K', vertical: false, desc: 'Summit event coverage. #BetterCallATH' },
+            { file: 'Solflaresink.mp4', title: 'Solflare Sink', views: '34K', vertical: true, desc: 'Creative production. #BetterCallATH' },
+            { file: 'Solflareviral.mp4', title: 'Solflare Viral', views: '18.7K', vertical: true, desc: 'Viral campaign. #BetterCallATH' },
+            { file: 'bettercallath.mp4', title: 'Better Call ATH', views: '41K', vertical: true, desc: 'Narrative content. #BetterCallATH' },
+            { file: 'polaris.mp4', title: 'Polaris', views: '9.2K', vertical: false, desc: 'Cinematic production. #BetterCallATH' },
+            { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' }
+        ];
+
+        // --- INIT ---
         function initSite() {
             setTimeout(() => {
-                const loader = document.getElementById('loading-screen');
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 800);
-            }, 1500); // 1.5s delay
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 800);
+            }, 1200);
+            renderGrid(videos);
+            renderReelsFeed();
         }
 
-        // --- 2. RUNAWAY BUTTON ---
-        const btn = document.getElementById('runaway-btn');
-        // Desktop Hover
-        btn.addEventListener('mouseover', moveButton);
-        // Mobile Touch
-        btn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevent click
-            moveButton();
-        });
-
-        function moveButton() {
-            const x = Math.random() * 200 - 100; // -100 to 100
-            const y = Math.random() * 200 - 100;
-            btn.style.transform = `translate(${x}px, ${y}px)`;
+        // --- RENDERING ---
+        function renderGrid(data) {
+            const grid = document.getElementById('grid-container');
+            grid.innerHTML = '';
+            data.forEach((vid, index) => {
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.onclick = () => openViewer(index);
+                // Using preload auto to ensure previews load
+                div.innerHTML = `
+                    <video muted playsinline preload="auto" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+                        <source src="${vid.file}#t=0.1" type="video/mp4">
+                    </video>
+                    <div class="views-badge"><i class="fas fa-play text-[8px]"></i> ${vid.views}</div>
+                `;
+                grid.appendChild(div);
+            });
         }
 
-        // --- 3. VIEWER / PLAYER LOGIC ---
-        const viewer = document.getElementById('video-viewer');
-        const activeVideo = document.getElementById('active-video');
-        const playIcon = document.getElementById('viewer-play-icon');
-        const progressBarFill = document.getElementById('viewer-progress-fill');
-        let currentMuted = false;
+        function renderReelsFeed() {
+            const container = document.getElementById('view-reels');
+            videos.forEach((vid, index) => {
+                // Simplified reel item for feed mode
+                const div = document.createElement('div');
+                div.className = 'w-full h-full snap-start relative bg-black flex items-center justify-center';
+                div.innerHTML = `
+                    <video src="${vid.file}" class="w-full h-full object-contain" loop playsinline onclick="this.paused ? this.play() : this.pause()"></video>
+                    <div class="absolute bottom-20 left-4 text-shadow">
+                        <div class="font-bold mb-1">@ath.camera</div>
+                        <div class="text-sm">${vid.desc}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
 
-        function openViewer(src, isVertical) {
-            // "One King" Logic: Ensure grid videos are really paused (though they don't autoplay now)
-            
-            // Set Source
-            activeVideo.src = src;
-            activeVideo.load();
-            
-            // Adjust container aspect ratio based on video type
-            const container = document.querySelector('.viewer-container');
-            if (isVertical) {
-                container.style.aspectRatio = "9/16";
-                activeVideo.style.objectFit = "cover";
-            } else {
-                container.style.aspectRatio = "16/9";
-                activeVideo.style.objectFit = "contain"; 
+        // --- NAVIGATION ---
+        function switchView(view) {
+            if (view === 'grid') {
+                document.getElementById('view-profile').classList.remove('hidden');
+                document.getElementById('view-reels').classList.add('hidden');
+            } else if (view === 'reels') {
+                document.getElementById('view-profile').classList.add('hidden');
+                document.getElementById('view-reels').classList.remove('hidden');
+                // Auto play first reel logic could go here
             }
+        }
 
-            // Show Viewer
+        function toggleSearch() {
+            document.getElementById('search-overlay').classList.toggle('open');
+            if(document.getElementById('search-overlay').classList.contains('open')) {
+                document.getElementById('search-input').focus();
+            }
+        }
+
+        function handleSearch(query) {
+            const lower = query.toLowerCase();
+            const filtered = videos.filter(v => v.title.toLowerCase().includes(lower));
+            renderGrid(filtered);
+        }
+
+        function showNotification() {
+            const toast = document.getElementById('notif-toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        // --- VIEWER LOGIC ---
+        let currentIndex = 0;
+        const viewer = document.getElementById('video-viewer');
+        const vVideo = document.getElementById('viewer-video');
+        const vFill = document.getElementById('viewer-fill');
+        const vHeart = document.getElementById('viewer-heart');
+        let isMuted = false;
+
+        function openViewer(index) {
+            currentIndex = index;
+            loadVideoInViewer(index);
             viewer.classList.add('active');
-            
-            // Play
-            activeVideo.muted = currentMuted;
-            updateMuteIconUI();
-            activeVideo.play().then(() => {
-                playIcon.style.opacity = '0';
-            }).catch(e => console.log(e));
+        }
 
-            // Start update loop
-            activeVideo.ontimeupdate = () => {
-                if(activeVideo.duration) {
-                    const pct = (activeVideo.currentTime / activeVideo.duration) * 100;
-                    progressBarFill.style.width = pct + '%';
-                }
-            };
+        function loadVideoInViewer(index) {
+            const data = videos[index];
+            vVideo.src = data.file;
+            vVideo.muted = isMuted;
+            vVideo.load();
+            vVideo.play().catch(e => console.log("Autoplay blocked"));
+            
+            // Update UI
+            document.getElementById('viewer-likes').innerText = data.views; // Using views as fake likes count
+            document.getElementById('viewer-desc').innerText = data.desc;
+            vHeart.className = 'far fa-heart'; // Reset like
+            vHeart.parentElement.classList.remove('liked');
+
+            // Handle Aspect Ratio
+            const wrapper = document.querySelector('.viewer-video-wrapper video');
+            if (data.vertical) {
+                wrapper.style.objectFit = 'cover'; // Fill screen for vertical
+            } else {
+                wrapper.style.objectFit = 'contain'; // Fit for horizontal
+            }
         }
 
         function closeViewer() {
             viewer.classList.remove('active');
-            activeVideo.pause();
-            activeVideo.src = ""; // Clear source to stop buffering
+            vVideo.pause();
+            vVideo.src = "";
         }
 
-        function togglePlayState() {
-            if(activeVideo.paused) {
-                activeVideo.play();
-                playIcon.style.opacity = '0';
+        function toggleViewerPlay() {
+            if(vVideo.paused) {
+                vVideo.play();
+                document.getElementById('center-play').style.opacity = '0';
             } else {
-                activeVideo.pause();
-                playIcon.style.opacity = '1';
+                vVideo.pause();
+                document.getElementById('center-play').style.opacity = '1';
             }
         }
 
-        function toggleViewerMute(e, btn) {
-            e.stopPropagation();
-            currentMuted = !currentMuted;
-            activeVideo.muted = currentMuted;
-            updateMuteIconUI(btn);
+        function toggleMute() {
+            isMuted = !isMuted;
+            vVideo.muted = isMuted;
+            document.getElementById('mute-icon').className = isMuted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
         }
 
-        function updateMuteIconUI(btnElement) {
-            const btn = btnElement || document.querySelector('.viewer-actions .mute-btn');
-            const icon = btn.querySelector('i');
-            if (currentMuted) {
-                icon.className = 'fas fa-volume-xmark';
-            } else {
-                icon.className = 'fas fa-volume-high';
+        function handleLike() {
+            vHeart.className = 'fas fa-heart';
+            vHeart.parentElement.classList.add('liked');
+            // Show custom dialog logic here if needed, or just notification
+            setTimeout(showNotification, 500);
+        }
+
+        // --- VIEWER SWIPE LOGIC (UP/DOWN) ---
+        let touchStartY = 0;
+        
+        viewer.addEventListener('touchstart', e => touchStartY = e.touches[0].clientY);
+        
+        viewer.addEventListener('touchend', e => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+
+            if (Math.abs(diff) > 50) { // Threshold
+                if (diff > 0) {
+                    // Swipe UP -> Next Video
+                    if (currentIndex < videos.length - 1) {
+                        loadVideoInViewer(currentIndex + 1);
+                        currentIndex++;
+                    }
+                } else {
+                    // Swipe DOWN -> Close viewer
+                    closeViewer();
+                }
             }
-        }
+        });
 
-        // --- 4. SCRUBBING LOGIC ---
-        let isScrubbing = false;
+        // --- SCRUBBER LOGIC ---
+        vVideo.ontimeupdate = () => {
+            if(vVideo.duration) {
+                const pct = (vVideo.currentTime / vVideo.duration) * 100;
+                vFill.style.width = pct + '%';
+            }
+        };
 
         function startScrub(e) {
-            e.stopPropagation();
-            isScrubbing = true;
-            activeVideo.pause();
-            handleScrub(e);
+            e.stopPropagation(); // Don't trigger click/swipe
+            const update = (evt) => {
+                const rect = document.querySelector('.viewer-timeline-area').getBoundingClientRect();
+                const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                let pct = (clientX - rect.left) / rect.width;
+                if(pct < 0) pct = 0; if(pct > 1) pct = 1;
+                vFill.style.width = (pct*100) + '%';
+                vVideo.currentTime = pct * vVideo.duration;
+            };
             
-            document.addEventListener('mousemove', handleScrub);
-            document.addEventListener('touchmove', handleScrub, {passive: false});
-            document.addEventListener('mouseup', stopScrub);
-            document.addEventListener('touchend', stopScrub);
+            update(e); // Initial jump
+            
+            const move = (evt) => { evt.preventDefault(); update(evt); };
+            const up = () => {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('mouseup', up);
+                document.removeEventListener('touchend', up);
+            };
+
+            document.addEventListener('mousemove', move);
+            document.addEventListener('touchmove', move, {passive: false});
+            document.addEventListener('mouseup', up);
+            document.addEventListener('touchend', up);
         }
 
-        function handleScrub(e) {
-            if(!isScrubbing) return;
-            if(e.cancelable) e.preventDefault();
-            
-            const bar = document.querySelector('.video-progress');
-            const rect = bar.getBoundingClientRect();
-            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            
-            let pct = (clientX - rect.left) / rect.width;
-            if(pct < 0) pct = 0;
-            if(pct > 1) pct = 1;
-            
-            progressBarFill.style.width = (pct * 100) + '%';
-            if(activeVideo.duration) activeVideo.currentTime = pct * activeVideo.duration;
-        }
-
-        function stopScrub() {
-            isScrubbing = false;
-            document.removeEventListener('mousemove', handleScrub);
-            document.removeEventListener('touchmove', handleScrub);
-            document.removeEventListener('mouseup', stopScrub);
-            document.removeEventListener('touchend', stopScrub);
-            activeVideo.play();
-            playIcon.style.opacity = '0';
-        }
-
-        // --- 5. LIKE & MODAL LOGIC ---
-        const contactModal = document.getElementById('contactModal');
-        const modalPanel = document.getElementById('modalPanel');
-
-        function handleLike(btn) {
-            const icon = btn.querySelector('i');
-            icon.className = 'fas fa-heart';
-            btn.classList.add('liked');
-            
-            setTimeout(() => {
-                contactModal.classList.remove('hidden');
-                setTimeout(() => modalPanel.classList.remove('translate-y-full'), 10);
-            }, 800);
-        }
-
-        function closeModal() {
-            modalPanel.classList.add('translate-y-full');
-            setTimeout(() => contactModal.classList.add('hidden'), 300);
-        }
-
-        // Modal Swipe Down
-        let startY = 0;
-        modalPanel.addEventListener('touchstart', e => startY = e.touches[0].clientY);
-        modalPanel.addEventListener('touchmove', e => {
-            const delta = e.touches[0].clientY - startY;
-            if(delta > 0) modalPanel.style.transform = `translateY(${delta}px)`;
-        });
-        modalPanel.addEventListener('touchend', e => {
-            if((e.changedTouches[0].clientY - startY) > 100) closeModal();
-            else modalPanel.style.transform = '';
-        });
+        // --- RUNAWAY BUTTON ---
+        const btn = document.getElementById('runaway-btn');
+        const run = () => {
+            const x = (Math.random() - 0.5) * 150;
+            const y = (Math.random() - 0.5) * 150;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        };
+        btn.onmouseover = run;
+        btn.ontouchstart = (e) => { e.preventDefault(); run(); };
 
     </script>
 </body>
