@@ -374,7 +374,8 @@
         </div>
 
         <!-- PROFILE VIEW (Grid) -->
-        <div id="view-profile" class="max-w-2xl mx-auto pt-2 md:pt-10 transition-opacity duration-300">
+        <!-- removed pt-2 to fix top spacing issue -->
+        <div id="view-profile" class="max-w-2xl mx-auto pt-0 md:pt-10 transition-opacity duration-300">
             
             <!-- Mobile Header -->
             <div class="md:hidden flex justify-between items-center px-4 py-2 border-b border-neutral-800 mb-2">
@@ -688,6 +689,9 @@
             vVideo.load();
             vVideo.play().catch(e => console.log("Autoplay blocked"));
             
+            // Ensure Play icon is hidden when switching to new video that autoplayed
+            document.getElementById('center-play').style.opacity = '0';
+
             document.getElementById('viewer-likes').innerText = data.views;
             document.getElementById('viewer-desc').innerText = data.desc;
             vHeart.className = 'far fa-heart';
@@ -763,10 +767,10 @@
             const screenHeight = window.innerHeight;
             
             // ZONING LOGIC
-            const isTopZone = touchStartY < (screenHeight * 0.7); // Top 70%
+            const isTopZone = touchStartY < (screenHeight * 0.55); // Top 55%
 
-            // Vertical Swipe (> 30px threshold)
-            if (Math.abs(diff) > 30) { 
+            // Vertical Swipe (> 35px threshold)
+            if (Math.abs(diff) > 35) { 
                 if (diff > 0) {
                     // Swipe UP -> Next Video
                     if (currentIndex < videos.length - 1) {
