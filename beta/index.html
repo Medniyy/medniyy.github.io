@@ -17,8 +17,22 @@
             font-family: 'Inter', sans-serif;
             background-color: #000;
             color: #fff;
-            overscroll-behavior-y: none; /* Prevent pull-to-refresh */
+            overscroll-behavior-y: none; /* Prevent pull-to-refresh globally */
             -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Lock Body Scroll Class (Javascript toggles this) */
+        body.lock-scroll {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Prevent Text Selection during gestures */
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         /* Utilities */
@@ -98,23 +112,6 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
             z-index: 10;
         }
-        /* Just Viewed Overlay Styles */
-        .just-viewed-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        .grid-item.viewed .just-viewed-overlay {
-            opacity: 1;
-        }
 
         /* Search Bar */
         #search-overlay {
@@ -188,6 +185,7 @@
             right: 70px;
             z-index: 20;
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            cursor: pointer; /* Indicate clickable */
         }
         
         /* Larger text for mobile */
@@ -468,7 +466,7 @@
     </nav>
 
     <!-- FULLSCREEN VIEWER (Overlay) -->
-    <div id="video-viewer">
+    <div id="video-viewer" class="no-select">
         <div class="viewer-video-wrapper">
             
             <!-- Video Container for Event Listeners -->
@@ -516,13 +514,13 @@
                 </button>
             </div>
 
-            <!-- Bottom Info -->
-            <div class="viewer-bottom-info">
+            <!-- Bottom Info (Click to close/back logic integrated) -->
+            <div class="viewer-bottom-info" onclick="closeViewer()">
                 <div class="flex items-center gap-2 mb-2">
                     <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
                     <span class="font-bold text-sm">ath.camera</span>
                     <!-- Follow button leads to X -->
-                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white">Follow</a>
+                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
                 </div>
                 <!-- Increased text size for mobile -->
                 <p class="viewer-desc text-gray-100" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
@@ -585,9 +583,6 @@
             { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' }
         ];
 
-        // Track Viewed Videos
-        const viewedVideos = new Set();
-
         // --- INIT ---
         function initSite() {
             setTimeout(() => {
@@ -608,18 +603,11 @@
                 div.id = `grid-item-${index}`; // ID for updates
                 div.onclick = () => openViewer(index);
                 
-                // Check if viewed
-                const viewedClass = viewedVideos.has(index) ? 'viewed' : '';
-
                 div.innerHTML = `
                     <video muted playsinline preload="auto">
                         <source src="${vid.file}#t=0.1" type="video/mp4">
                     </video>
                     <div class="views-badge"><i class="fas fa-play text-[8px]"></i> ${vid.views}</div>
-                    <div class="just-viewed-overlay ${viewedClass}">
-                        <i class="far fa-eye text-2xl mb-1"></i>
-                        <span class="text-xs font-bold uppercase">Just Viewed</span>
-                    </div>
                 `;
                 grid.appendChild(div);
             });
@@ -679,9 +667,16 @@
         const vHeart = document.getElementById('viewer-heart');
         const touchArea = document.getElementById('video-touch-area');
         let isMuted = false;
+        let scrollPosition = 0;
 
         function openViewer(index) {
             currentIndex = index;
+            
+            // LOCK BODY SCROLL (Safari Fix)
+            scrollPosition = window.scrollY;
+            document.body.style.top = `-${scrollPosition}px`;
+            document.body.classList.add('lock-scroll');
+            
             loadVideoInViewer(index);
             viewer.classList.add('active');
         }
@@ -711,10 +706,10 @@
             vVideo.pause();
             vVideo.src = "";
             
-            // Mark as viewed
-            viewedVideos.add(currentIndex);
-            const gridItem = document.getElementById(`grid-item-${currentIndex}`);
-            if(gridItem) gridItem.classList.add('viewed');
+            // UNLOCK BODY SCROLL
+            document.body.classList.remove('lock-scroll');
+            document.body.style.top = '';
+            window.scrollTo(0, scrollPosition);
         }
 
         function toggleMute() {
@@ -741,17 +736,16 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // --- LONG PRESS & TOUCH LOGIC ---
+        // --- GESTURE LOGIC (ZONING) ---
         let longPressTimer;
         let isLongPress = false;
         let touchStartY = 0;
 
-        // Use touchArea for gestures to avoid conflicting with controls
         touchArea.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
             isLongPress = false;
             
-            // Start Long Press Timer (300ms)
+            // Long Press for 2x Speed
             longPressTimer = setTimeout(() => {
                 isLongPress = true;
                 vVideo.playbackRate = 2.0;
@@ -760,29 +754,42 @@
         }, {passive: true});
 
         touchArea.addEventListener('touchend', (e) => {
-            clearTimeout(longPressTimer); // Cancel if lifted early
+            clearTimeout(longPressTimer);
             document.getElementById('speed-overlay').classList.remove('visible');
             vVideo.playbackRate = 1.0;
 
             const touchEndY = e.changedTouches[0].clientY;
             const diff = touchStartY - touchEndY;
+            const screenHeight = window.innerHeight;
+            
+            // ZONING LOGIC
+            const isTopZone = touchStartY < (screenHeight * 0.7); // Top 70%
 
-            // If it was a swipe (vertical move > 150px)
-            if (Math.abs(diff) > 150) { 
+            // Vertical Swipe (> 30px threshold)
+            if (Math.abs(diff) > 30) { 
                 if (diff > 0) {
-                    // Swipe Up (Next)
+                    // Swipe UP -> Next Video
                     if (currentIndex < videos.length - 1) {
                         loadVideoInViewer(currentIndex + 1);
                         currentIndex++;
                     }
                 } else {
-                    // Swipe Down (Close)
-                    closeViewer();
+                    // Swipe DOWN
+                    if (isTopZone) {
+                        // Top Zone -> Close
+                        closeViewer();
+                    } else {
+                        // Bottom Zone -> Prev Video
+                        if (currentIndex > 0) {
+                            loadVideoInViewer(currentIndex - 1);
+                            currentIndex--;
+                        }
+                    }
                 }
-                return; // Stop further processing
+                return; 
             }
 
-            // If simple tap (not long press, not swipe)
+            // Simple Tap (Play/Pause) if not long press
             if (!isLongPress && Math.abs(diff) < 10) {
                 if(vVideo.paused) {
                     vVideo.play();
@@ -794,7 +801,7 @@
             }
         });
         
-        // Mouse support for testing on PC
+        // Mouse Listeners for Desktop Testing
         touchArea.addEventListener('mousedown', () => {
             longPressTimer = setTimeout(() => {
                 vVideo.playbackRate = 2.0;
@@ -805,9 +812,6 @@
             clearTimeout(longPressTimer);
             document.getElementById('speed-overlay').classList.remove('visible');
             vVideo.playbackRate = 1.0;
-        });
-        touchArea.addEventListener('click', () => {
-             // Simple click fallback if needed, but handled by touchend mostly
         });
 
 
@@ -820,7 +824,7 @@
         };
 
         function startScrub(e) {
-            e.stopPropagation(); // Stop swipe/close logic
+            e.stopPropagation(); // Stop global swipe/close
             const update = (evt) => {
                 const rect = document.querySelector('.viewer-timeline-area').getBoundingClientRect();
                 const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
