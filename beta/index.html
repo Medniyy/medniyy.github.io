@@ -112,6 +112,10 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
             z-index: 10;
         }
+        /* Just Viewed Overlay Styles (Removed per request, kept CSS just in case needed later, but logic removed) */
+        .grid-item.viewed .just-viewed-overlay {
+            opacity: 1;
+        }
 
         /* Search Bar */
         #search-overlay {
@@ -119,6 +123,8 @@
             overflow: hidden;
             transition: height 0.3s ease;
             background: #000;
+            position: relative;
+            z-index: 40;
         }
         #search-overlay.open { height: 60px; }
 
@@ -311,12 +317,12 @@
         @keyframes likeHeart { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
         .liked { color: #ef4444 !important; animation: likeHeart 0.4s ease-in-out; }
 
-        /* Notifications Modal */
+        /* Notifications Modal - FIX: Increased negative translate to fully hide it */
         #notif-toast {
             position: fixed;
             top: 20px;
             left: 50%;
-            transform: translateX(-50%) translateY(-100px);
+            transform: translateX(-50%) translateY(-200%); /* Ensure hidden off-screen */
             background: rgba(20, 20, 20, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid #333;
@@ -374,8 +380,8 @@
         </div>
 
         <!-- PROFILE VIEW (Grid) -->
-        <!-- removed pt-2 to fix top spacing issue -->
-        <div id="view-profile" class="max-w-2xl mx-auto pt-0 md:pt-10 transition-opacity duration-300">
+        <!-- Added pt-4 back to ensure content isn't hidden under status bar/notch (Restored Indent) -->
+        <div id="view-profile" class="max-w-2xl mx-auto pt-4 md:pt-10 transition-opacity duration-300">
             
             <!-- Mobile Header -->
             <div class="md:hidden flex justify-between items-center px-4 py-2 border-b border-neutral-800 mb-2">
