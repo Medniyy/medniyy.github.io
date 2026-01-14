@@ -76,20 +76,33 @@
             .bottom-nav { display: none !important; }
         }
 
-        /* Story Ring Animation */
-        @keyframes ringAppear {
-            0% { transform: rotate(-90deg) scale(0.8); opacity: 0; }
-            100% { transform: rotate(0deg) scale(1); opacity: 1; }
+        /* === STORY RING ANIMATION === */
+        @keyframes drawRing {
+            to { stroke-dashoffset: 0; }
         }
-        .story-ring-dashed {
-            position: absolute;
-            inset: -4px; /* Outside the avatar */
-            border-radius: 50%;
-            border: 2px dashed #d946ef; /* Fuchsia-500 color */
-            opacity: 0; /* Hidden initially */
-            animation: ringAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 2.5s; /* Delay after loading screen */
-            pointer-events: none;
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .story-ring-svg {
+            transform: rotate(-90deg); /* Start drawing from top */
+        }
+        
+        .story-ring-circle {
+            /* Circumference for r=46 is approx 289. 
+               7 segments means approx 41px per unit.
+               Let's do 38px dash and 3px gap. */
+            stroke-dasharray: 38 3.3; 
+            stroke-dashoffset: 289; /* Fully hidden initially */
+            
+            /* Apply both animations */
+            animation-name: drawRing, fadeIn;
+            animation-duration: 1.2s, 0.1s;
+            animation-delay: 2.5s, 2.5s; /* Wait for loading screen + slight delay */
+            animation-fill-mode: forwards, forwards;
+            animation-timing-function: ease-out, linear;
+            
+            opacity: 0; /* Hidden before animation starts */
         }
         
         /* --- LOGO ROTATION ANIMATION (One-time) --- */
@@ -184,7 +197,7 @@
         <div class="pulse-logo"><img src="logo.png" class="w-full h-full object-cover"></div>
     </div>
 
-    <!-- X REDIRECT DIALOG (NEW) -->
+    <!-- X REDIRECT DIALOG (Reels/Camera) -->
     <div id="x-dialog" class="fixed inset-0 z-[150] hidden flex items-center justify-center px-4">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeXDialog()"></div>
@@ -227,9 +240,9 @@
             <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
         </div>
         <nav class="flex flex-col gap-6 text-lg">
-            <button onclick="switchView('grid')" class="flex items-center gap-4 font-bold hover:text-gray-300"><i class="fas fa-home"></i> Home</button>
+            <button onclick="showXDialogDelay()" class="flex items-center gap-4 font-bold hover:text-gray-300"><i class="fas fa-home"></i> Home</button>
             <button onclick="toggleSearch()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</button>
-            <button onclick="switchView('reels')" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</button>
+            <button onclick="showXDialogDelay()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</button>
             <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-envelope"></i> Messages</a>
             <button onclick="showNotification()" class="flex items-center gap-4 hover:text-gray-300 relative">
                 <i class="far fa-heart"></i> Notifications
@@ -272,6 +285,7 @@
                     
                     <!-- AVATAR WITH ANIMATED RING AND ROTATION -->
                     <div class="relative w-20 h-20 shrink-0 mr-4 cursor-pointer" onclick="openStories()">
+                        <!-- SVG Ring -->
                         <svg class="absolute inset-0 w-full h-full story-ring-svg z-0" viewBox="0 0 100 100">
                             <defs>
                                 <linearGradient id="insta-grad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -285,6 +299,7 @@
                                     class="story-ring-circle" />
                         </svg>
                         
+                        <!-- Image Container (Centered inside ring) -->
                         <div class="absolute inset-[6px] rounded-full overflow-hidden border-2 border-black z-10 bg-black animate-spin-once">
                             <img src="logo.png" class="w-full h-full object-cover">
                         </div>
@@ -334,7 +349,8 @@
             <!-- Tabs -->
             <div class="flex justify-around border-t border-neutral-800 text-2xl text-gray-500">
                 <button class="flex-1 py-2 border-b-2 border-white text-white"><i class="fas fa-th"></i></button>
-                <button class="flex-1 py-2" onclick="switchView('reels')"><i class="fas fa-video"></i></button>
+                <!-- Only trigger Dialog -->
+                <button class="flex-1 py-2" onclick="showXDialogDelay()"><i class="fas fa-video"></i></button>
             </div>
 
             <!-- THE GRID -->
@@ -343,55 +359,86 @@
             </div>
         </div>
 
-        <!-- REELS FEED VIEW (Hidden by default) -->
-        <div id="view-reels" class="hidden h-[calc(100vh-50px)] overflow-y-scroll snap-y snap-mandatory">
-            <!-- JS Populated -->
-        </div>
-
     </div>
 
     <!-- MOBILE BOTTOM NAV -->
     <nav class="bottom-nav fixed bottom-0 w-full bg-black border-t border-neutral-800 z-50 flex justify-around items-center py-3 pb-safe">
-        <button onclick="switchView('grid')" class="text-white text-2xl"><i class="fas fa-home"></i></button>
+        <button onclick="showXDialogDelay()" class="text-white text-2xl"><i class="fas fa-home"></i></button>
         <button onclick="toggleSearch()" class="text-neutral-500 text-2xl"><i class="fas fa-search"></i></button>
-        <button onclick="switchView('reels')" class="text-neutral-500 text-2xl"><i class="fas fa-film"></i></button>
+        <!-- Reels Button (Triggers X Dialog only) -->
+        <button onclick="showXDialogDelay()" class="text-neutral-500 text-2xl"><i class="fas fa-film"></i></button>
         <a href="https://x.com/athcamera" target="_blank" class="text-neutral-500 text-2xl"><i class="far fa-user"></i></a>
     </nav>
 
-    <!-- FULLSCREEN VIEWER (Reels Mode) -->
+    <!-- FULLSCREEN VIEWER (Overlay) -->
     <div id="video-viewer" class="no-select">
         <div class="viewer-video-wrapper">
+            
+            <!-- Video Container for Event Listeners -->
             <div id="video-touch-area" class="relative w-full h-full flex items-center justify-center">
                 <video id="viewer-video" playsinline loop>
                     <source src="" type="video/mp4">
                 </video>
             </div>
+
+            <!-- Close / Back Button -->
             <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md">
                 <i class="fas fa-chevron-left"></i>
             </button>
+
+            <!-- Mute Toggle -->
             <button onclick="toggleMute()" class="absolute top-4 right-4 z-40 text-white text-xl bg-black/50 p-2 rounded-full backdrop-blur-sm">
                 <i id="mute-icon" class="fas fa-volume-xmark"></i>
             </button>
-            <div id="speed-overlay" class="speed-overlay"><i class="fas fa-forward"></i> Speed 2x</div>
-            <div id="center-play" class="play-icon-overlay"><i class="fas fa-play text-3xl ml-1"></i></div>
-            <div class="viewer-right-actions">
-                <button class="action-btn" onclick="handleLike()"><i id="viewer-heart" class="far fa-heart"></i><span id="viewer-likes">12K</span></button>
-                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn"><i class="far fa-comment-dots"></i><span>DM</span></a>
-                <button class="action-btn"><i class="far fa-paper-plane"></i></button>
-                <button class="action-btn"><i class="fas fa-ellipsis-h"></i></button>
+
+            <!-- Speed 2x Overlay -->
+            <div id="speed-overlay" class="speed-overlay">
+                <i class="fas fa-forward"></i> Speed 2x
             </div>
+
+            <!-- Play Icon (Center) -->
+            <div id="center-play" class="play-icon-overlay">
+                <i class="fas fa-play text-3xl ml-1"></i>
+            </div>
+
+            <!-- Right Actions -->
+            <div class="viewer-right-actions">
+                <button class="action-btn" onclick="handleLike()">
+                    <i id="viewer-heart" class="far fa-heart"></i>
+                    <span id="viewer-likes">12K</span>
+                </button>
+                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn">
+                    <i class="far fa-comment-dots"></i>
+                    <span>DM</span>
+                </a>
+                <button class="action-btn">
+                    <i class="far fa-paper-plane"></i>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+
+            <!-- Bottom Info (Click to close/back logic integrated) -->
             <div class="viewer-bottom-info" onclick="closeViewer()">
                 <div class="flex items-center gap-2 mb-2">
                     <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
                     <span class="font-bold text-sm">ath.camera</span>
+                    <!-- Follow button leads to X -->
                     <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
                 </div>
+                <!-- Increased text size for mobile -->
                 <p class="viewer-desc text-gray-100" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
                 <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
             </div>
+
+            <!-- Timeline -->
             <div class="viewer-timeline-area" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
-                <div class="viewer-timeline-bg"><div class="viewer-timeline-fill" id="viewer-fill"></div></div>
+                <div class="viewer-timeline-bg">
+                    <div class="viewer-timeline-fill" id="viewer-fill"></div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -425,6 +472,7 @@
         </div>
     </div>
 
+    <!-- LOGIC -->
     <script>
         // --- DATA ---
         const videos = [
@@ -453,7 +501,6 @@
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 800);
             }, 1200);
             renderGrid(videos);
-            renderReelsFeed();
         }
 
         // --- STORIES LOGIC ---
@@ -565,37 +612,19 @@
             });
         }
 
-        function renderReelsFeed() {
-            const container = document.getElementById('view-reels');
-            videos.forEach((vid, index) => {
-                const div = document.createElement('div');
-                div.className = 'w-full h-full snap-start relative bg-black flex items-center justify-center';
-                div.innerHTML = `
-                    <video src="${vid.file}" class="w-full h-full object-contain" loop playsinline onclick="this.paused ? this.play() : this.pause()"></video>
-                    <div class="absolute bottom-20 left-4 text-shadow">
-                        <div class="font-bold mb-1">@ath.camera</div>
-                        <div class="text-sm">${vid.desc}</div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
         // --- NAVIGATION ---
         function switchView(view) {
             if (view === 'grid') {
                 document.getElementById('view-profile').classList.remove('hidden');
-                document.getElementById('view-reels').classList.add('hidden');
-            } else if (view === 'reels') {
-                document.getElementById('view-profile').classList.add('hidden');
-                document.getElementById('view-reels').classList.remove('hidden');
-                
-                // Show X Dialog after micro-delay
-                setTimeout(showXDialog, 800);
+                // No reels view to switch to/from anymore
             }
         }
         
-        // --- X DIALOG LOGIC (New) ---
+        // --- X DIALOG LOGIC ---
+        function showXDialogDelay() {
+            setTimeout(showXDialog, 800);
+        }
+
         function showXDialog() {
             const dialog = document.getElementById('x-dialog');
             dialog.classList.remove('hidden');
