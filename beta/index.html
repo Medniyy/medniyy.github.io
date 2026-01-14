@@ -21,7 +21,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Lock Body Scroll Class (Javascript toggles this) */
+        /* Lock Body Scroll Class */
         body.lock-scroll {
             position: fixed;
             width: 100%;
@@ -29,13 +29,7 @@
             overflow: hidden;
         }
 
-        /* Prevent Text Selection during gestures */
-        .no-select {
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        /* Utilities */
+        .no-select { user-select: none; -webkit-user-select: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .touch-pan-y { touch-action: pan-y; }
@@ -73,272 +67,98 @@
             .sidebar {
                 display: flex;
                 position: fixed;
-                left: 0;
-                top: 0;
-                height: 100vh;
-                width: 240px;
+                left: 0; top: 0; height: 100vh; width: 240px;
                 border-right: 1px solid rgba(255,255,255,0.1);
-                background: #000;
-                z-index: 50;
-                flex-direction: column;
-                padding: 2rem;
+                background: #000; z-index: 50;
+                flex-direction: column; padding: 2rem;
             }
             .main-content { margin-left: 240px; }
             .bottom-nav { display: none !important; }
         }
 
-        /* Grid Layout */
-        .grid-item {
-            position: relative;
-            padding-bottom: 100%; /* Square */
-            background: #111;
-            cursor: pointer;
-            overflow: hidden;
+        /* Story Ring Animation */
+        @keyframes ringAppear {
+            0% { transform: rotate(-90deg) scale(0.8); opacity: 0; }
+            100% { transform: rotate(0deg) scale(1); opacity: 1; }
         }
-        .grid-item video {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-        }
-        .views-badge {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-            z-index: 10;
-        }
-        /* Just Viewed Overlay Styles (Removed per request, kept CSS just in case needed later, but logic removed) */
-        .grid-item.viewed .just-viewed-overlay {
-            opacity: 1;
+        .story-ring-active {
+            animation: ringAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 1.5s; /* Wait for loading screen */
+            opacity: 0; /* Hidden initially */
         }
 
-        /* Search Bar */
-        #search-overlay {
-            height: 0;
-            overflow: hidden;
-            transition: height 0.3s ease;
-            background: #000;
-            position: relative;
-            z-index: 40;
-        }
-        #search-overlay.open { height: 60px; }
-
-        /* Video Viewer (Modal) */
-        #video-viewer {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            pointer-events: none;
+        /* Stories Viewer */
+        #stories-viewer {
+            position: fixed; inset: 0; background: #000; z-index: 200;
+            display: flex; flex-direction: column;
+            opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        #video-viewer.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
+        #stories-viewer.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        .story-progress-container {
+            display: flex; gap: 4px; padding: 8px 4px; 
+            position: absolute; top: 0; left: 0; width: 100%; z-index: 20;
+        }
+        .story-bar {
+            height: 2px; flex: 1; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden;
+        }
+        .story-bar-fill {
+            height: 100%; background: #fff; width: 0%;
         }
 
-        .viewer-video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
+        /* Grid Item */
+        .grid-item {
+            position: relative; padding-bottom: 100%; background: #111; cursor: pointer; overflow: hidden;
         }
-        
-        .viewer-video-wrapper video {
-            max-height: 100%;
-            max-width: 100%;
-            width: 100%; 
-            object-fit: contain; 
+        .grid-item video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
         }
-        
-        /* Viewer UI Controls */
-        .viewer-right-actions {
-            position: absolute;
-            right: 12px;
-            bottom: 100px; /* Shifted up slightly */
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            align-items: center;
-            z-index: 20;
+        .views-badge {
+            position: absolute; bottom: 5px; left: 5px; display: flex; align-items: center; gap: 4px;
+            font-size: 10px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.8); z-index: 10;
         }
-        .action-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+
+        /* Search & Video Viewer (Common) */
+        #search-overlay { height: 0; overflow: hidden; transition: height 0.3s ease; background: #000; position: relative; z-index: 40; }
+        #search-overlay.open { height: 60px; }
+
+        #video-viewer {
+            position: fixed; inset: 0; background: #000; z-index: 100;
+            display: flex; flex-direction: column; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
+        #video-viewer.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        .viewer-video-wrapper { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; }
+        .viewer-video-wrapper video { max-height: 100%; max-width: 100%; width: 100%; object-fit: contain; }
+
+        .viewer-right-actions { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 24px; align-items: center; z-index: 20; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .action-btn i { font-size: 26px; }
         .action-btn span { font-size: 13px; font-weight: 600; }
 
-        .viewer-bottom-info {
-            position: absolute;
-            bottom: 45px; 
-            left: 12px;
-            right: 70px;
-            z-index: 20;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-            cursor: pointer; /* Indicate clickable */
-        }
-        
-        /* Larger text for mobile */
-        .viewer-desc {
-            font-size: 15px; 
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        .viewer-bottom-info { position: absolute; bottom: 45px; left: 12px; right: 70px; z-index: 20; text-shadow: 0 1px 2px rgba(0,0,0,0.8); cursor: pointer; }
+        .viewer-desc { font-size: 15px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* Timeline / Scrubber */
-        .viewer-timeline-area {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40px; /* Large touch area */
-            z-index: 50; /* Top z-index to prevent conflict */
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            touch-action: none; /* Crucial: stops scroll/swipe on timeline */
-        }
-        .viewer-timeline-bg {
-            width: 100%;
-            height: 4px; 
-            background: rgba(255, 255, 255, 0.3);
-            position: relative;
-            margin: 0 10px; /* Side margins */
-            border-radius: 2px;
-        }
-        /* Active scrubbing visual */
+        /* Timeline */
+        .viewer-timeline-area { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; z-index: 50; display: flex; align-items: center; cursor: pointer; touch-action: none; }
+        .viewer-timeline-bg { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.3); position: relative; margin: 0 10px; border-radius: 2px; }
         .viewer-timeline-area:active .viewer-timeline-bg { height: 8px; }
-        
-        .viewer-timeline-fill {
-            height: 100%;
-            background: #fff;
-            width: 0%;
-            position: absolute;
-            top: 0; left: 0;
-            border-radius: 2px;
-        }
-        /* Thumb */
-        .viewer-timeline-fill::after {
-            content: '';
-            position: absolute;
-            right: -6px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 12px;
-            height: 12px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
+        .viewer-timeline-fill { height: 100%; background: #fff; width: 0%; position: absolute; top: 0; left: 0; border-radius: 2px; }
+        .viewer-timeline-fill::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
-        /* Center Play Icon - Perfect Circle */
-        .play-icon-overlay {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            background: rgba(0,0,0,0.5);
-            width: 70px;
-            height: 70px;
-            min-width: 70px; /* Prevent squishing */
-            min-height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; 
-            transition: opacity 0.2s;
-            z-index: 10;
-        }
-
-        /* Speed Overlay */
-        .speed-overlay {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.6);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-            z-index: 30;
-            backdrop-filter: blur(4px);
-        }
+        .play-icon-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; background: rgba(0,0,0,0.5); width: 70px; height: 70px; min-width: 70px; min-height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 10; }
+        .speed-overlay { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 30; backdrop-filter: blur(4px); }
         .speed-overlay.visible { opacity: 1; }
 
-        /* Notification Badge */
-        .notif-badge {
-            position: absolute;
-            top: -2px;
-            right: -4px;
-            width: 16px;
-            height: 16px;
-            background-color: #ef4444;
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid black;
-        }
-
-        /* Runaway Button */
+        .notif-badge { position: absolute; top: -2px; right: -4px; width: 16px; height: 16px; background-color: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid black; }
         .runaway-btn { transition: transform 0.15s ease-out; }
-
-        /* Animations */
         @keyframes likeHeart { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
         .liked { color: #ef4444 !important; animation: likeHeart 0.4s ease-in-out; }
 
-        /* Notifications Modal - FIX: Increased negative translate to fully hide it */
-        #notif-toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-200%); /* Ensure hidden off-screen */
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid #333;
-            padding: 16px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            z-index: 200;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: start;
-            gap: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        #notif-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-200%); background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border: 1px solid #333; padding: 16px; border-radius: 12px; width: 90%; max-width: 400px; z-index: 200; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: start; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #notif-toast.show { transform: translateX(-50%) translateY(0); }
-
     </style>
 </head>
 <body class="text-white bg-black" onload="initSite()">
@@ -346,6 +166,36 @@
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="pulse-logo"><img src="logo.png" class="w-full h-full object-cover"></div>
+    </div>
+
+    <!-- STORIES VIEWER -->
+    <div id="stories-viewer">
+        <!-- Progress Bars -->
+        <div id="story-bars" class="story-progress-container">
+            <!-- Bars injected via JS -->
+        </div>
+
+        <!-- Header -->
+        <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-2">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
+                <span class="font-bold text-sm text-shadow">ath.camera</span>
+                <span class="text-xs text-white/60 text-shadow">2h</span>
+            </div>
+            <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- Video -->
+        <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
+            <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
+            <div class="absolute inset-0 z-40 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none"></div>
+        </div>
+
+        <!-- Tap Zones -->
+        <div class="absolute inset-0 z-20 flex">
+            <div class="w-1/3 h-full" onclick="prevStory()"></div>
+            <div class="w-2/3 h-full" onclick="nextStory()"></div>
+        </div>
     </div>
 
     <!-- SIDEBAR (Desktop) -->
@@ -380,7 +230,6 @@
         </div>
 
         <!-- PROFILE VIEW (Grid) -->
-        <!-- Added pt-4 back to ensure content isn't hidden under status bar/notch (Restored Indent) -->
         <div id="view-profile" class="max-w-2xl mx-auto pt-4 md:pt-10 transition-opacity duration-300">
             
             <!-- Mobile Header -->
@@ -398,8 +247,8 @@
             <!-- Profile Info -->
             <div class="px-4 mb-4">
                 <div class="flex items-center justify-between mb-4">
-                    <!-- Avatar -->
-                    <div class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 to-fuchsia-600 shrink-0 mr-4">
+                    <!-- Avatar with Ring Animation -->
+                    <div id="profile-ring" class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 to-fuchsia-600 shrink-0 mr-4 story-ring-active cursor-pointer" onclick="openStories()">
                         <div class="w-full h-full bg-black rounded-full overflow-hidden border-2 border-black">
                             <img src="logo.png" class="w-full h-full object-cover">
                         </div>
@@ -472,75 +321,40 @@
         <a href="https://x.com/athcamera" target="_blank" class="text-neutral-500 text-2xl"><i class="far fa-user"></i></a>
     </nav>
 
-    <!-- FULLSCREEN VIEWER (Overlay) -->
+    <!-- FULLSCREEN VIEWER (Reels Mode) -->
     <div id="video-viewer" class="no-select">
         <div class="viewer-video-wrapper">
-            
-            <!-- Video Container for Event Listeners -->
             <div id="video-touch-area" class="relative w-full h-full flex items-center justify-center">
                 <video id="viewer-video" playsinline loop>
                     <source src="" type="video/mp4">
                 </video>
             </div>
-
-            <!-- Close / Back Button -->
             <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md">
                 <i class="fas fa-chevron-left"></i>
             </button>
-
-            <!-- Mute Toggle -->
             <button onclick="toggleMute()" class="absolute top-4 right-4 z-40 text-white text-xl bg-black/50 p-2 rounded-full backdrop-blur-sm">
                 <i id="mute-icon" class="fas fa-volume-xmark"></i>
             </button>
-
-            <!-- Speed 2x Overlay -->
-            <div id="speed-overlay" class="speed-overlay">
-                <i class="fas fa-forward"></i> Speed 2x
-            </div>
-
-            <!-- Play Icon (Center) -->
-            <div id="center-play" class="play-icon-overlay">
-                <i class="fas fa-play text-3xl ml-1"></i>
-            </div>
-
-            <!-- Right Actions -->
+            <div id="speed-overlay" class="speed-overlay"><i class="fas fa-forward"></i> Speed 2x</div>
+            <div id="center-play" class="play-icon-overlay"><i class="fas fa-play text-3xl ml-1"></i></div>
             <div class="viewer-right-actions">
-                <button class="action-btn" onclick="handleLike()">
-                    <i id="viewer-heart" class="far fa-heart"></i>
-                    <span id="viewer-likes">12K</span>
-                </button>
-                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn">
-                    <i class="far fa-comment-dots"></i>
-                    <span>DM</span>
-                </a>
-                <button class="action-btn">
-                    <i class="far fa-paper-plane"></i>
-                </button>
-                <button class="action-btn">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
+                <button class="action-btn" onclick="handleLike()"><i id="viewer-heart" class="far fa-heart"></i><span id="viewer-likes">12K</span></button>
+                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn"><i class="far fa-comment-dots"></i><span>DM</span></a>
+                <button class="action-btn"><i class="far fa-paper-plane"></i></button>
+                <button class="action-btn"><i class="fas fa-ellipsis-h"></i></button>
             </div>
-
-            <!-- Bottom Info (Click to close/back logic integrated) -->
             <div class="viewer-bottom-info" onclick="closeViewer()">
                 <div class="flex items-center gap-2 mb-2">
                     <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
                     <span class="font-bold text-sm">ath.camera</span>
-                    <!-- Follow button leads to X -->
                     <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
                 </div>
-                <!-- Increased text size for mobile -->
                 <p class="viewer-desc text-gray-100" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
                 <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
             </div>
-
-            <!-- Timeline -->
             <div class="viewer-timeline-area" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
-                <div class="viewer-timeline-bg">
-                    <div class="viewer-timeline-fill" id="viewer-fill"></div>
-                </div>
+                <div class="viewer-timeline-bg"><div class="viewer-timeline-fill" id="viewer-fill"></div></div>
             </div>
-
         </div>
     </div>
 
@@ -574,7 +388,6 @@
         </div>
     </div>
 
-    <!-- LOGIC -->
     <script>
         // --- DATA ---
         const videos = [
@@ -590,6 +403,9 @@
             { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' }
         ];
 
+        // Pick vertical videos for stories
+        const storiesData = videos.filter(v => v.vertical).slice(0, 5);
+
         // --- INIT ---
         function initSite() {
             setTimeout(() => {
@@ -599,6 +415,97 @@
             renderGrid(videos);
             renderReelsFeed();
         }
+
+        // --- STORIES LOGIC ---
+        let currentStoryIndex = 0;
+        const storiesViewer = document.getElementById('stories-viewer');
+        const storyVideo = document.getElementById('story-video');
+        const storyBarsContainer = document.getElementById('story-bars');
+
+        function openStories() {
+            if (storiesData.length === 0) return;
+            
+            // Build Bars
+            storyBarsContainer.innerHTML = '';
+            storiesData.forEach((_, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'story-bar';
+                bar.innerHTML = `<div class="story-bar-fill" id="story-fill-${i}"></div>`;
+                storyBarsContainer.appendChild(bar);
+            });
+
+            currentStoryIndex = 0;
+            storiesViewer.classList.add('active');
+            playStory(0);
+        }
+
+        function playStory(index) {
+            if (index >= storiesData.length) {
+                closeStories();
+                return;
+            }
+            if (index < 0) {
+                closeStories(); // or stay on first
+                return;
+            }
+
+            currentStoryIndex = index;
+            const data = storiesData[index];
+            
+            // Reset all bars
+            storiesData.forEach((_, i) => {
+                const fill = document.getElementById(`story-fill-${i}`);
+                fill.style.width = (i < index) ? '100%' : '0%';
+                fill.style.transition = 'none'; // Instant reset
+            });
+
+            storyVideo.src = data.file;
+            storyVideo.load();
+            storyVideo.play();
+        }
+
+        storyVideo.ontimeupdate = () => {
+            if (storyVideo.duration) {
+                const pct = (storyVideo.currentTime / storyVideo.duration) * 100;
+                const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
+                if (fill) {
+                    fill.style.width = pct + '%';
+                    // Force linear transition for smooth fill
+                    fill.style.transition = 'width 0.1s linear';
+                }
+            }
+        };
+
+        storyVideo.onended = () => nextStory();
+
+        function nextStory() {
+            // Fill current bar completely before moving
+            const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
+            if (fill) fill.style.width = '100%';
+            playStory(currentStoryIndex + 1);
+        }
+
+        function prevStory() {
+            // Reset current bar
+            const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
+            if (fill) fill.style.width = '0%';
+            playStory(currentStoryIndex - 1);
+        }
+
+        function closeStories() {
+            storiesViewer.classList.remove('active');
+            storyVideo.pause();
+            storyVideo.src = "";
+        }
+
+        // Stories Swipe Down Logic
+        let sStartY = 0;
+        storiesViewer.addEventListener('touchstart', e => sStartY = e.touches[0].clientY);
+        storiesViewer.addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].clientY - sStartY;
+            if (diff > 100) closeStories(); // Swipe down to close
+        });
+
 
         // --- RENDERING ---
         function renderGrid(data) {
@@ -666,7 +573,7 @@
             setTimeout(() => toast.classList.remove('show'), 5000);
         }
 
-        // --- VIEWER LOGIC ---
+        // --- VIEWER LOGIC (MAIN PLAYER) ---
         let currentIndex = 0;
         const viewer = document.getElementById('video-viewer');
         const vVideo = document.getElementById('viewer-video');
@@ -678,12 +585,9 @@
 
         function openViewer(index) {
             currentIndex = index;
-            
-            // LOCK BODY SCROLL (Safari Fix)
             scrollPosition = window.scrollY;
             document.body.style.top = `-${scrollPosition}px`;
             document.body.classList.add('lock-scroll');
-            
             loadVideoInViewer(index);
             viewer.classList.add('active');
         }
@@ -694,16 +598,11 @@
             vVideo.muted = isMuted;
             vVideo.load();
             vVideo.play().catch(e => console.log("Autoplay blocked"));
-            
-            // Ensure Play icon is hidden when switching to new video that autoplayed
             document.getElementById('center-play').style.opacity = '0';
-
             document.getElementById('viewer-likes').innerText = data.views;
             document.getElementById('viewer-desc').innerText = data.desc;
             vHeart.className = 'far fa-heart';
             vHeart.parentElement.classList.remove('liked');
-
-            // Aspect Ratio
             if (data.vertical) {
                 vVideo.style.objectFit = 'cover';
             } else {
@@ -715,8 +614,6 @@
             viewer.classList.remove('active');
             vVideo.pause();
             vVideo.src = "";
-            
-            // UNLOCK BODY SCROLL
             document.body.classList.remove('lock-scroll');
             document.body.style.top = '';
             window.scrollTo(0, scrollPosition);
@@ -746,7 +643,7 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // --- GESTURE LOGIC (ZONING) ---
+        // --- GESTURES & SCRUBBER ---
         let longPressTimer;
         let isLongPress = false;
         let touchStartY = 0;
@@ -754,8 +651,6 @@
         touchArea.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
             isLongPress = false;
-            
-            // Long Press for 2x Speed
             longPressTimer = setTimeout(() => {
                 isLongPress = true;
                 vVideo.playbackRate = 2.0;
@@ -771,25 +666,18 @@
             const touchEndY = e.changedTouches[0].clientY;
             const diff = touchStartY - touchEndY;
             const screenHeight = window.innerHeight;
-            
-            // ZONING LOGIC
-            const isTopZone = touchStartY < (screenHeight * 0.55); // Top 55%
+            const isTopZone = touchStartY < (screenHeight * 0.55);
 
-            // Vertical Swipe (> 35px threshold)
             if (Math.abs(diff) > 35) { 
                 if (diff > 0) {
-                    // Swipe UP -> Next Video
                     if (currentIndex < videos.length - 1) {
                         loadVideoInViewer(currentIndex + 1);
                         currentIndex++;
                     }
                 } else {
-                    // Swipe DOWN
                     if (isTopZone) {
-                        // Top Zone -> Close
                         closeViewer();
                     } else {
-                        // Bottom Zone -> Prev Video
                         if (currentIndex > 0) {
                             loadVideoInViewer(currentIndex - 1);
                             currentIndex--;
@@ -799,7 +687,6 @@
                 return; 
             }
 
-            // Simple Tap (Play/Pause) if not long press
             if (!isLongPress && Math.abs(diff) < 10) {
                 if(vVideo.paused) {
                     vVideo.play();
@@ -811,7 +698,6 @@
             }
         });
         
-        // Mouse Listeners for Desktop Testing
         touchArea.addEventListener('mousedown', () => {
             longPressTimer = setTimeout(() => {
                 vVideo.playbackRate = 2.0;
@@ -824,8 +710,6 @@
             vVideo.playbackRate = 1.0;
         });
 
-
-        // --- SCRUBBER LOGIC ---
         vVideo.ontimeupdate = () => {
             if(vVideo.duration) {
                 const pct = (vVideo.currentTime / vVideo.duration) * 100;
@@ -834,7 +718,7 @@
         };
 
         function startScrub(e) {
-            e.stopPropagation(); // Stop global swipe/close
+            e.stopPropagation();
             const update = (evt) => {
                 const rect = document.querySelector('.viewer-timeline-area').getBoundingClientRect();
                 const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
@@ -843,9 +727,7 @@
                 vFill.style.width = (pct*100) + '%';
                 vVideo.currentTime = pct * vVideo.duration;
             };
-            
             update(e);
-            
             const move = (evt) => { evt.preventDefault(); update(evt); };
             const up = () => {
                 document.removeEventListener('mousemove', move);
@@ -853,14 +735,12 @@
                 document.removeEventListener('mouseup', up);
                 document.removeEventListener('touchend', up);
             };
-
             document.addEventListener('mousemove', move);
             document.addEventListener('touchmove', move, {passive: false});
             document.addEventListener('mouseup', up);
             document.addEventListener('touchend', up);
         }
 
-        // --- RUNAWAY BUTTON ---
         const btn = document.getElementById('runaway-btn');
         const run = () => {
             const x = (Math.random() - 0.5) * 150;
@@ -870,7 +750,6 @@
         btn.onmouseover = run;
         btn.ontouchstart = (e) => { e.preventDefault(); run(); };
 
-        // Modal Swipe
         const modalPanel = document.getElementById('modalPanel');
         let mStartY = 0;
         modalPanel.addEventListener('touchstart', e => mStartY = e.touches[0].clientY);
