@@ -81,10 +81,15 @@
             0% { transform: rotate(-90deg) scale(0.8); opacity: 0; }
             100% { transform: rotate(0deg) scale(1); opacity: 1; }
         }
-        .story-ring-active {
-            animation: ringAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 1.5s; /* Wait for loading screen */
+        .story-ring-dashed {
+            position: absolute;
+            inset: -4px; /* Outside the avatar */
+            border-radius: 50%;
+            border: 2px dashed #d946ef; /* Fuchsia-500 color */
             opacity: 0; /* Hidden initially */
+            animation: ringAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 2.5s; /* Delay after loading screen */
+            pointer-events: none;
         }
 
         /* Stories Viewer */
@@ -248,8 +253,11 @@
             <div class="px-4 mb-4">
                 <div class="flex items-center justify-between mb-4">
                     <!-- Avatar with Ring Animation -->
-                    <div id="profile-ring" class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 to-fuchsia-600 shrink-0 mr-4 story-ring-active cursor-pointer" onclick="openStories()">
-                        <div class="w-full h-full bg-black rounded-full overflow-hidden border-2 border-black">
+                    <div class="relative w-20 h-20 shrink-0 mr-4 cursor-pointer" onclick="openStories()">
+                        <!-- Dashed Ring (Animated) -->
+                        <div class="story-ring-dashed"></div>
+                        <!-- Image Container -->
+                        <div class="w-full h-full rounded-full overflow-hidden border-2 border-black relative z-10">
                             <img src="logo.png" class="w-full h-full object-cover">
                         </div>
                     </div>
@@ -403,8 +411,11 @@
             { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' }
         ];
 
-        // Pick vertical videos for stories
-        const storiesData = videos.filter(v => v.vertical).slice(0, 5);
+        // Specific Stories Data
+        const storiesData = [
+            { file: 'story1.mp4' },
+            { file: 'story2.mp4' }
+        ];
 
         // --- INIT ---
         function initSite() {
@@ -445,7 +456,7 @@
                 return;
             }
             if (index < 0) {
-                closeStories(); // or stay on first
+                closeStories(); 
                 return;
             }
 
@@ -479,14 +490,12 @@
         storyVideo.onended = () => nextStory();
 
         function nextStory() {
-            // Fill current bar completely before moving
             const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
             if (fill) fill.style.width = '100%';
             playStory(currentStoryIndex + 1);
         }
 
         function prevStory() {
-            // Reset current bar
             const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
             if (fill) fill.style.width = '0%';
             playStory(currentStoryIndex - 1);
