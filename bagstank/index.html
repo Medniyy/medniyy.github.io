@@ -31,6 +31,23 @@
 </head>
 <body class="text-white">
 
+    <div id="disclaimer-modal" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
+        <div class="max-w-lg w-full animate-enter">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
+                <span class="text-3xl">⚠️</span>
+            </div>
+            <h1 class="text-5xl font-bebas text-white mb-2">HIGH RISK ZONE</h1>
+            <p class="text-gray-400 text-lg mb-8 font-light">
+                Live feed from <span class="text-lime-400 font-bold">Bags.fm</span> contract.
+                <br>
+                <span class="text-red-400 font-bold">Unverified Assets. High Risk. DYOR.</span>
+            </p>
+            <button onclick="acceptRisk()" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl shadow-lg transition transform hover:scale-[1.02]">
+                ENTER SHARK TANK
+            </button>
+        </div>
+    </div>
+
     <header class="fixed top-0 w-full z-50 p-4 pointer-events-none">
         <div class="max-w-md mx-auto flex justify-between items-center pointer-events-auto">
             <div class="flex items-center gap-3">
@@ -42,4 +59,251 @@
             
             <div class="flex gap-2">
                 <button onclick="openInfo()" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-white/10 text-gray-400 hover:text-white transition">?</button>
-                <button id="wallet-btn" onclick="connectWallet()" class
+                <button id="wallet-btn" onclick="connectWallet()" class="glass-panel px-5 py-2 rounded-full font-bold hover:bg-lime-500 hover:text-black transition text-sm flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full" id="wallet-dot"></span>
+                    <span id="wallet-text">Connect</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="feed-container">
+        <div class="h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="animate-spin w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p class="text-lime-400 font-bebas text-xl" id="loading-text">Loading Feed...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="analytics-modal" class="fixed inset-0 z-[60] glass-modal hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div class="w-full max-w-md relative">
+            <button onclick="closeAnalytics()" class="absolute -top-12 right-0 text-gray-400 hover:text-white text-4xl">×</button>
+            <div id="analytics-content" class="bg-gray-900 border border-lime-500/30 rounded-3xl p-6 shadow-[0_0_50px_rgba(132,204,22,0.15)]">
+                </div>
+            <div class="mt-4 flex gap-3">
+                <button onclick="openJupiter()" class="flex-1 bg-lime-500 hover:bg-lime-400 text-black font-bebas text-xl py-4 rounded-xl shadow-lg transition transform hover:scale-105">BUY NOW</button>
+                <button onclick="shareTweet()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bebas text-xl py-4 rounded-xl border border-gray-700 transition">SHARE ALPHA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="jupiter-overlay" class="fixed inset-0 z-[100] hidden bg-black/90 flex flex-col items-center justify-center backdrop-blur-md p-4">
+        <button onclick="closeJupiter()" class="absolute top-6 right-6 z-[110] bg-red-500 hover:bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-2xl transition transform hover:scale-110">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="relative w-full max-w-[400px] h-[650px] bg-[#304256] rounded-3xl overflow-hidden shadow-2xl animate-enter border border-gray-700">
+            <div id="integrated-terminal" class="w-full h-full"></div>
+        </div>
+        <p class="mt-4 text-gray-500 text-xs font-mono">Powered by Jupiter Swap</p>
+    </div>
+
+    <div id="info-modal" class="fixed inset-0 z-[60] bg-black/95 hidden flex items-center justify-center p-4 backdrop-blur-xl opacity-0 transition-opacity duration-300">
+        <div class="max-w-md w-full glass-panel rounded-3xl p-8 relative">
+            <button onclick="closeInfo()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            <h2 class="text-4xl font-bebas text-lime-400 mb-6">ABOUT</h2>
+            <div class="space-y-4 text-gray-300">
+                <p>Live feed of new tokens interacting with <b>Bags.fm</b> contract.</p>
+                <p>We analyze liquidity and holders to give you a "Shark Verdict".</p>
+                <p class="text-xs text-gray-500 pt-4">Data provided by Helius RPC & Bitquery.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WORKER_URL = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
+        const JUPITER_RPC = 'https://api.mainnet-beta.solana.com'; // Public RPC for stability
+
+        let activeTokens = [];
+        let currentTokenIndex = 0;
+        let walletProvider = null;
+
+        // --- INIT ---
+        window.addEventListener('load', () => {
+            if(localStorage.getItem('riskAccepted') === 'true') {
+                document.getElementById('disclaimer-modal').style.display = 'none';
+                fetchTokens();
+            }
+        });
+
+        function acceptRisk() {
+            localStorage.setItem('riskAccepted', 'true');
+            document.getElementById('disclaimer-modal').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('disclaimer-modal').style.display = 'none';
+                fetchTokens();
+            }, 500);
+        }
+
+        // --- FETCHING ---
+        async function fetchTokens() {
+            try {
+                console.log("Fetching tokens...");
+                const res = await fetch(WORKER_URL);
+                const tokens = await res.json();
+                console.log("Data received:", tokens);
+
+                if (!Array.isArray(tokens) || tokens.length === 0) {
+                     document.getElementById('loading-text').innerText = "No tokens found (Empty Array)";
+                     return;
+                }
+                
+                // Safe parsing to avoid crashes
+                activeTokens = tokens.map(t => ({
+                    name: t.name || 'Unknown',
+                    symbol: t.symbol || 'BAGS',
+                    mint: t.mint || '',
+                    image: t.image && t.image.startsWith('http') ? t.image : 'bags-logo.png', // Fallback image
+                    liquidity: t.liquidity || 0,
+                    holders: t.holders || 0,
+                    tx: t.tx || ''
+                }));
+                
+                renderFeed(activeTokens);
+            } catch (e) {
+                console.error("Fetch Error:", e);
+                document.getElementById('loading-text').innerText = "Error loading data. Check Console.";
+            }
+        }
+
+        function renderFeed(tokens) {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = ''; // Clear loader
+            
+            tokens.forEach((token, index) => {
+                const bagsLink = `https://bags.fm/${token.mint}`;
+                
+                const slide = document.createElement('div');
+                slide.className = 'token-slide flex items-center justify-center p-4 snap-center';
+                
+                slide.innerHTML = `
+                    <div class="glass-panel w-full max-w-md rounded-3xl p-6 text-center relative animate-enter shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                        <div class="absolute top-4 right-4 bg-lime-500 text-black text-xs font-bold px-3 py-1 rounded-full border border-white/10">
+                            LIVE
+                        </div>
+                        
+                        <a href="${bagsLink}" target="_blank" class="block w-24 h-24 mx-auto mb-4 relative group">
+                            <img src="${token.image}" onerror="this.src='bags-logo.png'" class="w-full h-full rounded-full border-4 border-lime-500 group-hover:scale-105 transition object-cover shadow-2xl bg-black">
+                            <div class="absolute bottom-0 right-0 bg-black text-[10px] px-2 rounded border border-gray-700">↗</div>
+                        </a>
+                        
+                        <h2 class="text-5xl font-bebas text-white mb-1 tracking-wide">$${token.symbol}</h2>
+                        <p class="text-gray-400 mb-6 font-mono text-sm truncate px-4">${token.name}</p>
+                        
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold">Liquidity</div>
+                                <div class="text-2xl font-bebas text-lime-400">$${token.liquidity.toLocaleString()}</div>
+                            </div>
+                            <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold">Holders</div>
+                                <div class="text-2xl font-bebas text-white">${token.holders}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                             <button onclick="openAnalytics(${index})" class="w-full bg-gradient-to-r from-gray-800 to-gray-900 border border-lime-500/30 text-lime-400 font-bebas text-2xl py-3 rounded-xl shadow-[0_0_15px_rgba(132,204,22,0.1)] transition hover:scale-[1.01] flex items-center justify-center gap-2">
+                                🦈 SHARK VERDICT
+                            </button>
+                            <button onclick="openJupiter('${token.mint}')" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl transition shadow-lg shadow-lime-500/20 transform hover:scale-[1.02]">
+                                BUY NOW
+                            </button>
+                        </div>
+                        
+                        <div class="mt-4 flex justify-center gap-4 text-xs text-gray-500">
+                             <span class="font-mono cursor-pointer hover:text-white" onclick="navigator.clipboard.writeText('${token.mint}'); alert('Copied!')">
+                                CA: ${token.mint.slice(0,4)}...${token.mint.slice(-4)} ❐
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(slide);
+            });
+        }
+
+        // --- ANALYTICS ---
+        function openAnalytics(index) {
+            const token = activeTokens[index];
+            currentTokenIndex = index;
+            const modal = document.getElementById('analytics-modal');
+            const content = document.getElementById('analytics-content');
+            
+            // Logic
+            const score = Math.min(100, Math.floor((token.liquidity / 1000) + (token.holders / 5)));
+            const isIn = score > 40; 
+            
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    <img src="${token.image}" onerror="this.src='bags-logo.png'" class="w-20 h-20 rounded-full mx-auto mb-4 border-4 ${isIn ? 'border-lime-500' : 'border-red-500'} shadow-2xl object-cover bg-black">
+                    <h2 class="text-4xl font-bebas text-white">$${token.name}</h2>
+                    <div class="text-gray-400 text-xs font-mono mt-2">CA: ${token.mint.slice(0,6)}...</div>
+                </div>
+
+                <div class="${isIn ? 'bg-lime-900/20 border-lime-500/50' : 'bg-red-900/20 border-red-500/50'} border-2 rounded-2xl p-6 text-center mb-6 animate-border">
+                    <div class="text-6xl font-black ${isIn ? 'text-lime-400' : 'text-red-500'} font-bebas mb-2">
+                        ${isIn ? "I'M IN! 🚀" : "I'M OUT. ❌"}
+                    </div>
+                    <p class="text-lg text-white italic font-light">
+                        "${isIn ? "Liquidity looks healthy. Community active." : "Liquidity too thin. Risk high."}"
+                    </p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        // --- UTILS ---
+        function openJupiter(mint) {
+            if(!mint) mint = activeTokens[currentTokenIndex]?.mint;
+            const overlay = document.getElementById('jupiter-overlay');
+            overlay.classList.remove('hidden');
+            
+            if (!window.Jupiter._instance) {
+                window.Jupiter.init({ 
+                    displayMode: 'integrated',
+                    integratedTargetId: 'integrated-terminal',
+                    endpoint: JUPITER_RPC,
+                    formProps: { fixedOutputMint: true, initialOutputMint: mint }
+                });
+            } else {
+                window.Jupiter.resume();
+            }
+            if (walletProvider) window.Jupiter.syncProps({ passthroughWalletContextState: { wallet: walletProvider } });
+        }
+
+        function closeJupiter() { document.getElementById('jupiter-overlay').classList.add('hidden'); }
+        function closeAnalytics() { document.getElementById('analytics-modal').classList.add('opacity-0'); setTimeout(()=>document.getElementById('analytics-modal').classList.add('hidden'),300); }
+        function openInfo() { document.getElementById('info-modal').classList.remove('hidden'); setTimeout(()=>document.getElementById('info-modal').classList.remove('opacity-0'),10); }
+        function closeInfo() { document.getElementById('info-modal').classList.add('opacity-0'); setTimeout(()=>document.getElementById('info-modal').classList.add('hidden'),300); }
+
+        async function connectWallet() {
+            try {
+                const provider = window.phantom?.solana || window.solflare;
+                if (!provider) return alert("Install Phantom Wallet!");
+                await provider.connect();
+                walletProvider = provider;
+                const key = provider.publicKey.toString();
+                document.getElementById('wallet-text').innerText = key.slice(0,4) + '..' + key.slice(-4);
+                document.getElementById('wallet-dot').classList.replace('bg-red-500', 'bg-lime-500');
+            } catch (err) { console.error(err); }
+        }
+
+        async function shareTweet() {
+            const token = activeTokens[currentTokenIndex];
+            const element = document.getElementById('analytics-content');
+            try {
+                const canvas = await html2canvas(element, { backgroundColor: '#111', scale: 2 });
+                const link = document.createElement('a');
+                link.download = `shark-${token.symbol}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                const text = `🦈 I'm watching $${token.symbol} on #BAGS Shark Tank!\n\nCA: ${token.mint}\n\nCheck analytics via @athcamera 👇`;
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+            } catch (e) { alert('Screenshot failed'); }
+        }
+
+        // Refresh loop
+        setInterval(fetchTokens, 15000);
+    </script>
+</body>
+</html>
