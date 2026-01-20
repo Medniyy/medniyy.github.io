@@ -19,12 +19,13 @@
     
     <div class="text-center mb-12 sm:mb-16 animate-fade-in">
       
+      <!-- Wallet Connect Button - под цвета сайта -->
       <div class="absolute top-4 right-4">
-        <button id="wallet-btn" class="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg">
+        <button id="wallet-btn" class="flex items-center gap-2 bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-500 hover:to-green-600 text-black font-bold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg shadow-lime-400/50">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
           <span id="wallet-text">Connect Wallet</span>
         </button>
-        <div id="wallet-selector" class="hidden absolute top-14 right-0 bg-gray-900 border border-cyan-500 rounded-xl p-4 shadow-2xl z-50 min-w-[250px]">
+        <div id="wallet-selector" class="hidden absolute top-14 right-0 bg-gray-900 border border-lime-400 rounded-xl p-4 shadow-2xl z-50 min-w-[250px]">
           <h3 class="text-white font-bold mb-3">Select Wallet</h3>
           <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="phantom">
             <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
@@ -41,16 +42,18 @@
         </div>
       </div>
       
+      <!-- bags.fm Logo - КРУГЛЫЙ -->
       <div class="mb-6 flex justify-center">
         <div class="relative group">
           <div class="absolute inset-0 bg-gradient-to-r from-lime-400 via-green-500 to-lime-400 rounded-full blur-2xl opacity-50 group-hover:opacity-75 transition-opacity scale-110"></div>
-          <div class="relative bg-black rounded-full p-2 border-2 border-lime-400/30 group-hover:border-lime-400 transition-all">
-            <img src="bags-logo.png" alt="bags.fm" class="w-20 h-20 sm:w-24 sm:h-24 animate-float">
+          <div class="relative bg-black rounded-full p-2 border-2 border-lime-400/30 group-hover:border-lime-400 transition-all overflow-hidden">
+            <img src="bags-logo.png" alt="bags.fm" class="w-20 h-20 sm:w-24 sm:h-24 animate-float object-cover rounded-full">
           </div>
         </div>
       </div>
       
-      <div class="inline-block mb-4">
+      <!-- Title - ЦЕНТРИРОВАНО -->
+      <div class="flex justify-center mb-4">
         <div class="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-lime-400 via-green-500 to-lime-400 px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow-2xl shadow-lime-500/50">
           <span class="text-2xl sm:text-3xl">⚡</span>
           <h1 class="text-3xl sm:text-4xl font-black text-black tracking-tight" style="font-family: 'Bebas Neue';">BAGS.FM SHARK TANK</h1>
@@ -58,10 +61,11 @@
         </div>
       </div>
       
+      <!-- Powered by ATH - ЦЕНТРИРОВАНО, сокращено -->
       <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="inline-block group">
         <p class="text-lg sm:text-xl font-light" style="font-family: 'Rajdhani';">
           <span class="text-gray-500">Powered by</span>
-          <span class="text-lime-400 font-bold group-hover:text-green-400 transition-colors"> ATH Creative Studio</span>
+          <span class="text-lime-400 font-bold group-hover:text-green-400 transition-colors"> ATH</span>
         </p>
       </a>
       
@@ -91,7 +95,7 @@
       </div>
       <div id="verdict-content"></div>
       <div id="screenshot-watermark" class="hidden text-center mt-6 pt-6 border-t border-cyan-500/30">
-        <p class="text-lg font-light" style="font-family: 'Rajdhani';"><span class="text-gray-500">Powered by</span><span class="text-lime-400 font-bold"> ATH Creative Studio</span></p>
+        <p class="text-lg font-light" style="font-family: 'Rajdhani';"><span class="text-gray-500">Powered by</span><span class="text-lime-400 font-bold"> ATH</span></p>
       </div>
     </div>
   </div>
