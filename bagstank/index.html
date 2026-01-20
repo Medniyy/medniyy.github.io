@@ -101,11 +101,12 @@
         
         // ==================== API SERVICE ====================
         
-        const DEXSCREENER_BASE_URL = 'https://api.dexscreener.com/latest/dex';
+        // Use local PHP proxy to bypass CORS
+        const API_PROXY = './api-proxy.php';
         
         async function fetchTrendingSolanaTokens(limit = 20) {
             try {
-                const response = await axios.get(`${DEXSCREENER_BASE_URL}/tokens/latest`);
+                const response = await axios.get(`${API_PROXY}?endpoint=tokens/latest`);
                 
                 if (!response.data || !response.data.pairs) {
                     console.error('Invalid response from DexScreener');
