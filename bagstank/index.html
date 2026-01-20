@@ -2,143 +2,666 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAGS.FM ONE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="Swipe to discover and trade trending Solana tokens">
+    <title>Solana Token Swiper - Find Alpha</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Solana Wallet Adapter CSS -->
+    <link href="https://unpkg.com/@solana/wallet-adapter-react-ui@0.9.35/styles.css" rel="stylesheet" />
+    
     <style>
-        body { font-family: 'Rajdhani', sans-serif; background-color: #000; color: white; overflow: hidden; }
-        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
-        #main-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .glass-card { background: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 50px rgba(132, 204, 22, 0.1); }
-        .scanner-line { width: 100%; height: 2px; background: #84cc16; animation: scan 2s infinite; }
-        @keyframes scan { 0% { transform: translateY(-100px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(100px); opacity: 0; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #18181b;
+            color: #f4f4f5;
+        }
+        
+        ::selection {
+            background-color: #a3e635;
+            color: #000;
+        }
+        
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        /* Wallet button overrides */
+        .wallet-adapter-button {
+            background-color: #18181b !important;
+            color: #a3e635 !important;
+            border: 1px solid rgba(163, 230, 53, 0.5) !important;
+            border-radius: 9999px !important;
+            font-weight: 700 !important;
+            font-size: 10px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            padding: 0 1.25rem !important;
+            height: 2rem !important;
+            box-shadow: 0 0 15px rgba(163, 230, 53, 0.2) !important;
+            transition: all 0.2s !important;
+        }
+        
+        .wallet-adapter-button:hover {
+            background-color: #27272a !important;
+        }
+        
+        /* Loading spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Card drag styles */
+        .card-container {
+            touch-action: pan-y;
+            user-select: none;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition-property: color, background-color, border-color;
+            transition-duration: 200ms;
+        }
     </style>
 </head>
 <body>
-
-    <div id="disclaimer-modal" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
-        <h1 class="text-6xl font-bebas text-white mb-2">SHARK TANK</h1>
-        <p class="text-gray-400 mb-8">Tracking the latest active token on Bags.fm<br>High Risk.</p>
-        <button onclick="startApp()" class="bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-3 px-12 rounded-full transition">START</button>
-    </div>
-
-    <div id="main-container">
-        <div id="loader" class="text-center">
-            <div class="mb-4 text-lime-400 font-bebas text-2xl animate-pulse">SCANNING BAGS.FM...</div>
-            <div class="w-16 h-1 bg-gray-800 rounded overflow-hidden mx-auto"><div class="scanner-line"></div></div>
-        </div>
-
-        <div id="token-card" class="hidden w-full max-w-md p-6">
-            <div class="glass-card rounded-3xl p-8 text-center relative border-t-4 border-lime-500">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-lime-500 text-black font-bold px-4 py-1 rounded-b-lg text-xs tracking-widest">
-                    LATEST SIGNAL
-                </div>
-
-                <img id="t-img" src="" class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white/10 object-cover bg-black">
-                
-                <h1 id="t-symbol" class="text-5xl font-bebas text-white mb-1"></h1>
-                <p id="t-name" class="text-gray-500 text-sm mb-6 truncate"></p>
-                
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-white/5 rounded-xl p-3">
-                        <div class="text-[10px] text-gray-500 uppercase font-bold">Liquidity</div>
-                        <div id="t-liq" class="text-xl font-bebas text-lime-400">-</div>
-                    </div>
-                    <div class="bg-white/5 rounded-xl p-3">
-                        <div class="text-[10px] text-gray-500 uppercase font-bold">Vol 5m</div>
-                        <div id="t-vol" class="text-xl font-bebas text-white">-</div>
-                    </div>
-                </div>
-
-                <button onclick="buyToken()" id="buy-btn" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl shadow-lg mb-3 transition hover:scale-[1.02]">
-                    OPEN ↗
-                </button>
-                
-                <div class="flex gap-2">
-                    <button onclick="openAnalytics()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bebas py-3 rounded-xl transition">VERDICT</button>
-                    <button onclick="copyCA()" class="flex-1 bg-white/10 hover:bg-white/20 text-gray-400 hover:text-white font-bebas py-3 rounded-xl transition">COPY CA</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="analytics-modal" class="fixed inset-0 z-[60] bg-black/90 hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-sm glass-card rounded-3xl p-6 relative">
-            <button onclick="document.getElementById('analytics-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-            <div id="analytics-content"></div>
-        </div>
-    </div>
-
-    <script>
-        const WORKER = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
-        let currentToken = null;
-
-        function startApp() {
-            document.getElementById('disclaimer-modal').style.display = 'none';
-            fetchToken();
-            setInterval(fetchToken, 8000);
-        }
-
-        async function fetchToken() {
+    <div id="root"></div>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Solana Web3 -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios@1.6.2/dist/axios.min.js"></script>
+    
+    <!-- Jupiter Terminal -->
+    <script src="https://terminal.jup.ag/main-v2.js"></script>
+    
+    <script type="module">
+        const { useState, useEffect, useRef } = React;
+        const { createRoot } = ReactDOM;
+        
+        // ==================== API SERVICE ====================
+        
+        const DEXSCREENER_BASE_URL = 'https://api.dexscreener.com/latest/dex';
+        
+        async function fetchTrendingSolanaTokens(limit = 20) {
             try {
-                const res = await fetch(WORKER);
-                const data = await res.json();
-                if(data.length > 0) renderToken(data[0]);
-            } catch(e) { console.error(e); }
-        }
-
-        function renderToken(t) {
-            currentToken = t;
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('token-card').classList.remove('hidden');
-            
-            document.getElementById('t-img').src = t.image || 'bags-logo.png';
-            document.getElementById('t-symbol').innerText = `$${t.symbol}`;
-            document.getElementById('t-name').innerText = t.name;
-            document.getElementById('t-liq').innerText = `$${Math.floor(t.liquidity).toLocaleString()}`;
-            document.getElementById('t-vol').innerText = `$${Math.floor(t.volume5m).toLocaleString()}`;
-            
-            const btn = document.getElementById('buy-btn');
-            // Если ликвидность < 5000, значит токен только на Bags (Bonding curve)
-            // Если больше - значит вышел на Raydium -> Jupiter
-            btn.innerText = t.liquidity < 5000 ? "BUY ON BAGS ↗" : "BUY ON JUPITER ↗";
-        }
-
-        function buyToken() {
-            if(!currentToken) return;
-            const url = currentToken.liquidity < 5000 
-                ? `https://bags.fm/${currentToken.mint}`
-                : `https://jup.ag/swap/SOL-${currentToken.mint}`;
-            window.open(url, '_blank');
-        }
-
-        function openAnalytics() {
-            if(!currentToken) return;
-            const score = Math.min(10, Math.floor((currentToken.liquidity / 3000) + (currentToken.volume5m / 1000)));
-            const verdict = score > 7 ? "STRONG IN 🟢" : (score > 4 ? "WATCH 🟡" : "OUT 🔴");
-            
-            const html = `
-                <div class="text-center border-b border-white/10 pb-4 mb-4">
-                    <h2 class="text-4xl font-bebas text-white">${verdict}</h2>
-                    <p class="text-gray-400 text-sm">Score: ${score}/10</p>
-                </div>
-                <div class="space-y-2 text-sm text-gray-400">
-                    <p>Analysis based on Volume & Liquidity.</p>
-                    <div class="flex justify-between"><span class="text-white">Market Cap:</span> $${Math.floor(currentToken.marketCap)}</div>
-                </div>
-            `;
-            document.getElementById('analytics-content').innerHTML = html;
-            document.getElementById('analytics-modal').classList.remove('hidden');
-        }
-
-        function copyCA() {
-            if(currentToken) {
-                navigator.clipboard.writeText(currentToken.mint);
-                alert("CA Copied!");
+                const response = await axios.get(`${DEXSCREENER_BASE_URL}/tokens/latest`);
+                
+                if (!response.data || !response.data.pairs) {
+                    console.error('Invalid response from DexScreener');
+                    return [];
+                }
+                
+                const solanaPairs = response.data.pairs
+                    .filter(pair => 
+                        pair.chainId === 'solana' &&
+                        pair.liquidity &&
+                        pair.liquidity.usd > 1000 &&
+                        pair.volume &&
+                        pair.volume.h24 > 0
+                    )
+                    .sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0))
+                    .slice(0, limit)
+                    .map((pair, index) => processTokenPair(pair, index))
+                    .filter(token => token !== null);
+                
+                return solanaPairs;
+            } catch (error) {
+                console.error('Error fetching tokens:', error);
+                return [];
             }
         }
+        
+        function processTokenPair(pair, index) {
+            try {
+                const priceUsd = parseFloat(pair.priceUsd || '0');
+                const change24h = pair.priceChange?.h24 || 0;
+                const marketCap = pair.marketCap || pair.fdv || 0;
+                const liquidity = pair.liquidity?.usd || 0;
+                const volume24h = pair.volume?.h24 || 0;
+                
+                const verdict = analyzeToken({
+                    liquidity,
+                    priceChange: pair.priceChange || {},
+                    volume: pair.volume || { h24: 0, h6: 0, h1: 0, m5: 0 },
+                    txns: pair.txns,
+                    marketCap,
+                    pairCreatedAt: pair.pairCreatedAt
+                });
+                
+                return {
+                    id: pair.pairAddress || `${pair.baseToken.address}-${index}`,
+                    symbol: pair.baseToken.symbol,
+                    name: pair.baseToken.name,
+                    address: pair.baseToken.address,
+                    price: formatPrice(priceUsd),
+                    change: formatChange(change24h),
+                    verdict: verdict.message,
+                    imageUrl: pair.info?.imageUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${pair.baseToken.symbol}&backgroundColor=18181b`,
+                    sharkScore: verdict.score,
+                    marketCap: formatMarketCap(marketCap),
+                    liquidity,
+                    volume24h,
+                    pairAddress: pair.pairAddress,
+                    dexUrl: pair.url
+                };
+            } catch (error) {
+                console.error('Error processing token pair:', error);
+                return null;
+            }
+        }
+        
+        function analyzeToken(data) {
+            let score = 50;
+            let flags = [];
+            
+            // Liquidity
+            if (data.liquidity < 1000) {
+                flags.push('⚠️ Trash tier liquidity - high rug risk');
+                score -= 30;
+            } else if (data.liquidity < 5000) {
+                flags.push('Low liquidity detected');
+                score -= 15;
+            } else if (data.liquidity > 100000) {
+                flags.push('Solid liquidity pool');
+                score += 15;
+            }
+            
+            // Price movement
+            const h1Change = data.priceChange.h1 || 0;
+            const h24Change = data.priceChange.h24 || 0;
+            
+            if (h1Change > 100) {
+                flags.push('🚀 MOONING - extreme 1h volatility');
+                score += 20;
+            } else if (h1Change > 50) {
+                flags.push('Strong upward momentum detected');
+                score += 15;
+            } else if (h1Change < -50) {
+                flags.push('⚠️ Massive dump in progress');
+                score -= 25;
+            } else if (h24Change > 20 && h24Change < 100) {
+                flags.push('Healthy 24h growth trajectory');
+                score += 10;
+            } else if (h24Change < -30) {
+                flags.push('Bearish 24h trend - caution advised');
+                score -= 15;
+            }
+            
+            // Volume
+            if (data.volume.h24 > 100000) {
+                flags.push('High trading volume - active market');
+                score += 10;
+            } else if (data.volume.h24 < 1000) {
+                flags.push('Low volume - illiquid market');
+                score -= 10;
+            }
+            
+            // Buy/sell pressure
+            if (data.txns?.h1) {
+                const buyPressure = data.txns.h1.buys / (data.txns.h1.buys + data.txns.h1.sells);
+                if (buyPressure > 0.65) {
+                    flags.push('Heavy buy pressure - accumulation phase');
+                    score += 15;
+                } else if (buyPressure < 0.35) {
+                    flags.push('Sell pressure dominating');
+                    score -= 15;
+                }
+            }
+            
+            // Age
+            if (data.pairCreatedAt) {
+                const ageHours = (Date.now() - data.pairCreatedAt) / (1000 * 60 * 60);
+                if (ageHours < 1) {
+                    flags.push('🆕 Brand new token - extreme risk');
+                    score -= 20;
+                } else if (ageHours < 24) {
+                    flags.push('Fresh launch - high volatility expected');
+                    score -= 10;
+                }
+            }
+            
+            score = Math.max(0, Math.min(100, score));
+            
+            let message = '';
+            if (score >= 80) {
+                message = `🔥 ALPHA DETECTED: ${flags.slice(0, 2).join('. ')}. This could print.`;
+            } else if (score >= 60) {
+                message = `Solid opportunity. ${flags.slice(0, 2).join('. ')}. DYOR and consider entry.`;
+            } else if (score >= 40) {
+                message = `Neutral play. ${flags.slice(0, 2).join('. ')}. Wait for confirmation.`;
+            } else if (score >= 20) {
+                message = `⚠️ High risk. ${flags.slice(0, 2).join('. ')}. Proceed with extreme caution.`;
+            } else {
+                message = `🚨 AVOID. ${flags.slice(0, 2).join('. ')}. Not worth the risk.`;
+            }
+            
+            return { message, score };
+        }
+        
+        function formatPrice(price) {
+            if (price === 0) return '$0.00';
+            if (price < 0.00001) return `$${price.toExponential(2)}`;
+            if (price < 0.01) return `$${price.toFixed(6)}`;
+            if (price < 1) return `$${price.toFixed(4)}`;
+            return `$${price.toFixed(2)}`;
+        }
+        
+        function formatChange(change) {
+            const sign = change >= 0 ? '+' : '';
+            return `${sign}${change.toFixed(2)}%`;
+        }
+        
+        function formatMarketCap(marketCap) {
+            if (marketCap === 0) return 'N/A';
+            if (marketCap >= 1000000000) return `$${(marketCap / 1000000000).toFixed(2)}B`;
+            if (marketCap >= 1000000) return `$${(marketCap / 1000000).toFixed(2)}M`;
+            if (marketCap >= 1000) return `$${(marketCap / 1000).toFixed(2)}K`;
+            return `$${marketCap.toFixed(0)}`;
+        }
+        
+        // ==================== COMPONENTS ====================
+        
+        function TokenCard({ token, onSwipe, onRemove }) {
+            const cardRef = useRef(null);
+            const [isDragging, setIsDragging] = useState(false);
+            const [dragOffset, setDragOffset] = useState(0);
+            const startX = useRef(0);
+            
+            const handleStart = (clientX) => {
+                setIsDragging(true);
+                startX.current = clientX;
+            };
+            
+            const handleMove = (clientX) => {
+                if (!isDragging) return;
+                const diff = clientX - startX.current;
+                setDragOffset(diff);
+            };
+            
+            const handleEnd = () => {
+                if (Math.abs(dragOffset) > 100) {
+                    if (dragOffset > 0) {
+                        onSwipe('right', token);
+                    } else {
+                        onSwipe('left', token);
+                    }
+                    onRemove(token.id);
+                }
+                setIsDragging(false);
+                setDragOffset(0);
+            };
+            
+            const isPositive = token.change.startsWith('+');
+            const bullishPercent = Math.min(Math.max(token.sharkScore, 0), 100);
+            
+            const rotation = dragOffset * 0.05;
+            const opacity = Math.max(0, 1 - Math.abs(dragOffset) / 200);
+            
+            const nopeOpacity = dragOffset < -20 ? Math.min(1, Math.abs(dragOffset + 20) / 130) : 0;
+            const apeOpacity = dragOffset > 20 ? Math.min(1, (dragOffset - 20) / 130) : 0;
+            
+            let borderColor = 'rgb(39, 39, 42)';
+            if (dragOffset < -150) borderColor = 'rgba(239, 68, 68, 0.5)';
+            if (dragOffset > 150) borderColor = 'rgba(34, 197, 94, 0.5)';
+            
+            return React.createElement('div', {
+                ref: cardRef,
+                className: 'absolute top-0 left-0 w-full h-full flex items-center justify-center p-4 pt-20 pb-24 card-container',
+                style: {
+                    transform: `translateX(${dragOffset}px) rotate(${rotation}deg)`,
+                    opacity: opacity,
+                    cursor: isDragging ? 'grabbing' : 'grab',
+                    zIndex: 10
+                },
+                onMouseDown: (e) => handleStart(e.clientX),
+                onMouseMove: (e) => handleMove(e.clientX),
+                onMouseUp: handleEnd,
+                onMouseLeave: handleEnd,
+                onTouchStart: (e) => handleStart(e.touches[0].clientX),
+                onTouchMove: (e) => handleMove(e.touches[0].clientX),
+                onTouchEnd: handleEnd
+            },
+                React.createElement('div', {
+                    className: 'relative w-full h-full max-h-[600px] rounded-3xl overflow-hidden shadow-2xl flex flex-col',
+                    style: {
+                        backgroundColor: '#09090b',
+                        border: `2px solid ${borderColor}`
+                    }
+                },
+                    // Visual cues
+                    React.createElement('div', {
+                        className: 'absolute top-8 right-8 z-20 pointer-events-none',
+                        style: { opacity: nopeOpacity }
+                    },
+                        React.createElement('div', {
+                            className: 'border-4 border-red-500 text-red-500 font-black text-4xl px-4 py-2 rounded-lg bg-black/50',
+                            style: { transform: 'rotate(-12deg)' }
+                        }, 'PASS')
+                    ),
+                    React.createElement('div', {
+                        className: 'absolute top-8 left-8 z-20 pointer-events-none',
+                        style: { opacity: apeOpacity }
+                    },
+                        React.createElement('div', {
+                            className: 'border-4 border-lime-400 text-lime-400 font-black text-4xl px-4 py-2 rounded-lg bg-black/50',
+                            style: { transform: 'rotate(12deg)' }
+                        }, 'APE IN')
+                    ),
+                    
+                    // Content
+                    React.createElement('div', { className: 'relative z-10 flex flex-col h-full p-5' },
+                        // Header
+                        React.createElement('div', { className: 'flex justify-between items-start mb-2' },
+                            React.createElement('div', { className: 'flex items-center gap-3' },
+                                React.createElement('div', { className: 'w-12 h-12 rounded-full bg-zinc-800 p-2 border border-zinc-700 overflow-hidden' },
+                                    React.createElement('img', {
+                                        src: token.imageUrl,
+                                        alt: token.name,
+                                        className: 'w-full h-full object-cover'
+                                    })
+                                ),
+                                React.createElement('div', {},
+                                    React.createElement('h2', { className: 'text-xl font-bold text-white' }, token.symbol),
+                                    React.createElement('span', { className: 'text-xs text-zinc-400 uppercase' }, token.name)
+                                )
+                            ),
+                            React.createElement('div', { className: 'text-right' },
+                                React.createElement('div', { className: 'text-[10px] text-zinc-500 font-mono' }, 'MKT CAP'),
+                                React.createElement('div', { className: 'text-sm font-bold text-zinc-300' }, token.marketCap)
+                            )
+                        ),
+                        
+                        // Price
+                        React.createElement('div', { className: 'mt-4 mb-4 text-center' },
+                            React.createElement('h1', { className: 'text-5xl font-black text-white' }, token.price),
+                            React.createElement('div', {
+                                className: `inline-flex items-center gap-1 px-3 py-1 rounded-full mt-2 text-xs font-bold ${
+                                    isPositive ? 'bg-lime-400/10 text-lime-400' : 'bg-red-500/10 text-red-500'
+                                }`
+                            }, token.change + ' (24h)')
+                        ),
+                        
+                        // Stats
+                        React.createElement('div', { className: 'grid grid-cols-2 gap-3 mb-4' },
+                            React.createElement('div', { className: 'bg-zinc-900/60 border border-zinc-800 rounded-lg p-3' },
+                                React.createElement('div', { className: 'text-[10px] text-zinc-500 font-mono mb-1' }, 'LIQUIDITY'),
+                                React.createElement('div', { className: 'text-sm font-bold text-zinc-200' },
+                                    token.liquidity >= 1000000 
+                                        ? `$${(token.liquidity / 1000000).toFixed(2)}M`
+                                        : `$${(token.liquidity / 1000).toFixed(1)}K`
+                                )
+                            ),
+                            React.createElement('div', { className: 'bg-zinc-900/60 border border-zinc-800 rounded-lg p-3' },
+                                React.createElement('div', { className: 'text-[10px] text-zinc-500 font-mono mb-1' }, 'VOL 24H'),
+                                React.createElement('div', { className: 'text-sm font-bold text-zinc-200' },
+                                    token.volume24h >= 1000000 
+                                        ? `$${(token.volume24h / 1000000).toFixed(2)}M`
+                                        : `$${(token.volume24h / 1000).toFixed(1)}K`
+                                )
+                            )
+                        ),
+                        
+                        // Verdict
+                        React.createElement('div', { className: 'mt-auto mb-16' },
+                            React.createElement('div', { 
+                                className: 'relative bg-zinc-950/95 rounded-xl p-4 border border-lime-500/30',
+                                style: { boxShadow: '0 0 20px rgba(163, 230, 53, 0.2)' }
+                            },
+                                React.createElement('div', { className: 'flex items-center gap-2 mb-2' },
+                                    React.createElement('div', { className: 'w-5 h-5 rounded-full bg-lime-400/20 flex items-center justify-center' }, '🦈'),
+                                    React.createElement('h3', { 
+                                        className: 'text-xs font-bold uppercase',
+                                        style: { 
+                                            background: 'linear-gradient(to right, #a3e635, #22c55e)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent'
+                                        }
+                                    }, 'Shark Verdict')
+                                ),
+                                React.createElement('p', { className: 'text-zinc-200 text-xs leading-relaxed font-medium' }, 
+                                    `"${token.verdict}"`
+                                ),
+                                React.createElement('div', { className: 'mt-2 flex items-center gap-2' },
+                                    React.createElement('div', { className: 'h-1 flex-1 bg-zinc-800 rounded-full overflow-hidden' },
+                                        React.createElement('div', {
+                                            className: 'h-full',
+                                            style: {
+                                                width: `${bullishPercent}%`,
+                                                background: 'linear-gradient(to right, #a3e635, #22c55e)'
+                                            }
+                                        })
+                                    ),
+                                    React.createElement('span', { className: 'text-[10px] font-mono text-lime-400' }, 
+                                        `${bullishPercent}% BULLISH`
+                                    )
+                                )
+                            )
+                        ),
+                        
+                        // Action buttons
+                        React.createElement('div', { className: 'absolute bottom-4 right-4 flex flex-col gap-3 z-30' },
+                            React.createElement('button', {
+                                className: 'w-10 h-10 rounded-full bg-zinc-900/90 border border-zinc-700 flex items-center justify-center hover:bg-zinc-800',
+                                onClick: (e) => {
+                                    e.stopPropagation();
+                                    window.open(token.dexUrl, '_blank');
+                                }
+                            }, '🔗'),
+                            React.createElement('button', {
+                                className: 'w-10 h-10 rounded-full bg-zinc-900/90 border border-zinc-700 flex items-center justify-center hover:bg-zinc-800',
+                                onClick: (e) => {
+                                    e.stopPropagation();
+                                    window.open(`https://solscan.io/token/${token.address}`, '_blank');
+                                }
+                            }, '📊')
+                        )
+                    )
+                )
+            );
+        }
+        
+        function App() {
+            const [tokens, setTokens] = useState([]);
+            const [isLoading, setIsLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [sharkScore, setSharkScore] = useState(1420);
+            
+            useEffect(() => {
+                loadTokens();
+            }, []);
+            
+            const loadTokens = async () => {
+                setIsLoading(true);
+                setError(null);
+                try {
+                    const fetchedTokens = await fetchTrendingSolanaTokens(20);
+                    if (fetchedTokens.length === 0) {
+                        setError('No tokens found. Try again later.');
+                    } else {
+                        setTokens(fetchedTokens);
+                    }
+                } catch (err) {
+                    console.error('Error loading tokens:', err);
+                    setError('Failed to load tokens.');
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            const removeToken = (id) => {
+                setTokens(prev => prev.filter(t => t.id !== id));
+            };
+            
+            const handleSwipe = (direction, token) => {
+                if (direction === 'right') {
+                    setSharkScore(prev => prev + 50);
+                    alert(`Buy signal for ${token.symbol}!\n\nTo enable trading:\n1. Install Phantom wallet\n2. Connect wallet\n3. Swipe right to open Jupiter swap`);
+                }
+            };
+            
+            return React.createElement('div', {
+                className: 'flex justify-center bg-zinc-900 min-h-screen overflow-hidden items-center py-4 md:py-8'
+            },
+                React.createElement('div', {
+                    className: 'w-full max-w-md bg-black relative h-[850px] max-h-[95vh] flex flex-col shadow-2xl overflow-hidden border border-zinc-800 md:rounded-[3rem]',
+                    style: { boxShadow: '0 0 0 8px #09090b' }
+                },
+                    // Header
+                    React.createElement('header', {
+                        className: 'absolute top-0 left-0 right-0 z-50 px-5 pt-6 pb-4 flex items-center justify-between',
+                        style: { 
+                            background: 'linear-gradient(to bottom, black, rgba(0,0,0,0.9), transparent)'
+                        }
+                    },
+                        React.createElement('div', { className: 'flex items-center gap-3' },
+                            React.createElement('div', { className: 'relative' },
+                                React.createElement('div', {
+                                    className: 'w-9 h-9 rounded-full border border-zinc-800 bg-black flex items-center justify-center',
+                                    style: { boxShadow: '0 0 10px rgba(163, 230, 53, 0.2)' }
+                                }, '🚀')
+                            ),
+                            React.createElement('div', { className: 'flex flex-col' },
+                                React.createElement('span', { className: 'text-[10px] text-zinc-500 font-bold uppercase' }, 'Shark Score'),
+                                React.createElement('span', {
+                                    className: 'text-lime-400 font-mono font-bold text-lg leading-none',
+                                    style: { textShadow: '0 0 10px rgba(163, 230, 53, 0.5)' }
+                                }, sharkScore)
+                            )
+                        ),
+                        React.createElement('button', {
+                            className: 'bg-zinc-900 text-lime-400 border border-lime-400/50 rounded-full px-5 h-8 text-[10px] font-bold uppercase hover:bg-zinc-800',
+                            style: { boxShadow: '0 0 15px rgba(163, 230, 53, 0.2)' },
+                            onClick: () => alert('Install Phantom wallet extension to connect!\n\nphantom.app')
+                        }, 'CONNECT')
+                    ),
+                    
+                    // Main content
+                    React.createElement('main', { className: 'flex-1 relative flex items-center justify-center w-full h-full overflow-hidden' },
+                        isLoading ? (
+                            React.createElement('div', { className: 'flex flex-col items-center justify-center p-8 text-center z-10' },
+                                React.createElement('div', {
+                                    className: 'w-20 h-20 border-4 border-lime-400 border-t-transparent rounded-full animate-spin mb-6'
+                                }),
+                                React.createElement('h3', { className: 'text-2xl font-bold text-white mb-2' }, 'Loading Alpha...'),
+                                React.createElement('p', { className: 'text-sm text-zinc-400' }, 'Fetching live Solana tokens')
+                            )
+                        ) : error ? (
+                            React.createElement('div', { className: 'flex flex-col items-center justify-center p-8 text-center z-10' },
+                                React.createElement('div', { className: 'w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 border border-red-500/50' }, '⚠️'),
+                                React.createElement('h3', { className: 'text-2xl font-bold text-white mb-2' }, 'Error'),
+                                React.createElement('p', { className: 'text-sm text-zinc-400 mb-8' }, error),
+                                React.createElement('button', {
+                                    className: 'border border-lime-400 text-lime-400 rounded-xl px-8 py-3 hover:bg-lime-400/10',
+                                    onClick: loadTokens
+                                }, '🔄 Try Again')
+                            )
+                        ) : tokens.length > 0 ? (
+                            tokens.slice().reverse().map(token =>
+                                React.createElement(TokenCard, {
+                                    key: token.id,
+                                    token: token,
+                                    onSwipe: handleSwipe,
+                                    onRemove: removeToken
+                                })
+                            )
+                        ) : (
+                            React.createElement('div', { className: 'flex flex-col items-center justify-center p-8 text-center z-10' },
+                                React.createElement('div', { className: 'w-20 h-20 bg-zinc-900/50 rounded-full flex items-center justify-center mb-6 border border-zinc-800' }, '🚀'),
+                                React.createElement('h3', { className: 'text-2xl font-bold text-white mb-2' }, 'Feed Empty'),
+                                React.createElement('p', { className: 'text-sm text-zinc-400 mb-8' }, "You've swiped through all the alpha"),
+                                React.createElement('button', {
+                                    className: 'border border-lime-400 text-lime-400 rounded-xl px-8 py-3 hover:bg-lime-400/10',
+                                    onClick: loadTokens
+                                }, '🔄 Refresh Feed')
+                            )
+                        ),
+                        
+                        // Swipe hints
+                        !isLoading && !error && tokens.length > 0 && (
+                            React.createElement('div', {
+                                className: 'absolute bottom-[15%] w-full px-12 flex justify-between pointer-events-none z-0',
+                                style: { opacity: 0.2 }
+                            },
+                                React.createElement('div', { className: 'w-16 h-16 rounded-full border-2 border-red-500/50 flex items-center justify-center text-red-500 text-3xl' }, '✕'),
+                                React.createElement('div', { className: 'w-16 h-16 rounded-full border-2 border-lime-400/50 flex items-center justify-center text-lime-400 text-3xl' }, '🚀')
+                            )
+                        )
+                    ),
+                    
+                    // Bottom nav
+                    React.createElement('nav', {
+                        className: 'relative z-50 bg-black/95 border-t border-zinc-900/50 pb-safe'
+                    },
+                        React.createElement('div', { className: 'flex justify-around items-end px-2 py-3 pb-6' },
+                            React.createElement('button', { className: 'flex flex-col items-center gap-1.5 p-2 text-lime-400' },
+                                React.createElement('span', { style: { fontSize: '22px' } }, '🔥'),
+                                React.createElement('span', { className: 'text-[9px] font-bold uppercase' }, 'Feed')
+                            ),
+                            React.createElement('button', { className: 'flex flex-col items-center gap-1.5 p-2 text-zinc-600' },
+                                React.createElement('span', { style: { fontSize: '22px' } }, '🏆'),
+                                React.createElement('span', { className: 'text-[9px] font-bold uppercase' }, 'Top')
+                            ),
+                            React.createElement('div', { className: 'relative -top-6' },
+                                React.createElement('button', {
+                                    className: 'w-14 h-14 rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform border-[3px] border-black',
+                                    style: { 
+                                        background: 'linear-gradient(to bottom right, #a3e635, #22c55e)',
+                                        boxShadow: '0 0 25px rgba(163, 230, 53, 0.4)'
+                                    },
+                                    onClick: loadTokens
+                                }, '🔄')
+                            ),
+                            React.createElement('button', { className: 'flex flex-col items-center gap-1.5 p-2 text-zinc-600' },
+                                React.createElement('span', { style: { fontSize: '22px' } }, '⚡'),
+                                React.createElement('span', { className: 'text-[9px] font-bold uppercase' }, 'Alerts')
+                            ),
+                            React.createElement('button', { className: 'flex flex-col items-center gap-1.5 p-2 text-zinc-600' },
+                                React.createElement('span', { style: { fontSize: '22px' } }, '👤'),
+                                React.createElement('span', { className: 'text-[9px] font-bold uppercase' }, 'Profile')
+                            )
+                        )
+                    ),
+                    
+                    // Background glow
+                    React.createElement('div', {
+                        className: 'absolute top-0 left-1/2 pointer-events-none z-0',
+                        style: {
+                            width: '400px',
+                            height: '400px',
+                            background: 'radial-gradient(circle, rgba(163, 230, 53, 0.1) 0%, transparent 70%)',
+                            transform: 'translateX(-50%)',
+                            filter: 'blur(80px)'
+                        }
+                    })
+                )
+            );
+        }
+        
+        // ==================== RENDER ====================
+        
+        const root = createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
     </script>
 </body>
 </html>
