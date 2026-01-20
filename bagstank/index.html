@@ -3,189 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAGS.FM SHARK TANK</title>
+    <title>BAGS.FM ONE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Rajdhani', sans-serif; background-color: #000; color: white; overflow: hidden; }
         .font-bebas { font-family: 'Bebas Neue', sans-serif; }
-        #feed-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
-        .token-slide { height: 100vh; scroll-snap-align: start; position: relative; overflow: hidden; }
-        .glass-panel { background: rgba(12, 12, 12, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-modal { background: rgba(5, 5, 5, 0.98); }
-        ::-webkit-scrollbar { width: 0; }
+        #main-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .glass-card { background: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 50px rgba(132, 204, 22, 0.1); }
+        .scanner-line { width: 100%; height: 2px; background: #84cc16; animation: scan 2s infinite; }
+        @keyframes scan { 0% { transform: translateY(-100px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(100px); opacity: 0; } }
     </style>
 </head>
-<body class="text-white">
+<body>
 
     <div id="disclaimer-modal" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
-        <div class="max-w-lg w-full">
-            <h1 class="text-5xl font-bebas text-white mb-2">DYOR ZONE</h1>
-            <p class="text-gray-400 text-lg mb-8">Live Feed. High Risk. No Financial Advice.</p>
-            <button onclick="acceptRisk()" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl">ENTER</button>
+        <h1 class="text-6xl font-bebas text-white mb-2">SHARK TANK</h1>
+        <p class="text-gray-400 mb-8">Tracking the latest active token on Bags.fm<br>High Risk.</p>
+        <button onclick="startApp()" class="bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-3 px-12 rounded-full transition">START</button>
+    </div>
+
+    <div id="main-container">
+        <div id="loader" class="text-center">
+            <div class="mb-4 text-lime-400 font-bebas text-2xl animate-pulse">SCANNING BAGS.FM...</div>
+            <div class="w-16 h-1 bg-gray-800 rounded overflow-hidden mx-auto"><div class="scanner-line"></div></div>
+        </div>
+
+        <div id="token-card" class="hidden w-full max-w-md p-6">
+            <div class="glass-card rounded-3xl p-8 text-center relative border-t-4 border-lime-500">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-lime-500 text-black font-bold px-4 py-1 rounded-b-lg text-xs tracking-widest">
+                    LATEST SIGNAL
+                </div>
+
+                <img id="t-img" src="" class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white/10 object-cover bg-black">
+                
+                <h1 id="t-symbol" class="text-5xl font-bebas text-white mb-1"></h1>
+                <p id="t-name" class="text-gray-500 text-sm mb-6 truncate"></p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/5 rounded-xl p-3">
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">Liquidity</div>
+                        <div id="t-liq" class="text-xl font-bebas text-lime-400">-</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-3">
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">Vol 5m</div>
+                        <div id="t-vol" class="text-xl font-bebas text-white">-</div>
+                    </div>
+                </div>
+
+                <button onclick="buyToken()" id="buy-btn" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl shadow-lg mb-3 transition hover:scale-[1.02]">
+                    OPEN ↗
+                </button>
+                
+                <div class="flex gap-2">
+                    <button onclick="openAnalytics()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bebas py-3 rounded-xl transition">VERDICT</button>
+                    <button onclick="copyCA()" class="flex-1 bg-white/10 hover:bg-white/20 text-gray-400 hover:text-white font-bebas py-3 rounded-xl transition">COPY CA</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <header class="fixed top-0 w-full z-50 p-4 pointer-events-none">
-        <div class="max-w-md mx-auto flex justify-between items-center pointer-events-auto">
-            <div class="flex items-center gap-3">
-                <img src="bags-logo.png" onerror="this.src='https://placehold.co/40x40/000/FFF?text=$'" class="w-10 h-10 rounded-full border border-lime-500">
-                <h1 class="text-xl font-bebas leading-none">BAGS.FM <span class="text-lime-400">SHARK</span></h1>
-            </div>
-            <button onclick="openInfo()" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center">?</button>
-        </div>
-    </header>
-
-    <div id="feed-container">
-        <div class="h-screen flex items-center justify-center">
-            <div class="text-center">
-                <div class="animate-spin w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p class="text-lime-400 font-bebas text-xl">Loading Feed...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="analytics-modal" class="fixed inset-0 z-[60] glass-modal hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-md relative">
-            <button onclick="closeAnalytics()" class="absolute -top-12 right-0 text-white text-4xl">&times;</button>
-            <div id="analytics-content" class="bg-gray-900 border border-lime-500/30 rounded-3xl p-6"></div>
-            <div class="mt-4 flex gap-3">
-                <button onclick="buyToken()" class="flex-1 bg-lime-500 text-black font-bebas text-xl py-4 rounded-xl">BUY NOW ↗</button>
-                <button onclick="shareTweet()" class="flex-1 bg-gray-800 text-white font-bebas text-xl py-4 rounded-xl border border-gray-700">SHARE</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="info-modal" class="fixed inset-0 z-[60] bg-black/95 hidden flex items-center justify-center p-4">
-        <div class="max-w-md w-full glass-panel rounded-3xl p-8 relative">
-            <button onclick="closeInfo()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-            <h2 class="text-4xl font-bebas text-lime-400 mb-4">LOGIC</h2>
-            <ul class="text-sm text-gray-400 space-y-2 list-disc pl-5">
-                <li>Green: Holders > 300, Vol > 20k</li>
-                <li>Yellow: Holders > 150</li>
-                <li>Red: Low momentum</li>
-            </ul>
+    <div id="analytics-modal" class="fixed inset-0 z-[60] bg-black/90 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-sm glass-card rounded-3xl p-6 relative">
+            <button onclick="document.getElementById('analytics-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            <div id="analytics-content"></div>
         </div>
     </div>
 
     <script>
-        const WORKER_URL = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
-        let activeTokens = [];
-        let currentTokenIndex = 0;
-        let currentAnalysis = null;
+        const WORKER = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
+        let currentToken = null;
 
-        // INIT
-        if(localStorage.getItem('riskAccepted') === 'true') {
+        function startApp() {
             document.getElementById('disclaimer-modal').style.display = 'none';
-            fetchTokens();
+            fetchToken();
+            setInterval(fetchToken, 8000);
         }
 
-        function acceptRisk() {
-            localStorage.setItem('riskAccepted', 'true');
-            document.getElementById('disclaimer-modal').style.display = 'none';
-            fetchTokens();
-        }
-
-        async function fetchTokens() {
+        async function fetchToken() {
             try {
-                const res = await fetch(WORKER_URL);
-                const tokens = await res.json();
-                activeTokens = tokens;
-                renderFeed(tokens);
-            } catch (e) {
-                console.error(e);
-            }
+                const res = await fetch(WORKER);
+                const data = await res.json();
+                if(data.length > 0) renderToken(data[0]);
+            } catch(e) { console.error(e); }
         }
 
-        function renderFeed(tokens) {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
+        function renderToken(t) {
+            currentToken = t;
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('token-card').classList.remove('hidden');
             
-            tokens.forEach((token, index) => {
-                const ageMins = Math.floor((Date.now() - token.created) / 60000);
-                const logo = token.image || 'bags-logo.png';
-                
-                const slide = document.createElement('div');
-                slide.className = 'token-slide flex items-center justify-center p-4 snap-center';
-                slide.innerHTML = `
-                    <div class="glass-panel w-full max-w-md rounded-3xl p-6 text-center shadow-2xl">
-                        <div class="absolute top-4 right-4 bg-lime-500 text-black text-xs font-bold px-3 py-1 rounded-full">LIVE</div>
-                        <img src="${logo}" onerror="this.src='bags-logo.png'" class="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-lime-500 object-cover">
-                        <h2 class="text-5xl font-bebas text-white mb-1 truncate">${token.name}</h2>
-                        <p class="text-gray-400 mb-6 font-mono text-xs">${token.mint.slice(0,6)}...${token.mint.slice(-4)}</p>
-                        
-                        <div class="grid grid-cols-2 gap-3 mb-6">
-                            <div class="bg-black/40 rounded-xl p-3 border border-white/10">
-                                <div class="text-[10px] text-gray-500 font-bold">LIQUIDITY</div>
-                                <div class="text-2xl font-bebas text-lime-400">$${token.liquidity.toLocaleString()}</div>
-                            </div>
-                            <div class="bg-black/40 rounded-xl p-3 border border-white/10">
-                                <div class="text-[10px] text-gray-500 font-bold">HOLDERS</div>
-                                <div class="text-2xl font-bebas text-white">${token.holders}</div>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col gap-3">
-                            <button onclick="analyzeProject(${index})" class="w-full bg-gray-800 text-lime-400 border border-lime-500/50 font-bebas text-2xl py-3 rounded-xl">🦈 SHARK VERDICT</button>
-                            <button onclick="buyToken(${index})" class="w-full bg-lime-500 text-black font-bebas text-2xl py-3 rounded-xl hover:scale-105 transition">BUY NOW ↗</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(slide);
-            });
+            document.getElementById('t-img').src = t.image || 'bags-logo.png';
+            document.getElementById('t-symbol').innerText = `$${t.symbol}`;
+            document.getElementById('t-name').innerText = t.name;
+            document.getElementById('t-liq').innerText = `$${Math.floor(t.liquidity).toLocaleString()}`;
+            document.getElementById('t-vol').innerText = `$${Math.floor(t.volume5m).toLocaleString()}`;
+            
+            const btn = document.getElementById('buy-btn');
+            // Если ликвидность < 5000, значит токен только на Bags (Bonding curve)
+            // Если больше - значит вышел на Raydium -> Jupiter
+            btn.innerText = t.liquidity < 5000 ? "BUY ON BAGS ↗" : "BUY ON JUPITER ↗";
         }
 
-        function analyzeProject(index) {
-            const token = activeTokens[index];
-            currentTokenIndex = index;
-            
-            // Аналитика (Твоя формула упрощенная для надежности)
-            let score = 0;
-            if(token.holders > 300) score += 4;
-            else if(token.holders > 150) score += 2;
-            
-            if(token.volume5m > 15000) score += 3;
-            else if(token.volume5m > 5000) score += 1;
-            
-            if(token.liquidity > 20000) score += 3;
-            
-            let verdict = score >= 7 ? "STRONG IN" : (score >= 4 ? "WATCH" : "OUT");
-            let color = score >= 7 ? "text-lime-400" : (score >= 4 ? "text-yellow-400" : "text-red-500");
+        function buyToken() {
+            if(!currentToken) return;
+            const url = currentToken.liquidity < 5000 
+                ? `https://bags.fm/${currentToken.mint}`
+                : `https://jup.ag/swap/SOL-${currentToken.mint}`;
+            window.open(url, '_blank');
+        }
 
-            currentAnalysis = { verdict, score, token };
-
-            const modal = document.getElementById('analytics-modal');
-            const content = document.getElementById('analytics-content');
+        function openAnalytics() {
+            if(!currentToken) return;
+            const score = Math.min(10, Math.floor((currentToken.liquidity / 3000) + (currentToken.volume5m / 1000)));
+            const verdict = score > 7 ? "STRONG IN 🟢" : (score > 4 ? "WATCH 🟡" : "OUT 🔴");
             
-            content.innerHTML = `
-                <div class="text-center mb-6 border-b border-white/10 pb-6">
-                    <div class="text-6xl font-black mb-2 animate-pulse ${color}" style="font-family:'Bebas Neue';">${verdict}</div>
-                    <div class="text-3xl font-bold text-white">SCORE: ${score}/10</div>
+            const html = `
+                <div class="text-center border-b border-white/10 pb-4 mb-4">
+                    <h2 class="text-4xl font-bebas text-white">${verdict}</h2>
+                    <p class="text-gray-400 text-sm">Score: ${score}/10</p>
                 </div>
                 <div class="space-y-2 text-sm text-gray-400">
-                    <div class="flex justify-between"><span>Holders:</span> <span class="text-white">${token.holders}</span></div>
-                    <div class="flex justify-between"><span>Vol 5m:</span> <span class="text-white">$${token.volume5m}</span></div>
+                    <p>Analysis based on Volume & Liquidity.</p>
+                    <div class="flex justify-between"><span class="text-white">Market Cap:</span> $${Math.floor(currentToken.marketCap)}</div>
                 </div>
             `;
-            modal.classList.remove('hidden');
+            document.getElementById('analytics-content').innerHTML = html;
+            document.getElementById('analytics-modal').classList.remove('hidden');
         }
 
-        function buyToken(index) {
-            const idx = index !== undefined ? index : currentTokenIndex;
-            const token = activeTokens[idx];
-            // Прямая ссылка на Jupiter
-            window.open(`https://jup.ag/swap/SOL-${token.mint}`, '_blank');
-        }
-
-        function closeAnalytics() { document.getElementById('analytics-modal').classList.add('hidden'); }
-        function openInfo() { document.getElementById('info-modal').classList.remove('hidden'); }
-        function closeInfo() { document.getElementById('info-modal').classList.add('hidden'); }
-
-        function shareTweet() {
-            if(!currentAnalysis) return;
-            const text = `${currentAnalysis.verdict} on $${currentAnalysis.token.name} 🦈 Score: ${currentAnalysis.score}/10. via @bagsfm @athcamera`;
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        function copyCA() {
+            if(currentToken) {
+                navigator.clipboard.writeText(currentToken.mint);
+                alert("CA Copied!");
+            }
         }
     </script>
 </body>
