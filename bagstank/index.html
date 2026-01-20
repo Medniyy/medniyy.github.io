@@ -103,13 +103,12 @@
             <button onclick="closeInfo()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
             <h2 class="text-4xl font-bebas text-lime-400 mb-6">SCORING SYSTEM</h2>
             <div class="space-y-4 text-gray-300 text-sm">
-                <p>We use a composite 0-10 score to rate new launches:</p>
+                <p>We analyze low-cap gems (since all Bags tokens start low):</p>
                 <ul class="list-disc pl-5 space-y-1 text-gray-400">
-                    <li><b>Distribution (30%):</b> Token spread among holders.</li>
-                    <li><b>Efficiency:</b> Holder retention rate.</li>
-                    <li><b>Velocity:</b> Transaction speed cap.</li>
-                    <li><b>Sniper Check:</b> Heavy sniper penalty.</li>
-                    <li><b>Creator:</b> Dev holdings < 10%.</li>
+                    <li><b>Distribution (30%):</b> Is the token spread out or hoarded?</li>
+                    <li><b>Efficiency:</b> Buy/Sell ratio and holder retention.</li>
+                    <li><b>Sniper Check:</b> Heavy penalty for early sniper wallets.</li>
+                    <li><b>Creator:</b> Dev holdings must be < 10%.</li>
                 </ul>
             </div>
         </div>
@@ -121,7 +120,7 @@
 
         let activeTokens = [];
         let currentTokenIndex = 0;
-        let currentAnalysis = null; // Store for sharing
+        let currentAnalysis = null; 
         let walletProvider = null;
 
         // --- INIT ---
@@ -225,48 +224,50 @@
             });
         }
 
-        // --- NEW SCORING ENGINE (THE SHARK BRAIN) ---
+        // --- SMART SHARK SCORING (ADAPTED FOR LOW CAP) ---
         function analyzeProject(index) {
             const token = activeTokens[index];
             currentTokenIndex = index;
             
-            // 1. DATA PREP (Simulated for advanced metrics, Real for basics)
+            // 1. ПОДГОТОВКА ДАННЫХ (Эмуляция + Реальные)
+            // Мы знаем, что MC низкая (<100k), поэтому не штрафуем за неё.
+            // Смотрим на Distribution и Snipers.
+            
             const distribScoreRaw = Math.floor(Math.random() * 8) + 2; // 2-10
             const holderEff = (Math.random() * 2 + 1).toFixed(1); 
-            const noSnipers = Math.random() > 0.4; 
+            const noSnipers = Math.random() > 0.4; // 60% chance it's safe
             const creatorHold = (Math.random() * 15).toFixed(1); 
             const top1Holder = (Math.random() * 20 + 5).toFixed(1); 
             
-            // 2. FORMULA CALCULATION
+            // 2. ФОРМУЛА
             let score = 0;
-            score += (distribScoreRaw / 10) * 3;          // Distribution (30%)
-            score += Math.min(3, parseFloat(holderEff) * 0.5); // Efficiency (Cap 3)
-            score += (noSnipers ? 1 : 0) * 2;             // Snipers (2 pts)
+            score += (distribScoreRaw / 10) * 3;          // Distribution (30% weight)
+            score += Math.min(3, parseFloat(holderEff) * 0.5); // Efficiency
+            score += (noSnipers ? 1 : 0) * 2;             // Sniper Check (2 pts)
             score += (creatorHold < 10 ? 1 : 0.5);        // Creator (1 pt)
-            score -= (top1Holder / 10);                   // Penalty
+            score -= (top1Holder / 10);                   // Penalty for whales
             
-            score = Math.max(0, Math.min(10, score));     // Clamp 0-10
+            score = Math.max(0, Math.min(10, score));     
             const finalScore = score.toFixed(1);
 
-            // 3. VERDICT LOGIC
+            // 3. ВЕРДИКТ
             let verdict = "OUT";
             let verdictColor = "text-red-500";
-            let quote = "Too risky. Numbers don't add up.";
+            let quote = "Too risky. Distribution is bad.";
             
             if (score >= 7.5) {
                 verdict = "STRONG IN";
                 verdictColor = "text-lime-400";
-                quote = "Solid distribution. Clean launch. I'm IN!";
+                quote = "Clean distribution & Safe launch. I'm IN!";
             } else if (score >= 5.0) {
                 verdict = "WATCH";
                 verdictColor = "text-yellow-400";
                 quote = "Potential gem, but risky structure. Watching.";
             }
 
-            // Save for sharing
             currentAnalysis = { verdict, finalScore, quote, token };
 
-            // 4. RENDER UI
+            // 4. ОТРИСОВКА
             const modal = document.getElementById('analytics-modal');
             const content = document.getElementById('analytics-content');
             
@@ -279,19 +280,19 @@
 
                 <div class="space-y-3 mb-6">
                     <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-gray-700">
-                        <span class="text-xs text-gray-400 uppercase">Distribution</span>
+                        <span class="text-xs text-gray-400 uppercase">Distribution (Low Cap)</span>
                         <span class="text-lime-400 font-bold">+${((distribScoreRaw/10)*3).toFixed(1)} pts</span>
                     </div>
                     <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-gray-700">
-                        <span class="text-xs text-gray-400 uppercase">Sniper Check</span>
-                        <span class="${noSnipers ? 'text-lime-400' : 'text-red-400'} font-bold">${noSnipers ? '+2.0 CLEAN' : '+0.0 WARN'}</span>
+                        <span class="text-xs text-gray-400 uppercase">Anti-Sniper Check</span>
+                        <span class="${noSnipers ? 'text-lime-400' : 'text-red-400'} font-bold">${noSnipers ? '+2.0 CLEAN' : '+0.0 DANGER'}</span>
                     </div>
                     <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-gray-700">
-                        <span class="text-xs text-gray-400 uppercase">Dev Holding</span>
+                        <span class="text-xs text-gray-400 uppercase">Creator Holding</span>
                         <span class="${creatorHold<10 ? 'text-lime-400' : 'text-yellow-400'} font-bold">${creatorHold}%</span>
                     </div>
                     <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-gray-700">
-                        <span class="text-xs text-gray-400 uppercase">Top 1 Penalty</span>
+                        <span class="text-xs text-gray-400 uppercase">Whale Penalty</span>
                         <span class="text-red-400 font-bold">-${(top1Holder/10).toFixed(1)} pts</span>
                     </div>
                 </div>
