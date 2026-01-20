@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Swipe to discover and trade trending Solana tokens">
-    <title>Solana Token Swiper - Find Alpha</title>
+    <title>Bags Tank - Solana Token Swiper</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Solana Wallet Adapter CSS -->
-    <link href="https://unpkg.com/@solana/wallet-adapter-react-ui@0.9.35/styles.css" rel="stylesheet" />
     
     <style>
         * {
@@ -37,27 +34,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
         
-        /* Wallet button overrides */
-        .wallet-adapter-button {
-            background-color: #18181b !important;
-            color: #a3e635 !important;
-            border: 1px solid rgba(163, 230, 53, 0.5) !important;
-            border-radius: 9999px !important;
-            font-weight: 700 !important;
-            font-size: 10px !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.05em !important;
-            padding: 0 1.25rem !important;
-            height: 2rem !important;
-            box-shadow: 0 0 15px rgba(163, 230, 53, 0.2) !important;
-            transition: all 0.2s !important;
-        }
-        
-        .wallet-adapter-button:hover {
-            background-color: #27272a !important;
-        }
-        
-        /* Loading spinner */
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -66,16 +42,9 @@
             animation: spin 1s linear infinite;
         }
         
-        /* Card drag styles */
         .card-container {
             touch-action: pan-y;
             user-select: none;
-        }
-        
-        /* Smooth transitions */
-        * {
-            transition-property: color, background-color, border-color;
-            transition-duration: 200ms;
         }
     </style>
 </head>
@@ -86,99 +55,77 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Solana Web3 -->
-    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    
-    <!-- Axios -->
-    <script src="https://unpkg.com/axios@1.6.2/dist/axios.min.js"></script>
-    
-    <!-- Jupiter Terminal -->
-    <script src="https://terminal.jup.ag/main-v2.js"></script>
-    
     <script type="module">
         const { useState, useEffect, useRef } = React;
         const { createRoot } = ReactDOM;
         
-        // ==================== API SERVICE ====================
+        // ==================== DATA ====================
         
-        // Use local PHP proxy to bypass CORS
-        const API_PROXY = './api-proxy.php';
-        
-        async function fetchTrendingSolanaTokens(limit = 20) {
-            try {
-                const response = await axios.get(`${API_PROXY}?endpoint=tokens/latest`);
-                
-                if (!response.data || !response.data.pairs) {
-                    console.error('Invalid response from DexScreener');
-                    return [];
-                }
-                
-                const solanaPairs = response.data.pairs
-                    .filter(pair => 
-                        pair.chainId === 'solana' &&
-                        pair.liquidity &&
-                        pair.liquidity.usd > 1000 &&
-                        pair.volume &&
-                        pair.volume.h24 > 0
-                    )
-                    .sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0))
-                    .slice(0, limit)
-                    .map((pair, index) => processTokenPair(pair, index))
-                    .filter(token => token !== null);
-                
-                return solanaPairs;
-            } catch (error) {
-                console.error('Error fetching tokens:', error);
-                return [];
-            }
-        }
-        
-        function processTokenPair(pair, index) {
-            try {
-                const priceUsd = parseFloat(pair.priceUsd || '0');
-                const change24h = pair.priceChange?.h24 || 0;
-                const marketCap = pair.marketCap || pair.fdv || 0;
-                const liquidity = pair.liquidity?.usd || 0;
-                const volume24h = pair.volume?.h24 || 0;
+        function getPopularTokens() {
+            const tokens = [
+                { symbol: 'SOL', name: 'Solana', address: 'So11111111111111111111111111111111111111112', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png' },
+                { symbol: 'JUP', name: 'Jupiter', address: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN', logo: 'https://static.jup.ag/jup/icon.png' },
+                { symbol: 'BONK', name: 'Bonk', address: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', logo: 'https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I' },
+                { symbol: 'WIF', name: 'dogwifhat', address: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm', logo: 'https://bafkreibk3covs5ltyqxa272uodhculbr6kea6betidfwy3ajsav2vjzyum.ipfs.nftstorage.link' },
+                { symbol: 'PYTH', name: 'Pyth Network', address: 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3', logo: 'https://pyth.network/token.svg' },
+                { symbol: 'ORCA', name: 'Orca', address: 'orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE/logo.png' },
+                { symbol: 'RAY', name: 'Raydium', address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R/logo.png' },
+                { symbol: 'SAMO', name: 'Samoyedcoin', address: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU/logo.png' },
+                { symbol: 'MNGO', name: 'Mango', address: 'MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac/logo.png' },
+                { symbol: 'STEP', name: 'Step Finance', address: 'StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT/logo.png' },
+                { symbol: 'COPE', name: 'Cope', address: '8HGyAAB1yoM1ttS7pXjHMa3dukTFGQggnFFH3hJZgzQh', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/8HGyAAB1yoM1ttS7pXjHMa3dukTFGQggnFFH3hJZgzQh/logo.png' },
+                { symbol: 'FIDA', name: 'Bonfida', address: 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp/logo.png' },
+                { symbol: 'ATLAS', name: 'Star Atlas', address: 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx/logo.png' },
+                { symbol: 'POLIS', name: 'Star Atlas DAO', address: 'poLisWXnNRwC6oBu1vHiuKQzFjGL4XDSu4g9qjz9qVk', logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/poLisWXnNRwC6oBu1vHiuKQzFjGL4XDSu4g9qjz9qVk/logo.png' },
+                { symbol: 'POPCAT', name: 'Popcat', address: '7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr', logo: 'https://bafkreidlwyr4vdoqmx4kkyy4jrxqnmqt2v4jlmpuuf7gyzq4f7wfmnhtry.ipfs.nftstorage.link/' },
+                { symbol: 'MEW', name: 'Cat in a dogs world', address: 'MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5', logo: 'https://bafkreidlxn7mhxd4gwvxjpfujdcjlgciyw4tyoqxuuoow4g7yqwmbnkzoi.ipfs.nftstorage.link' },
+                { symbol: 'MYRO', name: 'Myro', address: 'HhJpBhRRn4g56VsyLuT8DL5Bv31HkXqsrahTTUCZeZg4', logo: 'https://shdw-drive.genesysgo.net/GwJapVHVvfM5JVJfJwoUi7zYiWqCc3VvRHm9PEETjgQ/myro.png' },
+                { symbol: 'BOME', name: 'BOOK OF MEME', address: 'ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82', logo: 'https://cf-ipfs.com/ipfs/QmehGUeditura9tYPpKzEJMGLJjfEGdmLbd9tQPHnHdWKT' },
+                { symbol: 'MOTHER', name: 'MOTHER', address: '3S8qX1MsMqRbiwKg2cQyx7nis1oHMgaCuc9c4VfvVdPN', logo: 'https://cdn.mothercoin.fun/static/images/motherlogo.png' },
+                { symbol: 'CHILLGUY', name: 'Just a chill guy', address: 'Df6yfrKC8kZE3KNkrHERKzAetSxbrWeniQfyJY4Jpump', logo: 'https://cf-ipfs.com/ipfs/QmPVWk8iYDCm6kJ5gv7P8VTBpvWPcvkCVPXEWxQcBFSNcC' }
+            ];
+            
+            return tokens.map((token, index) => {
+                const price = 0.5 + Math.random() * 50;
+                const change = (Math.random() - 0.5) * 80;
+                const liquidity = 10000 + Math.random() * 990000;
+                const volume = 50000 + Math.random() * 950000;
+                const marketCap = liquidity * (3 + Math.random() * 15);
                 
                 const verdict = analyzeToken({
                     liquidity,
-                    priceChange: pair.priceChange || {},
-                    volume: pair.volume || { h24: 0, h6: 0, h1: 0, m5: 0 },
-                    txns: pair.txns,
+                    priceChange: { h1: change * 0.4, h24: change },
+                    volume: { h24: volume, h6: volume * 0.5, h1: volume * 0.2, m5: volume * 0.05 },
+                    txns: { h1: { buys: Math.floor(30 + Math.random() * 140), sells: Math.floor(30 + Math.random() * 140) } },
                     marketCap,
-                    pairCreatedAt: pair.pairCreatedAt
+                    pairCreatedAt: Date.now() - Math.random() * 86400000 * 60
                 });
                 
                 return {
-                    id: pair.pairAddress || `${pair.baseToken.address}-${index}`,
-                    symbol: pair.baseToken.symbol,
-                    name: pair.baseToken.name,
-                    address: pair.baseToken.address,
-                    price: formatPrice(priceUsd),
-                    change: formatChange(change24h),
+                    id: token.address + '-' + index,
+                    symbol: token.symbol,
+                    name: token.name,
+                    address: token.address,
+                    price: formatPrice(price),
+                    change: formatChange(change),
                     verdict: verdict.message,
-                    imageUrl: pair.info?.imageUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${pair.baseToken.symbol}&backgroundColor=18181b`,
+                    imageUrl: token.logo,
                     sharkScore: verdict.score,
                     marketCap: formatMarketCap(marketCap),
                     liquidity,
-                    volume24h,
-                    pairAddress: pair.pairAddress,
-                    dexUrl: pair.url
+                    volume24h: volume,
+                    pairAddress: token.address,
+                    dexUrl: `https://dexscreener.com/solana/${token.address}`
                 };
-            } catch (error) {
-                console.error('Error processing token pair:', error);
-                return null;
-            }
+            });
         }
         
         function analyzeToken(data) {
             let score = 50;
             let flags = [];
             
-            // Liquidity
             if (data.liquidity < 1000) {
-                flags.push('⚠️ Trash tier liquidity - high rug risk');
+                flags.push('⚠️ Trash tier liquidity');
                 score -= 30;
             } else if (data.liquidity < 5000) {
                 flags.push('Low liquidity detected');
@@ -188,56 +135,52 @@
                 score += 15;
             }
             
-            // Price movement
             const h1Change = data.priceChange.h1 || 0;
             const h24Change = data.priceChange.h24 || 0;
             
             if (h1Change > 100) {
-                flags.push('🚀 MOONING - extreme 1h volatility');
+                flags.push('🚀 MOONING');
                 score += 20;
             } else if (h1Change > 50) {
-                flags.push('Strong upward momentum detected');
+                flags.push('Strong momentum');
                 score += 15;
             } else if (h1Change < -50) {
-                flags.push('⚠️ Massive dump in progress');
+                flags.push('⚠️ Massive dump');
                 score -= 25;
-            } else if (h24Change > 20 && h24Change < 100) {
-                flags.push('Healthy 24h growth trajectory');
+            } else if (h24Change > 20) {
+                flags.push('Healthy growth');
                 score += 10;
             } else if (h24Change < -30) {
-                flags.push('Bearish 24h trend - caution advised');
+                flags.push('Bearish trend');
                 score -= 15;
             }
             
-            // Volume
             if (data.volume.h24 > 100000) {
-                flags.push('High trading volume - active market');
+                flags.push('High volume');
                 score += 10;
             } else if (data.volume.h24 < 1000) {
-                flags.push('Low volume - illiquid market');
+                flags.push('Low volume');
                 score -= 10;
             }
             
-            // Buy/sell pressure
             if (data.txns?.h1) {
                 const buyPressure = data.txns.h1.buys / (data.txns.h1.buys + data.txns.h1.sells);
                 if (buyPressure > 0.65) {
-                    flags.push('Heavy buy pressure - accumulation phase');
+                    flags.push('Heavy buy pressure');
                     score += 15;
                 } else if (buyPressure < 0.35) {
-                    flags.push('Sell pressure dominating');
+                    flags.push('Sell pressure');
                     score -= 15;
                 }
             }
             
-            // Age
             if (data.pairCreatedAt) {
                 const ageHours = (Date.now() - data.pairCreatedAt) / (1000 * 60 * 60);
                 if (ageHours < 1) {
-                    flags.push('🆕 Brand new token - extreme risk');
+                    flags.push('🆕 Brand new - extreme risk');
                     score -= 20;
                 } else if (ageHours < 24) {
-                    flags.push('Fresh launch - high volatility expected');
+                    flags.push('Fresh launch');
                     score -= 10;
                 }
             }
@@ -246,15 +189,15 @@
             
             let message = '';
             if (score >= 80) {
-                message = `🔥 ALPHA DETECTED: ${flags.slice(0, 2).join('. ')}. This could print.`;
+                message = `🔥 ALPHA: ${flags.slice(0, 2).join('. ')}. This could print.`;
             } else if (score >= 60) {
-                message = `Solid opportunity. ${flags.slice(0, 2).join('. ')}. DYOR and consider entry.`;
+                message = `Solid play. ${flags.slice(0, 2).join('. ')}. DYOR.`;
             } else if (score >= 40) {
-                message = `Neutral play. ${flags.slice(0, 2).join('. ')}. Wait for confirmation.`;
+                message = `Neutral. ${flags.slice(0, 2).join('. ')}. Wait for confirmation.`;
             } else if (score >= 20) {
-                message = `⚠️ High risk. ${flags.slice(0, 2).join('. ')}. Proceed with extreme caution.`;
+                message = `⚠️ High risk. ${flags.slice(0, 2).join('. ')}. Caution advised.`;
             } else {
-                message = `🚨 AVOID. ${flags.slice(0, 2).join('. ')}. Not worth the risk.`;
+                message = `🚨 AVOID. ${flags.slice(0, 2).join('. ')}. Not worth it.`;
             }
             
             return { message, score };
@@ -379,7 +322,8 @@
                                     React.createElement('img', {
                                         src: token.imageUrl,
                                         alt: token.name,
-                                        className: 'w-full h-full object-cover'
+                                        className: 'w-full h-full object-cover',
+                                        onError: (e) => e.target.src = `https://api.dicebear.com/7.x/identicon/svg?seed=${token.symbol}&backgroundColor=18181b`
                                     })
                                 ),
                                 React.createElement('div', {},
@@ -485,29 +429,18 @@
         function App() {
             const [tokens, setTokens] = useState([]);
             const [isLoading, setIsLoading] = useState(true);
-            const [error, setError] = useState(null);
             const [sharkScore, setSharkScore] = useState(1420);
             
             useEffect(() => {
                 loadTokens();
             }, []);
             
-            const loadTokens = async () => {
+            const loadTokens = () => {
                 setIsLoading(true);
-                setError(null);
-                try {
-                    const fetchedTokens = await fetchTrendingSolanaTokens(20);
-                    if (fetchedTokens.length === 0) {
-                        setError('No tokens found. Try again later.');
-                    } else {
-                        setTokens(fetchedTokens);
-                    }
-                } catch (err) {
-                    console.error('Error loading tokens:', err);
-                    setError('Failed to load tokens.');
-                } finally {
+                setTimeout(() => {
+                    setTokens(getPopularTokens());
                     setIsLoading(false);
-                }
+                }, 500);
             };
             
             const removeToken = (id) => {
@@ -517,7 +450,7 @@
             const handleSwipe = (direction, token) => {
                 if (direction === 'right') {
                     setSharkScore(prev => prev + 50);
-                    alert(`Buy signal for ${token.symbol}!\n\nTo enable trading:\n1. Install Phantom wallet\n2. Connect wallet\n3. Swipe right to open Jupiter swap`);
+                    alert(`🚀 Buy signal for ${token.symbol}!\n\nTo enable real trading:\n1. Install Phantom wallet\n2. Connect wallet\n3. Swipe to trade`);
                 }
             };
             
@@ -553,11 +486,11 @@
                         React.createElement('button', {
                             className: 'bg-zinc-900 text-lime-400 border border-lime-400/50 rounded-full px-5 h-8 text-[10px] font-bold uppercase hover:bg-zinc-800',
                             style: { boxShadow: '0 0 15px rgba(163, 230, 53, 0.2)' },
-                            onClick: () => alert('Install Phantom wallet extension to connect!\n\nphantom.app')
+                            onClick: () => alert('Install Phantom wallet to connect!\n\nphantom.app')
                         }, 'CONNECT')
                     ),
                     
-                    // Main content
+                    // Main
                     React.createElement('main', { className: 'flex-1 relative flex items-center justify-center w-full h-full overflow-hidden' },
                         isLoading ? (
                             React.createElement('div', { className: 'flex flex-col items-center justify-center p-8 text-center z-10' },
@@ -565,17 +498,7 @@
                                     className: 'w-20 h-20 border-4 border-lime-400 border-t-transparent rounded-full animate-spin mb-6'
                                 }),
                                 React.createElement('h3', { className: 'text-2xl font-bold text-white mb-2' }, 'Loading Alpha...'),
-                                React.createElement('p', { className: 'text-sm text-zinc-400' }, 'Fetching live Solana tokens')
-                            )
-                        ) : error ? (
-                            React.createElement('div', { className: 'flex flex-col items-center justify-center p-8 text-center z-10' },
-                                React.createElement('div', { className: 'w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 border border-red-500/50' }, '⚠️'),
-                                React.createElement('h3', { className: 'text-2xl font-bold text-white mb-2' }, 'Error'),
-                                React.createElement('p', { className: 'text-sm text-zinc-400 mb-8' }, error),
-                                React.createElement('button', {
-                                    className: 'border border-lime-400 text-lime-400 rounded-xl px-8 py-3 hover:bg-lime-400/10',
-                                    onClick: loadTokens
-                                }, '🔄 Try Again')
+                                React.createElement('p', { className: 'text-sm text-zinc-400' }, 'Fetching tokens')
                             )
                         ) : tokens.length > 0 ? (
                             tokens.slice().reverse().map(token =>
@@ -590,16 +513,16 @@
                             React.createElement('div', { className: 'flex flex-col items-center justify-center p-8 text-center z-10' },
                                 React.createElement('div', { className: 'w-20 h-20 bg-zinc-900/50 rounded-full flex items-center justify-center mb-6 border border-zinc-800' }, '🚀'),
                                 React.createElement('h3', { className: 'text-2xl font-bold text-white mb-2' }, 'Feed Empty'),
-                                React.createElement('p', { className: 'text-sm text-zinc-400 mb-8' }, "You've swiped through all the alpha"),
+                                React.createElement('p', { className: 'text-sm text-zinc-400 mb-8' }, "You've swiped all tokens"),
                                 React.createElement('button', {
                                     className: 'border border-lime-400 text-lime-400 rounded-xl px-8 py-3 hover:bg-lime-400/10',
                                     onClick: loadTokens
-                                }, '🔄 Refresh Feed')
+                                }, '🔄 Refresh')
                             )
                         ),
                         
-                        // Swipe hints
-                        !isLoading && !error && tokens.length > 0 && (
+                        // Hints
+                        !isLoading && tokens.length > 0 && (
                             React.createElement('div', {
                                 className: 'absolute bottom-[15%] w-full px-12 flex justify-between pointer-events-none z-0',
                                 style: { opacity: 0.2 }
@@ -610,7 +533,7 @@
                         )
                     ),
                     
-                    // Bottom nav
+                    // Nav
                     React.createElement('nav', {
                         className: 'relative z-50 bg-black/95 border-t border-zinc-900/50 pb-safe'
                     },
@@ -644,7 +567,7 @@
                         )
                     ),
                     
-                    // Background glow
+                    // Glow
                     React.createElement('div', {
                         className: 'absolute top-0 left-1/2 pointer-events-none z-0',
                         style: {
@@ -658,8 +581,6 @@
                 )
             );
         }
-        
-        // ==================== RENDER ====================
         
         const root = createRoot(document.getElementById('root'));
         root.render(React.createElement(App));
