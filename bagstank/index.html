@@ -1,248 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BAGS.FM Shark Tank by ATH</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="bg-gradient-to-br from-black via-gray-900 to-black min-h-screen">
-  
-  <div class="fixed inset-0 opacity-40 pointer-events-none">
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-green-500 to-cyan-400 rounded-full filter blur-3xl animate-pulse"></div>
-    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-cyan-400 to-lime-400 rounded-full filter blur-3xl animate-pulse delay"></div>
-  </div>
-
-  <div class="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
-    
-    <div class="text-center mb-12 sm:mb-16 animate-fade-in">
-      
-      <div class="absolute top-4 right-4">
-        <button id="wallet-btn" class="flex items-center gap-2 bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-500 hover:to-green-600 text-black font-bold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg shadow-lime-400/50">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-          <span id="wallet-text">Connect Wallet</span>
-        </button>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAGS.FM SHARK TANK | Powered by ATH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Rajdhani', sans-serif; background-color: #050505; color: white; }
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
         
-        <div id="wallet-selector" class="hidden absolute top-14 right-0 bg-gray-900 border border-lime-400 rounded-xl p-4 shadow-2xl z-50 min-w-[280px]">
-          <h3 class="text-white font-bold mb-3 text-center">Select Wallet</h3>
-          
-          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="phantom">
-            <img src="https://phantom.app/img/phantom-icon-purple.png" alt="Phantom" class="w-8 h-8 rounded-lg">
-            <span class="text-white font-semibold">Phantom</span>
-          </button>
-          
-          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="solflare">
-            <svg class="w-8 h-8" viewBox="0 0 512 512" fill="none"><circle cx="256" cy="256" r="256" fill="url(#solflare)"/><path d="M391.7 188.5c-3.1-5.7-9.1-9.2-15.6-9.2H135.9c-5.4 0-10.4 2.4-13.8 6.5-3.4 4.1-4.7 9.5-3.6 14.7l26.5 124.1c1.6 7.5 8.2 12.9 15.9 12.9h240.2c5.4 0 10.4-2.4 13.8-6.5 3.4-4.1 4.7-9.5 3.6-14.7l-26.8-127.8z" fill="#FC853D"/><defs><linearGradient id="solflare" x1="0" y1="0" x2="512" y2="512"><stop stop-color="#FC853D"/><stop offset="1" stop-color="#F45532"/></linearGradient></defs></svg>
-            <span class="text-white font-semibold">Solflare</span>
-          </button>
-          
-          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="backpack">
-            <svg class="w-8 h-8" viewBox="0 0 200 200" fill="none"><rect width="200" height="200" rx="40" fill="url(#backpack)"/><path d="M150 75c0-27.6-22.4-50-50-50S50 47.4 50 75v50h100V75z" fill="#fff"/><defs><linearGradient id="backpack" x1="0" y1="0" x2="200" y2="200"><stop stop-color="#E33E3F"/><stop offset="1" stop-color="#C13584"/></linearGradient></defs></svg>
-            <span class="text-white font-semibold">Backpack</span>
-          </button>
-          
-          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors" data-wallet="jupiter">
-            <svg class="w-8 h-8" viewBox="0 0 256 256" fill="none"><rect width="256" height="256" rx="50" fill="#FCC00A"/><circle cx="128" cy="128" r="80" fill="#000"/><circle cx="128" cy="128" r="50" fill="#FCC00A"/></svg>
-            <span class="text-white font-semibold">Jupiter Wallet</span>
-          </button>
-        </div>
-      </div>
-      
-      <div class="mb-6 flex justify-center">
-        <div class="relative group">
-          <div class="absolute inset-0 bg-gradient-to-r from-lime-400 via-green-500 to-lime-400 rounded-full blur-2xl opacity-50 group-hover:opacity-75 transition-opacity scale-110"></div>
-          <div class="relative bg-black rounded-full p-2 border-2 border-lime-400/30 group-hover:border-lime-400 transition-all overflow-hidden">
-            <img src="bags-logo.png" alt="bags.fm" class="w-20 h-20 sm:w-24 sm:h-24 animate-float object-cover rounded-full">
-          </div>
-        </div>
-      </div>
-      
-      <div class="flex justify-center mb-4">
-        <div class="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-lime-400 via-green-500 to-lime-400 px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow-2xl shadow-lime-500/50">
-          <span class="text-2xl sm:text-3xl">⚡</span>
-          <h1 class="text-3xl sm:text-4xl font-black text-black tracking-tight" style="font-family: 'Bebas Neue';">BAGS.FM SHARK TANK</h1>
-          <span class="text-2xl sm:text-3xl">⚡</span>
-        </div>
-      </div>
-      
-      <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="inline-block group">
-        <p class="text-lg sm:text-xl font-light" style="font-family: 'Rajdhani';">
-          <span class="text-gray-500">Powered by</span>
-          <span class="text-lime-400 font-bold group-hover:text-green-400 transition-colors"> ATH</span>
-        </p>
-      </a>
-      
-      <p class="text-sm text-gray-400 mt-2"><span id="status-text">Loading latest tokens...</span></p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12" id="projects-grid">
-      <div class="col-span-full text-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-4 border-lime-400 border-t-transparent mx-auto mb-4"></div>
-        <p class="text-gray-400">Fetching tokens from Solana...</p>
-      </div>
-    </div>
-
-    <div id="analysis-panel" class="hidden bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-2xl border-2 border-cyan-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-cyan-500/30 animate-slide-up">
-      <div class="flex items-center justify-between mb-6 sm:mb-8 flex-wrap gap-4">
-        <h2 class="text-2xl sm:text-3xl font-black text-white" style="font-family: 'Bebas Neue';">SHARK TANK VERDICT</h2>
-        <div class="flex gap-2">
-          <button id="buy-btn" class="flex items-center gap-2 bg-gradient-to-r from-green-500 to-lime-400 hover:from-green-600 hover:to-lime-500 text-black font-bold px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 hover:scale-105 shadow-lg shadow-green-400/50" style="font-family: 'Rajdhani';">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            <span>Buy</span>
-          </button>
-          <button id="twitter-share-btn" class="flex items-center gap-2 bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-500 hover:to-green-600 text-black font-bold px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 hover:scale-105 shadow-lg shadow-lime-400/50" style="font-family: 'Rajdhani';">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            <span>Tweet</span>
-          </button>
-        </div>
-      </div>
-      <div id="verdict-content"></div>
-      <div id="screenshot-watermark" class="hidden text-center mt-6 pt-6 border-t border-cyan-500/30">
-        <p class="text-lg font-light" style="font-family: 'Rajdhani';"><span class="text-gray-500">Powered by</span><span class="text-lime-400 font-bold"> ATH</span></p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let wallet=null,currentProject=null,currentAnalysis=null;
-    const API_ENDPOINT='https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
-    
-    document.getElementById('wallet-btn').addEventListener('click',()=>document.getElementById('wallet-selector').classList.toggle('hidden'));
-    
-    document.querySelectorAll('.wallet-option').forEach(btn=>{
-      btn.addEventListener('click',async()=>{
-        const type=btn.dataset.wallet;
-        try{
-          let provider;
-          if(type==='phantom'&&window.solana?.isPhantom)provider=window.solana;
-          else if(type==='solflare'&&window.solflare)provider=window.solflare;
-          else if(type==='backpack'&&window.backpack)provider=window.backpack;
-          else if(type==='jupiter'&&window.jupiter?.isJupiter)provider=window.jupiter;
-          else{
-            const walletName=type.charAt(0).toUpperCase()+type.slice(1);
-            alert(`${walletName} wallet not installed. Install from:\n\nPhantom: phantom.app\nSolflare: solflare.com\nBackpack: backpack.app\nJupiter: jup.ag/wallet`);
-            return;
-          }
-          const resp=await provider.connect();
-          wallet={publicKey:resp.publicKey.toString(),provider:provider,type:type};
-          document.getElementById('wallet-text').textContent=wallet.publicKey.slice(0,4)+'...'+wallet.publicKey.slice(-4);
-          document.getElementById('wallet-selector').classList.add('hidden');
-          
-          const msg=document.createElement('div');
-          msg.className='fixed top-4 left-1/2 transform -translate-x-1/2 bg-lime-400 text-black px-6 py-3 rounded-full font-bold shadow-2xl z-50 animate-fade-in';
-          msg.textContent=`✅ ${type.charAt(0).toUpperCase()+type.slice(1)} connected`;
-          document.body.appendChild(msg);
-          setTimeout(()=>msg.remove(),3000);
-        }catch(e){
-          console.error(e);
-          alert('Failed to connect wallet. Make sure you approved the connection.');
+        /* Виральные анимации */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(132, 204, 22, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(132, 204, 22, 0.6); }
         }
-      });
-    });
-    
-    async function fetchTokens(){
-      try{
-        const response=await fetch(API_ENDPOINT);
-        if(!response.ok)throw new Error('API error');
-        const tokens=await response.json();
-        if(tokens.length===0){
-          document.getElementById('projects-grid').innerHTML='<div class="col-span-full text-center py-12"><p class="text-gray-400 text-lg">No active tokens found. Check back soon!</p></div>';
-          document.getElementById('status-text').textContent='No active launches right now';
-          return;
+        .animate-glow { animation: pulse-glow 2s infinite; }
+        
+        .glass-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s, border-color 0.2s;
         }
-        renderProjects(tokens);
-        document.getElementById('status-text').textContent=`${tokens.length} live tokens`;
-      }catch(e){
-        console.error(e);
-        document.getElementById('status-text').textContent='Connected to Worker API';
-        setTimeout(fetchTokens,2000);
-      }
-    }
-    
-    function renderProjects(projects){
-      const grid=document.getElementById('projects-grid');
-      grid.innerHTML='';
-      projects.forEach((p,i)=>{
-        const card=document.createElement('div');
-        card.className='group relative bg-gradient-to-br from-gray-900/80 to-black/60 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-4 sm:p-6 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-lime-400/50 hover:border-lime-400 animate-fade-in';
-        card.style.animationDelay=`${i*100}ms`;
-        card.innerHTML=`<div class="absolute top-3 sm:top-4 right-3 sm:right-4"><span class="px-2 sm:px-3 py-1 bg-lime-400/20 border border-lime-400/50 text-lime-300 text-xs font-bold rounded-full animate-pulse">LIVE</span></div><div class="mb-3 sm:mb-4 pr-16"><h3 class="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2" style="font-family:'Bebas Neue';">$${p.name}</h3><p class="text-xs text-cyan-400 font-mono break-all">${p.mint.slice(0,15)}...</p></div><div class="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4"><div class="bg-black/30 rounded-lg p-2 sm:p-3 border border-cyan-500/20"><div class="flex items-center gap-1 sm:gap-2 mb-1"><span class="text-lime-400">💰</span><span class="text-xs text-cyan-300 uppercase tracking-wide">Liquidity</span></div><p class="text-sm sm:text-lg font-bold text-white">$${p.liquidity.toLocaleString()}</p></div><div class="bg-black/30 rounded-lg p-2 sm:p-3 border border-cyan-500/20"><div class="flex items-center gap-1 sm:gap-2 mb-1"><span class="text-cyan-400">👥</span><span class="text-xs text-cyan-300 uppercase tracking-wide">Holders</span></div><p class="text-sm sm:text-lg font-bold text-white">${p.holders.toLocaleString()}</p></div></div><div class="flex items-center gap-2 text-xs sm:text-sm text-cyan-400"><span>🕐</span><span>Launched ${p.launchTime}</span></div>`;
-        card.addEventListener('click',()=>analyzeProject(p));
-        grid.appendChild(card);
-      });
-    }
-    
-    function analyzeProject(p){
-      currentProject=p;
-      const liqScore=Math.min(100,Math.round(p.liquidity/1000));
-      const holdScore=Math.min(100,Math.round(p.holders/10));
-      const timeScore=Math.floor(Math.random()*40)+40;
-      const overall=Math.round((liqScore+holdScore+timeScore)/3);
-      const isIn=overall>=50;
-      currentAnalysis={verdict:isIn?"IN":"OUT",confidence:overall,sharkQuote:isIn?"This has the fundamentals I'm looking for. I'm IN!":"The numbers don't justify the risk. I'm OUT.",metrics:{liquidity:liqScore,holders:holdScore,timing:timeScore,overall:overall},opportunities:["Early entry potential","Growing bags.fm ecosystem",`${p.holders} holders show interest`],risks:["High volatility risk","Concentration risk","No proven track record"],reasons:[`Liquidity of $${p.liquidity.toLocaleString()} shows ${liqScore>60?'strong':'weak'} backing`,`${p.holders} holders indicate ${holdScore>60?'solid':'concerning'} traction`,`Timing is ${timeScore>60?'favorable':'questionable'}`]};
-      document.getElementById('verdict-content').innerHTML=`<div class="text-center py-8 sm:py-12 px-4 sm:px-6 rounded-2xl border-4 mb-6 ${isIn?'bg-gradient-to-br from-lime-900/50 to-green-900/30 border-lime-400 shadow-lime-400/50':'bg-gradient-to-br from-red-900/50 to-orange-900/30 border-red-500 shadow-red-500/50'} shadow-2xl"><div class="text-5xl sm:text-8xl font-black mb-3 sm:mb-4 animate-pulse" style="font-family:'Bebas Neue';"><span class="${isIn?'text-lime-400':'text-red-400'}">${isIn?"I'M IN! 🦈":"I'M OUT 👎"}</span></div><p class="text-lg sm:text-2xl text-white italic font-light mb-3 sm:mb-4 px-2">"${currentAnalysis.sharkQuote}"</p><div class="text-2xl sm:text-4xl font-bold text-white">${currentAnalysis.confidence}% Confidence</div></div><div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">${Object.entries(currentAnalysis.metrics).map(([k,v])=>`<div class="bg-black/40 rounded-xl p-3 sm:p-4 border border-cyan-500/30"><div class="text-xs text-cyan-400 uppercase tracking-wide mb-2">${k}</div><div class="text-xl sm:text-2xl font-bold text-white">${v}/100</div><div class="mt-2 h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all ${v>=70?'bg-gradient-to-r from-lime-400 to-green-500':v>=40?'bg-gradient-to-r from-yellow-500 to-orange-400':'bg-gradient-to-r from-red-500 to-orange-500'}" style="width:${v}%"></div></div></div>`).join('')}</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6"><div class="bg-gradient-to-br from-lime-900/30 to-green-900/20 border border-lime-500/30 rounded-xl p-4 sm:p-6"><div class="flex items-center gap-2 mb-3 sm:mb-4"><span class="text-2xl">📈</span><h3 class="text-lg sm:text-xl font-bold text-lime-300" style="font-family:'Bebas Neue';">OPPORTUNITIES</h3></div><ul class="space-y-2">${currentAnalysis.opportunities.map(o=>`<li class="text-sm sm:text-base text-lime-100 flex items-start gap-2"><span>🎯</span><span>${o}</span></li>`).join('')}</ul></div><div class="bg-gradient-to-br from-red-900/30 to-orange-900/20 border border-red-500/30 rounded-xl p-4 sm:p-6"><div class="flex items-center gap-2 mb-3 sm:mb-4"><span class="text-2xl">🚨</span><h3 class="text-lg sm:text-xl font-bold text-red-300" style="font-family:'Bebas Neue';">RED FLAGS</h3></div><ul class="space-y-2">${currentAnalysis.risks.map(r=>`<li class="text-sm sm:text-base text-red-100 flex items-start gap-2"><span>🛡️</span><span>${r}</span></li>`).join('')}</ul></div></div><div class="bg-gradient-to-br from-cyan-900/30 to-blue-900/20 border border-cyan-500/30 rounded-xl p-4 sm:p-6"><h3 class="text-lg sm:text-xl font-bold text-cyan-300 mb-3 sm:mb-4" style="font-family:'Bebas Neue';">SHARK'S REASONING</h3><ul class="space-y-2 sm:space-y-3">${currentAnalysis.reasons.map((r,i)=>`<li class="text-sm sm:text-lg text-cyan-100 flex items-start gap-2 sm:gap-3"><span class="text-lime-400 font-bold">${i+1}.</span><span>${r}</span></li>`).join('')}</ul></div>`;
-      document.getElementById('analysis-panel').classList.remove('hidden');
-      document.getElementById('analysis-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
-    }
-    
-    document.getElementById('buy-btn').addEventListener('click',()=>{
-      if(!currentProject)return;
-      if(!wallet){alert('Please connect wallet first');return;}
-      window.open(`https://jup.ag/swap/SOL-${currentProject.mint}?referrer=ATH`,'_blank');
-    });
-    
-    document.getElementById('twitter-share-btn').addEventListener('click',async()=>{
-      if(!currentProject||!currentAnalysis)return;
-      const btn=document.getElementById('twitter-share-btn');
-      const orig=btn.innerHTML;
-      btn.disabled=true;
-      btn.innerHTML='<span>Creating...</span>';
-      try{
-        const wm=document.getElementById('screenshot-watermark');
-        wm.classList.remove('hidden');
-        await new Promise(r=>setTimeout(r,100));
-        const canvas=await html2canvas(document.getElementById('analysis-panel'),{backgroundColor:'#000000',scale:2,logging:false,useCORS:true});
-        wm.classList.add('hidden');
-        canvas.toBlob(b=>{
-          const url=canvas.toDataURL('image/png');
-          const link=document.createElement('a');
-          link.download=`shark-tank-${currentProject.name}.png`;
-          link.href=url;
-          link.click();
-          const emoji=currentAnalysis.confidence>=70?'🚀':currentAnalysis.confidence>=50?'📊':'⚠️';
-          const tweet=`${emoji} SharkTank on @bags_fm from @athcamera rated $${currentProject.name} as ${currentAnalysis.verdict==='IN'?'✅ I\'M IN':'❌ I\'M OUT'}!\n\nConfidence: ${currentAnalysis.confidence}%\n💰 Liquidity: $${currentProject.liquidity.toLocaleString()}\n👥 ${currentProject.holders} holders\n\n"${currentAnalysis.sharkQuote}"\n\n@solana @BagsApp @MeteoraAG`;
-          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,'_blank','width=550,height=420');
-          btn.disabled=false;
-          btn.innerHTML=orig;
-          const msg=document.createElement('div');
-          msg.className='fixed top-4 right-4 bg-lime-400 text-black px-6 py-3 rounded-full font-bold shadow-2xl z-50 animate-fade-in';
-          msg.textContent='✅ Screenshot downloaded!';
-          document.body.appendChild(msg);
-          setTimeout(()=>msg.remove(),3000);
-        },'image/png');
-      }catch(e){
-        console.error(e);
-        document.getElementById('screenshot-watermark').classList.add('hidden');
-        btn.disabled=false;
-        btn.innerHTML=orig;
-        alert('Screenshot failed');
-      }
-    });
-    
-    setTimeout(fetchTokens,1000);
-    setInterval(fetchTokens,30000);
-  </script>
+        .glass-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(132, 204, 22, 0.5);
+        }
 
-  <style>
-    @keyframes fade-in{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes slide-up{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes float{0%,100%{transform:translateY(0px);}50%{transform:translateY(-10px);}}
-    .animate-fade-in{animation:fade-in 0.8s ease-out;animation-fill-mode:both;}
-    .animate-slide-up{animation:slide-up 0.6s ease-out;}
-    .animate-float{animation:float 3s ease-in-out infinite;}
-    .delay{animation-delay:1s;}
-  </style>
+        /* Адаптация сетки для мобильных */
+        @media (max-width: 640px) {
+            .mobile-stack { flex-direction: column; }
+            .mobile-full { width: 100%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black overflow-x-hidden">
+
+    <header class="p-4 border-b border-gray-800 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center mobile-stack gap-4">
+            
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-lime-400 flex items-center justify-center shadow-[0_0_15px_rgba(163,230,53,0.5)]">
+                    <span class="text-black font-bold text-xl">$</span>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bebas tracking-wider text-white leading-none">BAGS.FM <span class="text-lime-400">SHARK TANK</span></h1>
+                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="text-xs text-gray-400 hover:text-white transition uppercase tracking-widest">
+                        Powered by ATH
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mobile-full">
+                <button onclick="connectWallet('phantom')" class="flex-1 px-4 py-2 bg-purple-900/30 hover:bg-purple-900/50 border border-purple-500/30 rounded-lg flex items-center gap-2 transition group">
+                    <svg class="w-5 h-5 fill-purple-400 group-hover:fill-white transition" viewBox="0 0 32 32"><path d="M25.8 17.6c-.6-2.1-2.2-3.8-4.2-4.4-1.6-.5-3.1-.3-4.5.4l-.2.1c-.3.2-.6.3-1 .2-.3-.1-.5-.4-.5-.7v-.1c.3-1.6.4-3.1.2-4.5-.4-2.3-2.2-4.2-4.6-4.6-3-.5-5.7 1.5-6.2 4.4-.5 2.8 1.1 5.4 3.8 6.2.3.1.5.3.6.6v.1c.1.4-.2.8-.6 1-.9.3-1.8.8-2.5 1.5-2.5 2.2-2.8 6-.7 8.5 1.8 2.2 4.9 2.8 7.4 1.6.4-.2.9-.2 1.2.2.8 1 2.1 1.6 3.4 1.6 2.3 0 4.3-1.8 4.6-4.1.3-2.1-.8-4.1-2.6-5.2-.4-.2-.5-.7-.3-1 .6-1.1.8-2.3.6-3.5z"/></svg>
+                    <span class="text-sm font-bold text-purple-200">Phantom</span>
+                </button>
+
+                <button onclick="connectWallet('solflare')" class="flex-1 px-4 py-2 bg-orange-900/30 hover:bg-orange-900/50 border border-orange-500/30 rounded-lg flex items-center gap-2 transition group">
+                    <svg class="w-5 h-5 fill-orange-400 group-hover:fill-white transition" viewBox="0 0 380 380"><path d="M96.4 23.2C54.4 23.2 20 57.6 20 99.6v180.8c0 42 34.4 76.4 76.4 76.4h187.2c42 0 76.4-34.4 76.4-76.4V99.6c0-42-34.4-76.4-76.4-76.4H96.4z" fill="#000" fill-opacity="0"/><path d="M84.2 210.6c17.2 48.2 62.8 82.8 116.6 82.8 53.8 0 99.4-34.6 116.6-82.8H84.2z" fill="#FC762B"/><path d="M198 259.6c-48.4 0-89.6-28.8-108.6-70.4h217.2c-19 41.6-60.2 70.4-108.6 70.4z" fill="#FCA048"/><path d="M200.8 86.6c-53.8 0-99.4 34.6-116.6 82.8h233.2c-17.2-48.2-62.8-82.8-116.6-82.8z" fill="#2A2A2A"/></svg>
+                    <span class="text-sm font-bold text-orange-200">Solflare</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="border-b border-gray-800 bg-black/30">
+        <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-xs text-gray-400">
+            <div id="statusIndicator" class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+                <span>Live Feed</span>
+            </div>
+            <div id="walletAddress">Not connected</div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        <div id="tokenGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="glass-card p-6 rounded-xl animate-pulse h-48 flex items-center justify-center">
+                <span class="text-lime-400 font-mono">Scanning Solana Chain...</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // CONFIG
+        const WORKER_URL = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev'; 
+        let connectedWallet = null;
+
+        // --- WALLET LOGIC ---
+        async function connectWallet(providerName) {
+            try {
+                let provider = null;
+                
+                if (providerName === 'phantom') {
+                    provider = window.phantom?.solana;
+                    if (!provider) return alert('Phantom not installed!');
+                } else if (providerName === 'solflare') {
+                    provider = window.solflare;
+                    if (!provider) return alert('Solflare not installed!');
+                }
+
+                if (!provider) return alert('Wallet provider not found');
+
+                // Connect
+                const resp = await provider.connect();
+                const publicKey = resp.publicKey.toString();
+                
+                connectedWallet = publicKey;
+                
+                // UI Update
+                document.getElementById('walletAddress').innerHTML = 
+                    `<span class="text-lime-400">●</span> ${publicKey.slice(0,4)}...${publicKey.slice(-4)}`;
+                
+                alert(`✅ ${providerName.toUpperCase()} Connected!`);
+
+            } catch (err) {
+                console.error(err);
+                alert('Connection cancelled');
+            }
+        }
+
+        // --- DATA FETCHING ---
+        async function fetchTokens() {
+            try {
+                const response = await fetch(WORKER_URL);
+                if (!response.ok) throw new Error("API Error");
+                const tokens = await response.json();
+                renderTokens(tokens);
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        function renderTokens(tokens) {
+            const grid = document.getElementById('tokenGrid');
+            grid.innerHTML = ''; // Clear loading
+
+            tokens.forEach(token => {
+                const isHot = token.liquidity > 20000; // Highlight if liquidity > $20k
+                
+                // Logo Logic (Fallback to generated avatar if no image)
+                const logoHtml = token.image 
+                    ? `<img src="${token.image}" class="w-12 h-12 rounded-full border border-gray-700 object-cover">`
+                    : `<div class="w-12 h-12 rounded-full bg-gradient-to-tr from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center text-xs font-bold text-gray-400">${token.symbol.slice(0,2)}</div>`;
+
+                const card = document.createElement('div');
+                card.className = `glass-card p-5 rounded-2xl relative overflow-hidden group ${isHot ? 'border-lime-500/30' : ''}`;
+                
+                card.innerHTML = `
+                    ${isHot ? '<div class="absolute top-0 right-0 bg-lime-500/20 text-lime-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">HOT</div>' : ''}
+                    
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            ${logoHtml}
+                            <div>
+                                <h3 class="text-xl font-bold text-white leading-tight">${token.name}</h3>
+                                <p class="text-sm text-gray-500 font-mono tracking-widest">$${token.symbol}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded bg-gray-800 text-gray-400 border border-gray-700 whitespace-nowrap">${token.launchTime}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-black/40 p-3 rounded-lg border border-white/5">
+                            <p class="text-[10px] uppercase text-gray-500 font-bold mb-1">Liquidity</p>
+                            <p class="text-lg font-mono ${token.liquidity > 10000 ? 'text-lime-400' : 'text-white'}">$${token.liquidity.toLocaleString()}</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-lg border border-white/5">
+                            <p class="text-[10px] uppercase text-gray-500 font-bold mb-1">Mkt Cap</p>
+                            <p class="text-lg font-mono text-white">$${token.marketCap.toLocaleString()}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="https://jup.ag/swap/SOL-${token.mint}?referrer=ATH" target="_blank" 
+                           class="flex-1 bg-lime-500 hover:bg-lime-400 text-black font-bold py-3 rounded-xl text-center transition flex items-center justify-center gap-2">
+                            <span>BUY NOW</span>
+                        </a>
+                        <button onclick="shareToken('${token.symbol}', '${token.mint}')" class="px-4 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-3 text-[10px] text-gray-600 font-mono truncate cursor-pointer hover:text-lime-400 transition" onclick="navigator.clipboard.writeText('${token.mint}')">
+                        CA: ${token.mint}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function shareToken(symbol, mint) {
+            const text = `Found a new gem $${symbol} on #BAGS Shark Tank! 🦈\n\nCA: ${mint}\n\nAnalysis by @athcamera #Solana`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        // AUTO-REFRESH
+        fetchTokens();
+        setInterval(fetchTokens, 15000);
+
+    </script>
 </body>
 </html>
