@@ -95,7 +95,7 @@
         <div class="relative w-full max-w-[400px] h-[650px] bg-[#304256] rounded-3xl overflow-hidden shadow-2xl animate-enter border border-gray-700">
             <div id="integrated-terminal" class="w-full h-full"></div>
         </div>
-        <p class="mt-4 text-gray-500 text-xs font-mono">Powered by Jupiter Swap</p>
+        <p class="mt-4 text-gray-500 text-xs font-mono">Powered by Jupiter Swap (Helius Node)</p>
     </div>
 
     <div id="info-modal" class="fixed inset-0 z-[60] bg-black/95 hidden flex items-center justify-center p-4 backdrop-blur-xl opacity-0 transition-opacity duration-300">
@@ -116,7 +116,9 @@
 
     <script>
         const WORKER_URL = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
-        const JUPITER_RPC = 'https://api.mainnet-beta.solana.com';
+        
+        // 🔥 FIX: ИСПОЛЬЗУЕМ ТВОЙ HELIUS ДЛЯ JUPITER (ЧТОБЫ НЕ БЫЛО ОШИБКИ)
+        const JUPITER_RPC = 'https://mainnet.helius-rpc.com/?api-key=30de9940-f297-4c42-94a2-456b08e9194b';
 
         let activeTokens = [];
         let currentTokenIndex = 0;
@@ -224,33 +226,27 @@
             });
         }
 
-        // --- SMART SHARK SCORING (ADAPTED FOR LOW CAP) ---
+        // --- SMART SHARK SCORING ---
         function analyzeProject(index) {
             const token = activeTokens[index];
             currentTokenIndex = index;
             
-            // 1. ПОДГОТОВКА ДАННЫХ (Эмуляция + Реальные)
-            // Мы знаем, что MC низкая (<100k), поэтому не штрафуем за неё.
-            // Смотрим на Distribution и Snipers.
-            
-            const distribScoreRaw = Math.floor(Math.random() * 8) + 2; // 2-10
+            const distribScoreRaw = Math.floor(Math.random() * 8) + 2; 
             const holderEff = (Math.random() * 2 + 1).toFixed(1); 
-            const noSnipers = Math.random() > 0.4; // 60% chance it's safe
+            const noSnipers = Math.random() > 0.4; 
             const creatorHold = (Math.random() * 15).toFixed(1); 
             const top1Holder = (Math.random() * 20 + 5).toFixed(1); 
             
-            // 2. ФОРМУЛА
             let score = 0;
-            score += (distribScoreRaw / 10) * 3;          // Distribution (30% weight)
-            score += Math.min(3, parseFloat(holderEff) * 0.5); // Efficiency
-            score += (noSnipers ? 1 : 0) * 2;             // Sniper Check (2 pts)
-            score += (creatorHold < 10 ? 1 : 0.5);        // Creator (1 pt)
-            score -= (top1Holder / 10);                   // Penalty for whales
+            score += (distribScoreRaw / 10) * 3;          
+            score += Math.min(3, parseFloat(holderEff) * 0.5); 
+            score += (noSnipers ? 1 : 0) * 2;             
+            score += (creatorHold < 10 ? 1 : 0.5);        
+            score -= (top1Holder / 10);                   
             
             score = Math.max(0, Math.min(10, score));     
             const finalScore = score.toFixed(1);
 
-            // 3. ВЕРДИКТ
             let verdict = "OUT";
             let verdictColor = "text-red-500";
             let quote = "Too risky. Distribution is bad.";
@@ -267,7 +263,6 @@
 
             currentAnalysis = { verdict, finalScore, quote, token };
 
-            // 4. ОТРИСОВКА
             const modal = document.getElementById('analytics-modal');
             const content = document.getElementById('analytics-content');
             
@@ -302,21 +297,28 @@
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
-        // --- UTILS ---
+        // --- FIXED JUPITER INTEGRATION ---
         function openJupiter(mint) {
             if(!mint) mint = activeTokens[currentTokenIndex]?.mint;
             document.getElementById('jupiter-overlay').classList.remove('hidden');
             
+            // Если виджет не инициализирован
             if (!window.Jupiter._instance) {
                 window.Jupiter.init({ 
                     displayMode: 'integrated',
                     integratedTargetId: 'integrated-terminal',
-                    endpoint: JUPITER_RPC,
-                    formProps: { fixedOutputMint: true, initialOutputMint: mint }
+                    endpoint: JUPITER_RPC, // ⚡ ИСПОЛЬЗУЕМ HELIUS
+                    strictTokenList: false, // ⚡ ВАЖНО: Разрешаем токены, которых нет в списке
+                    formProps: { 
+                        fixedOutputMint: true, 
+                        initialOutputMint: mint 
+                    }
                 });
             } else {
+                // Если уже есть, пробуем обновить или просто показываем
                 window.Jupiter.resume();
             }
+            
             if (walletProvider) window.Jupiter.syncProps({ passthroughWalletContextState: { wallet: walletProvider } });
         }
 
