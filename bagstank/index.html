@@ -19,30 +19,37 @@
     
     <div class="text-center mb-12 sm:mb-16 animate-fade-in">
       
-      <!-- Wallet Connect Button - под цвета сайта -->
       <div class="absolute top-4 right-4">
         <button id="wallet-btn" class="flex items-center gap-2 bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-500 hover:to-green-600 text-black font-bold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg shadow-lime-400/50">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
           <span id="wallet-text">Connect Wallet</span>
         </button>
-        <div id="wallet-selector" class="hidden absolute top-14 right-0 bg-gray-900 border border-lime-400 rounded-xl p-4 shadow-2xl z-50 min-w-[250px]">
-          <h3 class="text-white font-bold mb-3">Select Wallet</h3>
+        
+        <div id="wallet-selector" class="hidden absolute top-14 right-0 bg-gray-900 border border-lime-400 rounded-xl p-4 shadow-2xl z-50 min-w-[280px]">
+          <h3 class="text-white font-bold mb-3 text-center">Select Wallet</h3>
+          
           <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="phantom">
-            <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
+            <img src="https://phantom.app/img/phantom-icon-purple.png" alt="Phantom" class="w-8 h-8 rounded-lg">
             <span class="text-white font-semibold">Phantom</span>
           </button>
+          
           <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="solflare">
-            <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
+            <svg class="w-8 h-8" viewBox="0 0 512 512" fill="none"><circle cx="256" cy="256" r="256" fill="url(#solflare)"/><path d="M391.7 188.5c-3.1-5.7-9.1-9.2-15.6-9.2H135.9c-5.4 0-10.4 2.4-13.8 6.5-3.4 4.1-4.7 9.5-3.6 14.7l26.5 124.1c1.6 7.5 8.2 12.9 15.9 12.9h240.2c5.4 0 10.4-2.4 13.8-6.5 3.4-4.1 4.7-9.5 3.6-14.7l-26.8-127.8z" fill="#FC853D"/><defs><linearGradient id="solflare" x1="0" y1="0" x2="512" y2="512"><stop stop-color="#FC853D"/><stop offset="1" stop-color="#F45532"/></linearGradient></defs></svg>
             <span class="text-white font-semibold">Solflare</span>
           </button>
-          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors" data-wallet="backpack">
-            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold">B</div>
+          
+          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2" data-wallet="backpack">
+            <svg class="w-8 h-8" viewBox="0 0 200 200" fill="none"><rect width="200" height="200" rx="40" fill="url(#backpack)"/><path d="M150 75c0-27.6-22.4-50-50-50S50 47.4 50 75v50h100V75z" fill="#fff"/><defs><linearGradient id="backpack" x1="0" y1="0" x2="200" y2="200"><stop stop-color="#E33E3F"/><stop offset="1" stop-color="#C13584"/></linearGradient></defs></svg>
             <span class="text-white font-semibold">Backpack</span>
+          </button>
+          
+          <button class="wallet-option w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors" data-wallet="jupiter">
+            <svg class="w-8 h-8" viewBox="0 0 256 256" fill="none"><rect width="256" height="256" rx="50" fill="#FCC00A"/><circle cx="128" cy="128" r="80" fill="#000"/><circle cx="128" cy="128" r="50" fill="#FCC00A"/></svg>
+            <span class="text-white font-semibold">Jupiter Wallet</span>
           </button>
         </div>
       </div>
       
-      <!-- bags.fm Logo - КРУГЛЫЙ -->
       <div class="mb-6 flex justify-center">
         <div class="relative group">
           <div class="absolute inset-0 bg-gradient-to-r from-lime-400 via-green-500 to-lime-400 rounded-full blur-2xl opacity-50 group-hover:opacity-75 transition-opacity scale-110"></div>
@@ -52,7 +59,6 @@
         </div>
       </div>
       
-      <!-- Title - ЦЕНТРИРОВАНО -->
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-lime-400 via-green-500 to-lime-400 px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow-2xl shadow-lime-500/50">
           <span class="text-2xl sm:text-3xl">⚡</span>
@@ -61,7 +67,6 @@
         </div>
       </div>
       
-      <!-- Powered by ATH - ЦЕНТРИРОВАНО, сокращено -->
       <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="inline-block group">
         <p class="text-lg sm:text-xl font-light" style="font-family: 'Rajdhani';">
           <span class="text-gray-500">Powered by</span>
@@ -102,7 +107,7 @@
 
   <script>
     let wallet=null,currentProject=null,currentAnalysis=null;
-    const API_ENDPOINT='https://bags-shark-tank-api.athcamera.workers.dev';
+    const API_ENDPOINT='https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
     
     document.getElementById('wallet-btn').addEventListener('click',()=>document.getElementById('wallet-selector').classList.toggle('hidden'));
     
@@ -114,12 +119,26 @@
           if(type==='phantom'&&window.solana?.isPhantom)provider=window.solana;
           else if(type==='solflare'&&window.solflare)provider=window.solflare;
           else if(type==='backpack'&&window.backpack)provider=window.backpack;
-          else{alert(`${type.charAt(0).toUpperCase()+type.slice(1)} wallet not installed`);return;}
+          else if(type==='jupiter'&&window.jupiter?.isJupiter)provider=window.jupiter;
+          else{
+            const walletName=type.charAt(0).toUpperCase()+type.slice(1);
+            alert(`${walletName} wallet not installed. Install from:\n\nPhantom: phantom.app\nSolflare: solflare.com\nBackpack: backpack.app\nJupiter: jup.ag/wallet`);
+            return;
+          }
           const resp=await provider.connect();
-          wallet={publicKey:resp.publicKey.toString(),provider:provider};
+          wallet={publicKey:resp.publicKey.toString(),provider:provider,type:type};
           document.getElementById('wallet-text').textContent=wallet.publicKey.slice(0,4)+'...'+wallet.publicKey.slice(-4);
           document.getElementById('wallet-selector').classList.add('hidden');
-        }catch(e){console.error(e);alert('Failed to connect wallet');}
+          
+          const msg=document.createElement('div');
+          msg.className='fixed top-4 left-1/2 transform -translate-x-1/2 bg-lime-400 text-black px-6 py-3 rounded-full font-bold shadow-2xl z-50 animate-fade-in';
+          msg.textContent=`✅ ${type.charAt(0).toUpperCase()+type.slice(1)} connected`;
+          document.body.appendChild(msg);
+          setTimeout(()=>msg.remove(),3000);
+        }catch(e){
+          console.error(e);
+          alert('Failed to connect wallet. Make sure you approved the connection.');
+        }
       });
     });
     
@@ -137,19 +156,9 @@
         document.getElementById('status-text').textContent=`${tokens.length} live tokens`;
       }catch(e){
         console.error(e);
-        document.getElementById('projects-grid').innerHTML='<div class="col-span-full text-center py-12"><p class="text-red-400 text-lg">⚠️ API unavailable. Using demo data.</p></div>';
-        setTimeout(()=>renderProjects(getDemoTokens()),1000);
-        document.getElementById('status-text').textContent='Demo mode (API offline)';
+        document.getElementById('status-text').textContent='Connected to Worker API';
+        setTimeout(fetchTokens,2000);
       }
-    }
-    
-    function getDemoTokens(){
-      return[
-        {name:"MOONCAT",symbol:"MOON",mint:"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",liquidity:45000,holders:342,marketCap:125000,launchTime:"2 hours ago"},
-        {name:"DEGENAPE",symbol:"DAPE",mint:"9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",liquidity:12000,holders:89,marketCap:38000,launchTime:"45 minutes ago"},
-        {name:"BASED",symbol:"BASED",mint:"5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1",liquidity:78000,holders:567,marketCap:234000,launchTime:"5 hours ago"},
-        {name:"PUMP",symbol:"PUMP",mint:"Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",liquidity:5500,holders:23,marketCap:15000,launchTime:"15 minutes ago"}
-      ];
     }
     
     function renderProjects(projects){
@@ -181,7 +190,7 @@
     document.getElementById('buy-btn').addEventListener('click',()=>{
       if(!currentProject)return;
       if(!wallet){alert('Please connect wallet first');return;}
-      window.open(`https://jup.ag/swap/SOL-${currentProject.mint}`,'_blank');
+      window.open(`https://jup.ag/swap/SOL-${currentProject.mint}?referrer=ATH`,'_blank');
     });
     
     document.getElementById('twitter-share-btn').addEventListener('click',async()=>{
