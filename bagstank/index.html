@@ -3,408 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAGS.FM SHARK TANK | Pro Edition</title>
-    
+    <title>BAGS.FM SHARK TANK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://terminal.jup.ag/main-v3.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- GLOBAL STYLES --- */
         body { font-family: 'Rajdhani', sans-serif; background-color: #000; color: white; overflow: hidden; }
         .font-bebas { font-family: 'Bebas Neue', sans-serif; }
-        
-        /* Scroll Snap */
         #feed-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
         .token-slide { height: 100vh; scroll-snap-align: start; position: relative; overflow: hidden; }
-
-        /* Cursor Glow */
-        #cursor-glow {
-            position: fixed; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(132, 204, 22, 0.15) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); z-index: 0;
-            transition: opacity 0.3s;
-        }
-
-        /* Glassmorphism */
-        .glass-panel { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-modal { background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px); }
-
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-        
-        /* Animations */
-        @keyframes pulse-border { 0%, 100% { border-color: rgba(132, 204, 22, 0.3); } 50% { border-color: rgba(132, 204, 22, 0.8); } }
-        .animate-border { animation: pulse-border 2s infinite; }
-        @keyframes float-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .glass-panel { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .animate-enter { animation: float-up 0.5s ease-out forwards; }
+        @keyframes float-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
-<body class="text-white">
+<body>
 
-    <div id="disclaimer-modal" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center">
-        <div class="max-w-lg w-full animate-enter">
-            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-lime-500/10 flex items-center justify-center border border-lime-500 shadow-[0_0_30px_rgba(132,204,22,0.3)]">
-                <span class="text-3xl">⚠️</span>
-            </div>
-            <h1 class="text-5xl font-bebas text-white mb-2">HIGH RISK ZONE</h1>
-            <p class="text-gray-400 text-lg mb-8 font-light">
-                You are entering a real-time feed of unverified Solana tokens. 
-                <br><br>
-                <span class="text-red-400 font-bold">Most of these tokens may go to zero.</span> 
-                This tool provides analytics, not financial advice. 
-                <br>
-                Always Do Your Own Research (DYOR).
-            </p>
-            <button onclick="acceptRisk()" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl shadow-lg transition transform hover:scale-[1.02]">
-                I UNDERSTAND & ACCEPT RISKS
-            </button>
-        </div>
-    </div>
-
-    <div id="cursor-glow" class="hidden md:block"></div>
-
-    <header class="fixed top-0 w-full z-50 p-4 bg-gradient-to-b from-black/90 to-transparent pointer-events-none">
+    <header class="fixed top-0 w-full z-50 p-4 pointer-events-none">
         <div class="max-w-md mx-auto flex justify-between items-center pointer-events-auto">
             <div class="flex items-center gap-3">
-                <img src="bags-logo.png" onerror="this.src='https://placehold.co/40x40/000/FFF?text=$'" class="w-10 h-10 rounded-full border border-lime-500/50">
+                <img src="bags-logo.png" onerror="this.src='https://placehold.co/40x40/000/FFF?text=$'" class="w-10 h-10 rounded-full border border-lime-500 shadow-lg">
                 <div>
-                    <h1 class="text-xl font-bebas leading-none tracking-wide">BAGS.FM <span class="text-lime-400">SHARK TANK</span></h1>
-                    <div class="text-[10px] text-gray-400 font-bold tracking-widest">POWERED BY ATH</div>
+                    <h1 class="text-xl font-bebas leading-none">BAGS.FM <span class="text-lime-400">SHARK</span></h1>
                 </div>
             </div>
-            
-            <div class="flex gap-2">
-                <button onclick="openInfo()" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-white/10 text-gray-400 hover:text-white transition">
-                    ?
-                </button>
-                <div class="relative">
-                    <button id="wallet-btn" onclick="toggleWalletMenu()" class="glass-panel px-4 h-10 rounded-full flex items-center gap-2 hover:bg-white/10 transition">
-                        <span class="w-2 h-2 bg-red-500 rounded-full" id="wallet-indicator"></span>
-                        <span class="text-sm font-bold" id="wallet-label">Connect</span>
-                    </button>
-                    <div id="wallet-menu" class="hidden absolute right-0 mt-2 w-48 glass-panel rounded-xl overflow-hidden shadow-2xl animate-enter">
-                        <button onclick="connectWallet('phantom')" class="w-full text-left px-4 py-3 hover:bg-lime-500/20 text-sm font-bold flex items-center gap-2">Phantom</button>
-                        <button onclick="connectWallet('solflare')" class="w-full text-left px-4 py-3 hover:bg-lime-500/20 text-sm font-bold flex items-center gap-2 border-t border-white/5">Solflare</button>
-                        <button onclick="connectWallet('backpack')" class="w-full text-left px-4 py-3 hover:bg-lime-500/20 text-sm font-bold flex items-center gap-2 border-t border-white/5">Backpack</button>
-                    </div>
-                </div>
-            </div>
+            <button id="wallet-btn" onclick="connectWallet()" class="glass-panel px-5 py-2 rounded-full font-bold hover:bg-lime-500 hover:text-black transition text-sm flex items-center gap-2">
+                <span class="w-2 h-2 bg-red-500 rounded-full" id="wallet-dot"></span>
+                <span id="wallet-text">Connect</span>
+            </button>
         </div>
     </header>
-
-    <div id="info-modal" class="fixed inset-0 z-[60] bg-black/95 hidden flex items-center justify-center p-4 backdrop-blur-xl opacity-0 transition-opacity duration-300">
-        <div class="max-w-md w-full glass-panel rounded-3xl p-8 relative">
-            <button onclick="closeInfo()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-            <h2 class="text-4xl font-bebas text-lime-400 mb-6">HOW IT WORKS</h2>
-            
-            <div class="space-y-6">
-                <div>
-                    <h3 class="text-xl font-bold text-white mb-1">🚀 1. The Edge</h3>
-                    <p class="text-gray-400 text-sm">We scan the Solana blockchain in real-time to find new liquidity pools seconds after they launch. Speed is your advantage.</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-white mb-1">🦈 2. Shark Analytics</h3>
-                    <p class="text-gray-400 text-sm">Our algorithm analyzes Liquidity, Market Cap, and Holder count to give you an "IN" or "OUT" verdict. It filters the noise.</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-white mb-1">⚡ 3. Instant Action</h3>
-                    <p class="text-gray-400 text-sm">Connect your wallet to swap instantly via Jupiter without leaving the app. Don't miss the entry.</p>
-                </div>
-            </div>
-            
-            <div class="mt-8 pt-6 border-t border-gray-800 text-center">
-                <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Have fun & stay safe</p>
-                <div class="text-[10px] text-gray-600">Trading meme coins involves extreme risk. Never trade money you cannot afford to lose.</div>
-            </div>
-        </div>
-    </div>
 
     <div id="feed-container">
         <div class="h-screen flex items-center justify-center">
             <div class="text-center">
                 <div class="animate-spin w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p class="text-gray-500 font-bebas text-xl">HUNTING GEMS...</p>
+                <p class="text-lime-400 font-bebas text-xl">Connecting to Bags.fm...</p>
             </div>
         </div>
     </div>
 
-    <div id="analytics-modal" class="fixed inset-0 z-[60] glass-modal hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
-        <div class="w-full max-w-md relative">
-            <button onclick="closeAnalytics()" class="absolute -top-12 right-0 text-gray-400 hover:text-white transform scale-150">×</button>
-            <div id="analytics-content" class="bg-gray-900 border border-lime-500/30 rounded-3xl p-6 shadow-[0_0_50px_rgba(132,204,22,0.15)]">
-                </div>
-            <div class="mt-4 flex gap-3">
-                <button onclick="openJupiter()" class="flex-1 bg-lime-500 hover:bg-lime-400 text-black font-bebas text-xl py-4 rounded-xl shadow-lg transition transform hover:scale-105">BUY NOW</button>
-                <button onclick="shareTweet()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bebas text-xl py-4 rounded-xl border border-gray-700 transition">SHARE ALPHA</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="jupiter-overlay" class="fixed inset-0 z-[70] hidden bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center pointer-events-none transition-opacity duration-300">
-        <div class="pointer-events-auto w-full sm:w-[400px] bg-[#304256] rounded-t-3xl sm:rounded-3xl shadow-2xl transform translate-y-full transition-transform duration-300" id="jupiter-panel">
-            <div class="p-3 flex justify-center cursor-pointer hover:bg-white/5" onclick="closeJupiter()">
-                <div class="w-12 h-1.5 bg-gray-500 rounded-full"></div>
-            </div>
-            <div id="integrated-terminal" class="h-[600px] w-full overflow-hidden rounded-b-3xl"></div>
+    <div id="jupiter-overlay" class="fixed inset-0 z-[70] hidden bg-black/80 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="relative w-full max-w-[400px] bg-[#304256] rounded-3xl overflow-hidden shadow-2xl animate-enter">
+            <button onclick="closeJupiter()" class="absolute top-4 right-4 z-50 text-white/50 hover:text-white bg-black/20 hover:bg-black/50 rounded-full w-8 h-8 flex items-center justify-center transition">✕</button>
+            <div id="integrated-terminal" class="w-full h-[600px]"></div>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const WORKER_URL = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev'; 
+        const WORKER_URL = 'https://bags-shark-tank-api.privetandreynugdejeti.workers.dev';
         
-        // 🔴🔴🔴 30de9940-f297-4c42-94a2-456b08e9194b 🔴🔴🔴
-        const HELIUS_RPC = 'https://mainnet.helius-rpc.com/?api-key=30de9940-f297-4c42-94a2-456b08e9194b'; 
-        // 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
+        // 🔴 30de9940-f297-4c42-94a2-456b08e9194b 🔴
+        const HELIUS_KEY = '30de9940-f297-4c42-94a2-456b08e9194b'; 
+        // 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
 
-        let activeTokens = [];
-        let currentTokenIndex = 0;
-        let connectedWallet = null;
+        let walletProvider = null;
 
-        // --- INIT ---
-        window.addEventListener('load', () => {
-            // Check if user accepted risk before
-            if(localStorage.getItem('riskAccepted') === 'true') {
-                document.getElementById('disclaimer-modal').style.display = 'none';
-                startApp();
-            }
-        });
-
-        function acceptRisk() {
-            localStorage.setItem('riskAccepted', 'true');
-            document.getElementById('disclaimer-modal').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('disclaimer-modal').style.display = 'none';
-                startApp();
-            }, 500);
-        }
-
-        async function startApp() {
-            // Init Jupiter with custom RPC to fix "Not responding" error
-            if (window.Jupiter) {
-                window.Jupiter.init({ 
-                    displayMode: 'integrated',
-                    integratedTargetId: 'integrated-terminal',
-                    endpoint: HELIUS_RPC, // Using Helius for stability
-                });
-            }
-            await fetchTokens();
-        }
-
-        // --- FETCHING ---
-        async function fetchTokens() {
+        // 1. ПОДКЛЮЧЕНИЕ КОШЕЛЬКА (Phantom/Solflare)
+        async function connectWallet() {
             try {
-                const response = await fetch(WORKER_URL);
-                if(!response.ok) throw new Error("API Error");
-                const tokens = await response.json();
+                // Ищем провайдер
+                const provider = window.phantom?.solana || window.solflare;
                 
-                // Clean up token data (remove 'solana_' prefix)
-                activeTokens = tokens.map(t => ({
-                    ...t,
-                    cleanMint: t.mint.replace('solana_', ''),
-                    logoUrl: t.image || 'bags-logo.png'
-                }));
+                if (!provider) {
+                    return alert("Wallet not found. Please install Phantom!");
+                }
+
+                if (!provider.isConnected) {
+                    await provider.connect();
+                }
+
+                walletProvider = provider;
+                const key = provider.publicKey.toString();
                 
-                renderFeed(activeTokens);
-            } catch (e) {
-                console.error(e);
-                renderFeed(getDemoData());
-            }
-        }
+                // UI
+                document.getElementById('wallet-text').innerText = key.slice(0,4) + '..' + key.slice(-4);
+                document.getElementById('wallet-btn').classList.add('bg-lime-500', 'text-black');
+                document.getElementById('wallet-dot').classList.replace('bg-red-500', 'bg-black');
 
-        function renderFeed(tokens) {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
-
-            tokens.forEach((token, index) => {
-                const isHot = token.liquidity > 25000;
-                const slide = document.createElement('div');
-                slide.className = 'token-slide w-full h-full flex items-center justify-center p-4 snap-center relative';
-                
-                // Create dynamic background
-                slide.innerHTML = `
-                    <div class="absolute inset-0 z-0" style="background: radial-gradient(circle at 50% 50%, rgba(20, 40, 20, 0.4) 0%, #000 80%);"></div>
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-lime-500/5 blur-[100px] rounded-full animate-pulse"></div>
-
-                    <div class="relative z-10 w-full max-w-md glass-panel rounded-3xl p-6 shadow-2xl flex flex-col gap-5 animate-enter">
-                        
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-center gap-4">
-                                <a href="https://bags.fm/tokens/${token.cleanMint}" target="_blank" class="relative group">
-                                    <img src="${token.logoUrl}" class="w-16 h-16 rounded-2xl object-cover border-2 border-lime-500/30 shadow-lg group-hover:scale-105 transition">
-                                    <div class="absolute -bottom-2 -right-2 bg-black text-[10px] px-1 rounded border border-gray-700">↗ bags</div>
-                                </a>
-                                <div>
-                                    <h2 class="text-3xl font-bebas tracking-wide truncate max-w-[200px]">${token.name}</h2>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-lime-400 font-bold tracking-widest text-sm">$${token.symbol}</span>
-                                        ${isHot ? '<span class="px-2 py-0.5 bg-lime-500 text-black text-[10px] font-bold rounded uppercase">Hot</span>' : ''}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-gray-500 uppercase font-bold">Time</div>
-                                <div class="text-sm font-mono text-white">${token.launchTime}</div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-black/40 rounded-xl p-3 border border-white/5">
-                                <div class="text-[10px] text-gray-400 uppercase font-bold mb-1">Liquidity</div>
-                                <div class="text-2xl font-bebas text-lime-400">$${token.liquidity.toLocaleString()}</div>
-                            </div>
-                            <div class="bg-black/40 rounded-xl p-3 border border-white/5">
-                                <div class="text-[10px] text-gray-400 uppercase font-bold mb-1">Mkt Cap</div>
-                                <div class="text-2xl font-bebas text-white">$${token.marketCap.toLocaleString()}</div>
-                            </div>
-                        </div>
-
-                        <div onclick="copyCA('${token.cleanMint}')" class="bg-black/60 rounded-lg p-3 flex items-center justify-between border border-gray-800 cursor-pointer hover:border-lime-500/50 group transition">
-                            <div class="text-xs text-gray-500 font-mono truncate max-w-[250px] group-hover:text-lime-400 underline decoration-dotted">
-                                CA: ${token.cleanMint}
-                            </div>
-                            <svg class="w-4 h-4 text-gray-500 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 012 2v8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8a2 2 0 012-2z" /></svg>
-                        </div>
-
-                        <div class="flex flex-col gap-3 mt-1">
-                            <button onclick="openAnalytics(${index})" class="w-full bg-gradient-to-r from-gray-800 to-gray-900 border border-lime-500/30 text-lime-400 font-bebas text-2xl py-3 rounded-xl shadow-[0_0_15px_rgba(132,204,22,0.1)] transition hover:scale-[1.01] flex items-center justify-center gap-2">
-                                🦈 SHARK VERDICT
-                            </button>
-                            <button onclick="openJupiter('${token.cleanMint}')" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-xl py-3 rounded-xl transition font-bold tracking-wide">
-                                BUY NOW
-                            </button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(slide);
-            });
-        }
-
-        // --- LOGIC: Analytics & Verdict ---
-        function openAnalytics(index) {
-            const token = activeTokens[index];
-            currentTokenIndex = index;
-            const modal = document.getElementById('analytics-modal');
-            const content = document.getElementById('analytics-content');
-            
-            // MATH: Calculate Ratios
-            // Safe ratio: Liq should be at least 10-20% of MC for stability
-            const liqMcRatio = (token.liquidity / token.marketCap) * 100;
-            const score = Math.min(100, Math.floor(liqMcRatio + (token.holders / 10)));
-            
-            const isIn = score > 15; // Strict threshold
-            
-            content.innerHTML = `
-                <div class="text-center mb-6">
-                    <img src="${token.logoUrl}" class="w-20 h-20 rounded-full mx-auto mb-4 border-4 ${isIn ? 'border-lime-500' : 'border-red-500'} shadow-2xl">
-                    <h2 class="text-4xl font-bebas text-white">$${token.name}</h2>
-                    <div class="flex justify-center items-center gap-2 text-gray-400 text-xs font-mono mt-2">
-                        <span>CA: ${token.cleanMint.slice(0,6)}...${token.cleanMint.slice(-4)}</span>
-                    </div>
-                </div>
-
-                <div class="${isIn ? 'bg-lime-900/20 border-lime-500/50' : 'bg-red-900/20 border-red-500/50'} border-2 rounded-2xl p-6 text-center mb-6 animate-border">
-                    <div class="text-6xl font-black ${isIn ? 'text-lime-400' : 'text-red-500'} font-bebas mb-2">
-                        ${isIn ? "I'M IN! 🚀" : "I'M OUT. ❌"}
-                    </div>
-                    <p class="text-lg text-white italic font-light">
-                        "${isIn ? "Liquidity depth looks healthy compared to Market Cap. Good risk/reward." : "Liquidity is too thin ($" + Math.round(token.liquidity/1000) + "k). One sell crashes the chart."}"
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 text-center mb-4">
-                    <div class="bg-black/50 p-2 rounded-lg border border-gray-800">
-                        <div class="text-[10px] text-gray-400 uppercase">Liq / MC Ratio</div>
-                        <div class="text-xl font-bold ${liqMcRatio > 10 ? 'text-lime-400' : 'text-red-400'}">
-                            ${liqMcRatio.toFixed(1)}%
-                        </div>
-                    </div>
-                    <div class="bg-black/50 p-2 rounded-lg border border-gray-800">
-                        <div class="text-[10px] text-gray-400 uppercase">Holders</div>
-                        <div class="text-xl font-bold text-white">${token.holders}</div>
-                    </div>
-                </div>
-            `;
-
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        // --- ACTIONS ---
-        function copyCA(mint) {
-            navigator.clipboard.writeText(mint);
-            alert('Contract Copied: ' + mint);
-        }
-
-        function openJupiter(mint = null) {
-            if (!mint && currentTokenIndex !== undefined) mint = activeTokens[currentTokenIndex].cleanMint;
-            
-            const overlay = document.getElementById('jupiter-overlay');
-            const panel = document.getElementById('jupiter-panel');
-            overlay.classList.remove('hidden');
-            setTimeout(() => panel.classList.remove('translate-y-full'), 10);
-
-            // Force wallet sync if connected
-            if(window.Jupiter && connectedWallet) {
-               window.Jupiter.syncProps({ passthroughWalletContextState: connectedWallet });
-            }
-        }
-
-        function closeJupiter() {
-            const overlay = document.getElementById('jupiter-overlay');
-            const panel = document.getElementById('jupiter-panel');
-            panel.classList.add('translate-y-full');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
-        }
-
-        function openInfo() {
-            const modal = document.getElementById('info-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        function closeInfo() {
-            const modal = document.getElementById('info-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function closeAnalytics() {
-            const modal = document.getElementById('analytics-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // --- WALLET CONNECT FIX ---
-        function toggleWalletMenu() {
-            document.getElementById('wallet-menu').classList.toggle('hidden');
-        }
-
-        async function connectWallet(type) {
-            let provider;
-            try {
-                if (type === 'phantom') provider = window.phantom?.solana;
-                if (type === 'solflare') provider = window.solflare;
-                if (type === 'backpack') provider = window.backpack;
-
-                if (!provider) return alert('Wallet not installed!');
-
-                const resp = await provider.connect();
-                
-                // UI Update
-                const pubKey = resp.publicKey.toString();
-                document.getElementById('wallet-label').innerText = pubKey.slice(0,4) + '..' + pubKey.slice(-4);
-                document.getElementById('wallet-indicator').classList.replace('bg-red-500', 'bg-lime-500');
-                document.getElementById('wallet-menu').classList.add('hidden');
-                
-                // SAVE WALLET STATE FOR JUPITER
-                connectedWallet = { publicKey: resp.publicKey, wallet: provider };
-                
-                // Sync with Jupiter immediately
-                if(window.Jupiter) {
-                    window.Jupiter.syncProps({ passthroughWalletContextState: connectedWallet });
+                // Sync with Jupiter
+                if (window.Jupiter) {
+                    window.Jupiter.syncProps({ passthroughWalletContextState: { wallet: provider } });
                 }
 
             } catch (err) {
@@ -412,32 +93,114 @@
             }
         }
 
-        async function shareTweet() {
-            const token = activeTokens[currentTokenIndex];
-            const element = document.getElementById('analytics-content');
+        // 2. ПОЛУЧЕНИЕ ДАННЫХ
+        async function fetchTokens() {
             try {
-                const canvas = await html2canvas(element, { backgroundColor: '#111', scale: 2 });
-                const link = document.createElement('a');
-                link.download = `shark-verdict-${token.symbol}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-                
-                const text = `🦈 I'm looking at $${token.symbol} on #BAGS Shark Tank!\n\nCA: ${token.cleanMint}\n\nCheck analytics via @athcamera 👇`;
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-            } catch (e) { alert('Screenshot failed'); }
+                const res = await fetch(WORKER_URL);
+                const tokens = await res.json();
+                renderFeed(tokens);
+            } catch (e) {
+                console.error("Fetch Error:", e);
+                // Показываем ошибку красиво, а не ломаем сайт
+                renderFeed([{
+                    name: "Connection Error",
+                    symbol: "RETRY",
+                    mint: "error",
+                    launchTime: "Check Console"
+                }]);
+            }
         }
 
-        // Demo Data
-        function getDemoData() {
-            return [{ name: "Updating Feed...", symbol: "WAIT", mint: "solana_111111111111", liquidity: 1000, marketCap: 1000, launchTime: "Now" }];
+        function renderFeed(tokens) {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+            
+            tokens.forEach(token => {
+                // Логика "Ожидания"
+                const isWaiting = token.mint === "waiting_mode" || token.mint === "error";
+                const canBuy = !isWaiting && token.mint.length > 30;
+
+                const slide = document.createElement('div');
+                slide.className = 'token-slide flex items-center justify-center p-4 snap-center';
+                slide.innerHTML = `
+                    <div class="glass-panel w-full max-w-md rounded-3xl p-6 text-center relative animate-enter shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                        
+                        <div class="absolute top-4 right-4 ${isWaiting ? 'bg-yellow-500/20 text-yellow-400' : 'bg-lime-500 text-black'} text-xs font-bold px-3 py-1 rounded-full border border-white/10">
+                            ${isWaiting ? 'SCANNING' : 'LIVE ON BAGS'}
+                        </div>
+                        
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-black/50 border-2 ${isWaiting ? 'border-yellow-500/50 animate-pulse' : 'border-lime-500'} flex items-center justify-center text-3xl shadow-xl">
+                            ${isWaiting ? '📡' : '🦈'}
+                        </div>
+                        
+                        <h2 class="text-5xl font-bebas text-white mb-1 tracking-wide">$${token.symbol}</h2>
+                        <p class="text-gray-400 mb-8 font-mono text-sm">${token.name}</p>
+                        
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold">Time</div>
+                                <div class="text-white font-mono">${token.launchTime}</div>
+                            </div>
+                             <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold">Source</div>
+                                <div class="text-lime-400 font-mono">Bags.fm</div>
+                            </div>
+                        </div>
+
+                        ${canBuy ? `
+                            <button onclick="openJupiter('${token.mint}')" class="w-full bg-lime-500 hover:bg-lime-400 text-black font-bebas text-2xl py-4 rounded-xl transition shadow-lg shadow-lime-500/20 transform hover:scale-[1.02]">
+                                BUY NOW
+                            </button>
+                            <div class="mt-4 flex justify-center gap-4 text-xs text-gray-500">
+                                <a href="https://solscan.io/tx/${token.tx}" target="_blank" class="hover:text-white underline decoration-dotted">View TX</a>
+                                <span class="text-gray-700">|</span>
+                                <span class="font-mono cursor-pointer hover:text-white" onclick="navigator.clipboard.writeText('${token.mint}')">Copy CA</span>
+                            </div>
+                        ` : `
+                            <div class="w-full bg-white/5 text-gray-400 font-bebas text-xl py-4 rounded-xl border border-white/10">
+                                ${token.mint === 'error' ? 'API ERROR' : 'WAITING FOR LAUNCH...'}
+                            </div>
+                            <p class="mt-4 text-xs text-gray-600">Watching contract: BAGS...Amcv</p>
+                        `}
+                    </div>
+                `;
+                container.appendChild(slide);
+            });
         }
-        
-        // Cursor Logic
-        document.addEventListener('mousemove', (e) => {
-            const cursor = document.getElementById('cursor-glow');
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
+
+        // 3. JUPITER WIDGET
+        function openJupiter(mint) {
+            const overlay = document.getElementById('jupiter-overlay');
+            overlay.classList.remove('hidden');
+            
+            if (!window.Jupiter._instance) {
+                window.Jupiter.init({ 
+                    displayMode: 'integrated',
+                    integratedTargetId: 'integrated-terminal',
+                    endpoint: `https://mainnet.helius-rpc.com/?api-key=${HELIUS_KEY}`,
+                    formProps: {
+                        fixedOutputMint: true,
+                        initialOutputMint: mint,
+                    }
+                });
+            } else {
+                window.Jupiter.resume();
+            }
+
+            // Sync wallet again to be sure
+            if (walletProvider) {
+                window.Jupiter.syncProps({ passthroughWalletContextState: { wallet: walletProvider } });
+            }
+        }
+
+        function closeJupiter() {
+            document.getElementById('jupiter-overlay').classList.add('hidden');
+        }
+
+        // Auto-refresh every 10 seconds
+        fetchTokens();
+        setInterval(fetchTokens, 10000);
+
     </script>
 </body>
 </html>
