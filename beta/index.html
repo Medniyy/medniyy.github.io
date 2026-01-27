@@ -107,36 +107,15 @@
         
         /* Stories Viewer */
         #stories-viewer {
-            position: fixed; inset: 0; background: #1a1a1a; z-index: 200;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: fixed; inset: 0; background: #000; z-index: 200;
+            display: flex; flex-direction: column;
             opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
         #stories-viewer.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-        /* Stories Content Container - Adaptive */
-        .story-content-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            max-width: 500px; /* Mobile width constraint for desktop */
-            background: #000;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* On larger screens, add border radius and shadow */
-        @media (min-width: 768px) {
-            .story-content-wrapper {
-                height: 90vh; /* Max height on desktop */
-                border-radius: 12px;
-                box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            }
-        }
-
         .story-progress-container {
-            display: flex; gap: 4px; padding: 12px 8px; 
+            display: flex; gap: 4px; padding: 8px 4px; 
             position: absolute; top: 0; left: 0; width: 100%; z-index: 20;
         }
         .story-bar {
@@ -222,37 +201,24 @@
         </div>
     </div>
 
-    <!-- STORIES VIEWER (UPDATED) -->
+    <!-- STORIES VIEWER -->
     <div id="stories-viewer">
-        <!-- Wrapper for adaptive sizing -->
-        <div class="story-content-wrapper">
-            <!-- Progress Bars -->
-            <div id="story-bars" class="story-progress-container">
-                <!-- Bars injected via JS -->
+        <div id="story-bars" class="story-progress-container"></div>
+        <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-2">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
+                <span class="font-bold text-sm text-shadow">ath.camera</span>
+                <span class="text-xs text-white/60 text-shadow">2h</span>
             </div>
-
-            <!-- Header -->
-            <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-4">
-                <div class="flex items-center gap-2">
-                    <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
-                    <span class="font-bold text-sm text-shadow">ath.camera</span>
-                    <span class="text-xs text-white/60 text-shadow">2h</span>
-                </div>
-                <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
-            </div>
-
-            <!-- Video -->
-            <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
-                <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
-                <!-- Gradient overlay -->
-                <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-black/20 pointer-events-none"></div>
-            </div>
-
-            <!-- Tap Zones -->
-            <div class="absolute inset-0 z-20 flex">
-                <div class="w-1/3 h-full" onclick="prevStory()"></div>
-                <div class="w-2/3 h-full" onclick="nextStory()"></div>
-            </div>
+            <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
+            <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
+            <div class="absolute inset-0 z-40 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none"></div>
+        </div>
+        <div class="absolute inset-0 z-20 flex">
+            <div class="w-1/3 h-full" onclick="prevStory()"></div>
+            <div class="w-2/3 h-full" onclick="nextStory()"></div>
         </div>
     </div>
 
@@ -330,8 +296,8 @@
 
                     <!-- Stats -->
                     <div class="flex-1 flex justify-around text-center">
-                        <div><div class="font-bold text-lg">10</div><div class="text-xs">Posts</div></div>
-                        <div><div class="font-bold text-lg">12.5K</div><div class="text-xs">Followers</div></div>
+                        <div><div class="font-bold text-lg">13</div><div class="text-xs">Posts</div></div>
+                        <div><div class="font-bold text-lg">2946</div><div class="text-xs">Followers</div></div>
                         <div><div class="font-bold text-lg">42</div><div class="text-xs">Following</div></div>
                     </div>
                 </div>
@@ -348,8 +314,7 @@
 
                 <!-- Buttons -->
                 <div class="flex gap-2 mb-6">
-                    <!-- About Us triggers Stories -->
-                    <button onclick="openStories()" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center hover:bg-neutral-700 transition">About Us</button>
+                    <a href="about.html" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center">About Us</a>
                     <button id="runaway-btn" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center">Book a Call</button>
                 </div>
 
@@ -509,17 +474,16 @@
             { file: 'Solflareviral.mp4', title: 'Solflare Viral', views: '18.7K', vertical: true, desc: 'Viral campaign. #BetterCallATH' },
             { file: 'bettercallath.mp4', title: 'Better Call ATH', views: '41K', vertical: true, desc: 'Narrative content. #BetterCallATH' },
             { file: 'polaris.mp4', title: 'Polaris', views: '9.2K', vertical: false, desc: 'Cinematic production. #BetterCallATH' },
-            { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' }
+            { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '11.3K', vertical: false, desc: 'Product visual shield. #BetterCallATH' },
+            { file: 'story1.mp4', title: 'Life Style', views: '4.2K', vertical: true, desc: 'Everyday moments. #BetterCallATH' },
+            { file: 'story2.mp4', title: 'Studio Flow', views: '6.1K', vertical: true, desc: 'Work in progress. #BetterCallATH' },
+            { file: 'story3.mp4', title: 'Urban Vibes', views: '3.8K', vertical: true, desc: 'City lights. #BetterCallATH' }
         ];
 
         // Specific Stories Data
         const storiesData = [
             { file: 'story1.mp4' },
-            { file: 'story2.mp4' },
-            { file: 'story3.mp4' },
-            { file: 'story4.mp4' },
-            { file: 'story5.mp4' },
-            { file: 'story6.mp4' }
+            { file: 'story2.mp4' }
         ];
 
         // --- INIT ---
@@ -760,6 +724,8 @@
         touchArea.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
             isLongPress = false;
+            
+            // Long Press for 2x Speed
             longPressTimer = setTimeout(() => {
                 isLongPress = true;
                 vVideo.playbackRate = 2.0;
