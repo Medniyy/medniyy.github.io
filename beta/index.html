@@ -330,8 +330,8 @@
 
                     <!-- Stats -->
                     <div class="flex-1 flex justify-around text-center">
-                        <div><div class="font-bold text-lg">10</div><div class="text-xs">Posts</div></div>
-                        <div><div class="font-bold text-lg">12.5K</div><div class="text-xs">Followers</div></div>
+                        <div><div class="font-bold text-lg">13</div><div class="text-xs">Posts</div></div>
+                        <div><div class="font-bold text-lg">2946</div><div class="text-xs">Followers</div></div>
                         <div><div class="font-bold text-lg">42</div><div class="text-xs">Following</div></div>
                     </div>
                 </div>
@@ -500,6 +500,9 @@
     <script>
         // --- DATA ---
         const videos = [
+            { file: 'Bags Cinematic AI trailer.mp4', title: 'Bags Cinematic', views: '7.8K', vertical: false, desc: 'AI trailer production. #BetterCallATH' },
+            { file: 'Pudgy Penguins Solana Wallets Gran Prix.mp4', title: 'Pudgy Penguins', views: '10.5K', vertical: false, desc: 'Gran Prix highlights. #BetterCallATH' },
+            { file: 'Solflare Cinematic AI movie.mp4', title: 'Solflare AI', views: '9.1K', vertical: false, desc: 'Cinematic AI movie. #BetterCallATH' },
             { file: 'ATHCreativeAgency.mp4', title: 'Creative Agency', views: '15.2K', vertical: true, desc: 'Agency promo visuals. #BetterCallATH' },
             { file: 'ATHGlobalCompetition.mp4', title: 'Global Competition', views: '8.9K', vertical: false, desc: 'Global event highlights. #BetterCallATH' },
             { file: 'ATHJupiter.mp4', title: 'Jupiter', views: '12K', vertical: false, desc: 'Jupiter project visuals. #BetterCallATH' },
@@ -760,6 +763,8 @@
         touchArea.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
             isLongPress = false;
+            
+            // Long Press for 2x Speed
             longPressTimer = setTimeout(() => {
                 isLongPress = true;
                 vVideo.playbackRate = 2.0;
