@@ -178,7 +178,17 @@
         .action-btn span { font-size: 13px; font-weight: 600; }
 
         .viewer-bottom-info { position: absolute; bottom: 45px; left: 12px; right: 70px; z-index: 20; text-shadow: 0 1px 2px rgba(0,0,0,0.8); cursor: pointer; }
-        .viewer-desc { font-size: 15px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Updated Description Styles for Readability */
+        .viewer-desc { 
+            font-size: 14px; 
+            line-height: 1.3; 
+            max-height: 120px; /* Limit height */
+            overflow-y: auto; /* Allow scrolling */
+            display: block;
+            pointer-events: auto; /* Allow touch interaction */
+            padding-right: 4px;
+        }
 
         /* Timeline */
         .viewer-timeline-area { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; z-index: 50; display: flex; align-items: center; cursor: pointer; touch-action: none; }
@@ -451,8 +461,8 @@
                     <!-- Follow button leads to X -->
                     <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
                 </div>
-                <!-- Increased text size for mobile -->
-                <p class="viewer-desc text-gray-100" id="viewer-desc">Cinematic masterpiece #BetterCallATH</p>
+                <!-- Description with Scroll and Click Protection -->
+                <p class="viewer-desc text-gray-100" id="viewer-desc" onclick="event.stopPropagation()">Cinematic masterpiece #BetterCallATH</p>
                 <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
             </div>
 
@@ -500,19 +510,19 @@
     <script>
         // --- DATA ---
         const videos = [
-            { file: 'Bags Cinematic AI trailer.mp4', title: 'Bags Cinematic', views: '2.3K', vertical: false, desc: 'Helicopters, money, Lamborghinis, chains, and excess as visual language. All the elements of a high budget rap video distilled into one bold cinematic piece for BEX. #BetterCallATH' },
-            { file: 'Pudgy Penguins Solana Wallets Gran Prix.mp4', title: 'Pudgy Penguins', views: '1.6K', vertical: false, desc: 'Pudgy Penguins is one of the most viral projects in crypto. We imagined a Grand Prix where every wallet in the Solana ecosystem is represented by its own Penguin ambassador. Playful, competitive, and instantly recognizable. #BetterCallATH' },
-            { file: 'Solflare Cinematic AI movie.mp4', title: 'Solflare AI', views: '8.4K', vertical: false, desc: 'A cinematic fragment built around the idea of security and trust. Using sound design and AI, we created a dramatic film moment that communicates one simple message. Solflare is always safe. A true cinematic experience. #BetterCallATH' },
-            { file: 'ATHCreativeAgency.mp4', title: 'Creative Agency', views: '1K', vertical: true, desc: 'A warm, cinematic visual that invites the viewer into our world. Soft light, calm pacing, and atmosphere first. Designed to feel like an opening scene rather than a promotion. #BetterCallATH' },
-            { file: 'ATHGlobalCompetition.mp4', title: 'Global Competition', views: '19.7K', vertical: false, desc: 'This film won first place at the Solana Global Content Competition and was created for Metaplex. Several full days of hands on production, manually built props, multiple locations, and real physical interaction. Treated as cinema, not content. If you want a true film for your brand, reach out. #BetterCallATH' },
-            { file: 'ATHJupiter.mp4', title: 'Jupiter', views: '1.7K', vertical: false, desc: 'Released just before Breakpoint, this short meme style trailer explores how a caricatured cultural entry point into the Solana ecosystem could look. A playful take on community, identity, and shared references. #BetterCallATH' },
-            { file: 'ATHSeries.mp4', title: 'ATH Series', views: '6.6K', vertical: false, desc: 'A series created one month before Breakpoint to document who we are, what we do, and how we prepared for the event. Over time, it evolved into short sketch driven episodes that helped us secure partnerships directly at Breakpoint. #BetterCallATH' },
-            { file: 'ATHSolanaSummit.mp4', title: 'Solana Summit', views: '3.8K', vertical: false, desc: 'Captured on the ground during Solana Summit. Fast, alive, and authentic. A visual reflection of the people, energy, and momentum of the ecosystem when it comes together offline. #BetterCallATH' },
-            { file: 'Solflaresink.mp4', title: 'Solflare Sink', views: '12K', vertical: true, desc: 'An experiment at the edge of format and tone. Short, bold, and humorous, with a clear message underneath. We enjoy taking creative risks, and it was rewarding to see the team receive this piece with warmth. #BetterCallATH' },
-            { file: 'Solflareviral.mp4', title: 'Solflare Viral', views: '430K', vertical: true, desc: 'Shot directly at Breakpoint. About thirty seconds of filming and roughly twenty minutes of editing resulted in four hundred and thirty thousand views. The video went viral during the conference itself. We study trends closely and know how to translate them into results for crypto native projects. This time, Solflare and ATH delivered a strong combo. #BetterCallATH' },
-            { file: 'bettercallath.mp4', title: 'Better Call ATH', views: '1.4K', vertical: true, desc: 'A reinterpretation of a classic cultural reference, adapted to our reality and constraints. A playful take on an iconic advertising format, reimagined for our agency. #BetterCallATH' },
-            { file: 'polaris.mp4', title: 'Polaris', views: '11K', vertical: false, desc: 'Emotion is the reason people engage and return. This piece won first place at a content competition by focusing on emotional contrast and sincerity. One of our most meaningful works. #BetterCallATH' },
-            { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '4.6K', vertical: false, desc: 'Created directly at Breakpoint with limited time and resources. A hands on product and brand shoot built through elegant, minimal cinematography. The same approach can be applied to your product. #BetterCallATH' }
+            { file: 'Bags Cinematic AI trailer.mp4', title: 'Bags Cinematic', views: '2.3K', likes: '45', vertical: false, desc: 'Helicopters, money, Lamborghinis, chains, and excess as visual language. All the elements of a high budget rap video distilled into one bold cinematic piece for BEX. #BetterCallATH' },
+            { file: 'Pudgy Penguins Solana Wallets Gran Prix.mp4', title: 'Pudgy Penguins', views: '1.6K', likes: '67', vertical: false, desc: 'Pudgy Penguins is one of the most viral projects in crypto. We imagined a Grand Prix where every wallet in the Solana ecosystem is represented by its own Penguin ambassador. Playful, competitive, and instantly recognizable. #BetterCallATH' },
+            { file: 'Solflare Cinematic AI movie.mp4', title: 'Solflare AI', views: '8.4K', likes: '32', vertical: false, desc: 'A cinematic fragment built around the idea of security and trust. Using sound design and AI, we created a dramatic film moment that communicates one simple message. Solflare is always safe. A true cinematic experience. #BetterCallATH' },
+            { file: 'ATHCreativeAgency.mp4', title: 'Creative Agency', views: '1K', likes: '58', vertical: true, desc: 'A warm, cinematic visual that invites the viewer into our world. Soft light, calm pacing, and atmosphere first. Designed to feel like an opening scene rather than a promotion. #BetterCallATH' },
+            { file: 'ATHGlobalCompetition.mp4', title: 'Global Competition', views: '19.7K', likes: '71', vertical: false, desc: 'This film won first place at the Solana Global Content Competition and was created for Metaplex. Several full days of hands on production, manually built props, multiple locations, and real physical interaction. Treated as cinema, not content. If you want a true film for your brand, reach out. #BetterCallATH' },
+            { file: 'ATHJupiter.mp4', title: 'Jupiter', views: '1.7K', likes: '39', vertical: false, desc: 'Released just before Breakpoint, this short meme style trailer explores how a caricatured cultural entry point into the Solana ecosystem could look. A playful take on community, identity, and shared references. #BetterCallATH' },
+            { file: 'ATHSeries.mp4', title: 'ATH Series', views: '6.6K', likes: '55', vertical: false, desc: 'A series created one month before Breakpoint to document who we are, what we do, and how we prepared for the event. Over time, it evolved into short sketch driven episodes that helped us secure partnerships directly at Breakpoint. #BetterCallATH' },
+            { file: 'ATHSolanaSummit.mp4', title: 'Solana Summit', views: '3.8K', likes: '41', vertical: false, desc: 'Captured on the ground during Solana Summit. Fast, alive, and authentic. A visual reflection of the people, energy, and momentum of the ecosystem when it comes together offline. #BetterCallATH' },
+            { file: 'Solflaresink.mp4', title: 'Solflare Sink', views: '12K', likes: '76', vertical: true, desc: 'An experiment at the edge of format and tone. Short, bold, and humorous, with a clear message underneath. We enjoy taking creative risks, and it was rewarding to see the team receive this piece with warmth. #BetterCallATH' },
+            { file: 'Solflareviral.mp4', title: 'Solflare Viral', views: '430K', likes: '63', vertical: true, desc: 'Shot directly at Breakpoint. About thirty seconds of filming and roughly twenty minutes of editing resulted in four hundred and thirty thousand views. The video went viral during the conference itself. We study trends closely and know how to translate them into results for crypto native projects. This time, Solflare and ATH delivered a strong combo. #BetterCallATH' },
+            { file: 'bettercallath.mp4', title: 'Better Call ATH', views: '1.4K', likes: '34', vertical: true, desc: 'A reinterpretation of a classic cultural reference, adapted to our reality and constraints. A playful take on an iconic advertising format, reimagined for our agency. #BetterCallATH' },
+            { file: 'polaris.mp4', title: 'Polaris', views: '11K', likes: '50', vertical: false, desc: 'Emotion is the reason people engage and return. This piece won first place at a content competition by focusing on emotional contrast and sincerity. One of our most meaningful works. #BetterCallATH' },
+            { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '4.6K', likes: '48', vertical: false, desc: 'Created directly at Breakpoint with limited time and resources. A hands on product and brand shoot built through elegant, minimal cinematography. The same approach can be applied to your product. #BetterCallATH' }
         ];
 
         // Specific Stories Data
@@ -711,7 +721,8 @@
             vVideo.load();
             vVideo.play().catch(e => console.log("Autoplay blocked"));
             document.getElementById('center-play').style.opacity = '0';
-            document.getElementById('viewer-likes').innerText = data.views;
+            // Use RANDOM LIKES here
+            document.getElementById('viewer-likes').innerText = data.likes;
             document.getElementById('viewer-desc').innerText = data.desc;
             vHeart.className = 'far fa-heart';
             vHeart.parentElement.classList.remove('liked');
