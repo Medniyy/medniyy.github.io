@@ -108,6 +108,7 @@
         /* Stories Viewer */
         #stories-viewer {
             position: fixed; inset: 0; background: #1a1a1a; z-index: 200;
+            /* Flexbox for centering on desktop */
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease, transform 0.3s ease;
@@ -119,19 +120,23 @@
             position: relative;
             width: 100%;
             height: 100%;
-            max-width: 500px; /* Mobile width constraint for desktop */
+            /* Default mobile style */
             background: #000;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* On larger screens, add border radius and shadow */
+        /* Desktop Adaptation for Stories */
         @media (min-width: 768px) {
             .story-content-wrapper {
-                height: 90vh; /* Max height on desktop */
-                border-radius: 12px;
-                box-shadow: 0 0 20px rgba(0,0,0,0.5);
+                max-width: 450px; /* Constrain width like mobile */
+                height: 90vh;    /* Max height to fit screen */
+                border-radius: 12px; /* Rounded corners */
+                box-shadow: 0 0 40px rgba(0,0,0,0.5); /* Shadow for pop-out effect */
+            }
+            #stories-viewer {
+                background: rgba(0,0,0,0.9); /* Dimmed background on desktop */
             }
         }
 
@@ -175,15 +180,15 @@
         /* Desktop specific viewer adjustments */
         @media (min-width: 768px) {
             .viewer-video-wrapper {
-                max-width: 450px; /* Reduced width for desktop */
-                max-height: 85vh; /* Reduced height for desktop */
+                max-width: 450px; 
+                max-height: 85vh; 
                 border-radius: 12px;
                 overflow: hidden;
                 margin: auto;
                 box-shadow: 0 0 40px rgba(0,0,0,0.8);
             }
             .viewer-right-actions {
-                right: -60px !important; /* Move actions outside video on desktop */
+                right: -60px !important; 
                 bottom: 20px !important;
             }
             .desk-nav-btn {
@@ -202,10 +207,9 @@
                 color: white; 
                 transform: translateY(-50%) scale(1.1);
             }
-            .desk-prev { left: -100px; } /* Position outside video */
+            .desk-prev { left: -100px; } 
             .desk-next { right: -100px; }
             
-            /* Close button adjustment for desktop */
             .desk-close-btn {
                 position: absolute;
                 top: 20px;
@@ -222,7 +226,6 @@
 
         .desk-nav-btn, .desk-close-btn { display: none; } /* Hidden on mobile */
 
-
         .viewer-right-actions { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 24px; align-items: center; z-index: 20; }
         .action-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .action-btn i { font-size: 26px; }
@@ -230,15 +233,13 @@
 
         .viewer-bottom-info { position: absolute; bottom: 45px; left: 12px; right: 70px; z-index: 20; text-shadow: 0 1px 2px rgba(0,0,0,0.8); cursor: pointer; }
         
-        /* Updated Description Styles for Readability */
         .viewer-desc { 
             font-size: 14px; 
             line-height: 1.4; 
-            /* Remove height restriction for scrolling */
             max-height: 150px; 
             overflow-y: auto; 
             display: block;
-            pointer-events: auto; /* Allow touch interaction */
+            pointer-events: auto; 
             padding-right: 4px;
         }
 
@@ -320,24 +321,37 @@
         </div>
     </div>
 
-    <!-- STORIES VIEWER -->
+    <!-- STORIES VIEWER (UPDATED) -->
     <div id="stories-viewer">
-        <div id="story-bars" class="story-progress-container"></div>
-        <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-2">
-            <div class="flex items-center gap-2">
-                <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
-                <span class="font-bold text-sm text-shadow">ath.camera</span>
-                <span class="text-xs text-white/60 text-shadow">2h</span>
+        <!-- Wrapper for adaptive sizing -->
+        <div class="story-content-wrapper">
+            <!-- Progress Bars -->
+            <div id="story-bars" class="story-progress-container">
+                <!-- Bars injected via JS -->
             </div>
-            <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
-            <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
-            <div class="absolute inset-0 z-40 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none"></div>
-        </div>
-        <div class="absolute inset-0 z-20 flex">
-            <div class="w-1/3 h-full" onclick="prevStory()"></div>
-            <div class="w-2/3 h-full" onclick="nextStory()"></div>
+
+            <!-- Header -->
+            <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-4">
+                <div class="flex items-center gap-2">
+                    <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
+                    <span class="font-bold text-sm text-shadow">ath.camera</span>
+                    <span class="text-xs text-white/60 text-shadow">2h</span>
+                </div>
+                <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Video -->
+            <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
+                <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
+                <!-- Gradient overlay -->
+                <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-black/20 pointer-events-none"></div>
+            </div>
+
+            <!-- Tap Zones -->
+            <div class="absolute inset-0 z-20 flex">
+                <div class="w-1/3 h-full" onclick="prevStory()"></div>
+                <div class="w-2/3 h-full" onclick="nextStory()"></div>
+            </div>
         </div>
     </div>
 
