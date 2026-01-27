@@ -172,13 +172,75 @@
         .viewer-video-wrapper { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; }
         .viewer-video-wrapper video { max-height: 100%; max-width: 100%; width: 100%; object-fit: contain; }
 
+        /* Desktop specific viewer adjustments */
+        @media (min-width: 768px) {
+            .viewer-video-wrapper {
+                max-width: 450px; /* Reduced width for desktop */
+                max-height: 85vh; /* Reduced height for desktop */
+                border-radius: 12px;
+                overflow: hidden;
+                margin: auto;
+                box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            }
+            .viewer-right-actions {
+                right: -60px !important; /* Move actions outside video on desktop */
+                bottom: 20px !important;
+            }
+            .desk-nav-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 2.5rem;
+                color: rgba(255,255,255,0.4);
+                cursor: pointer;
+                transition: color 0.2s, transform 0.2s;
+                padding: 20px;
+                z-index: 60;
+                display: block !important;
+            }
+            .desk-nav-btn:hover { 
+                color: white; 
+                transform: translateY(-50%) scale(1.1);
+            }
+            .desk-prev { left: -100px; } /* Position outside video */
+            .desk-next { right: -100px; }
+            
+            /* Close button adjustment for desktop */
+            .desk-close-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 2rem;
+                color: rgba(255,255,255,0.6);
+                cursor: pointer;
+                z-index: 60;
+                display: block !important;
+                transition: color 0.2s;
+            }
+             .desk-close-btn:hover { color: white; }
+        }
+
+        .desk-nav-btn, .desk-close-btn { display: none; } /* Hidden on mobile */
+
+
         .viewer-right-actions { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 24px; align-items: center; z-index: 20; }
         .action-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .action-btn i { font-size: 26px; }
         .action-btn span { font-size: 13px; font-weight: 600; }
 
         .viewer-bottom-info { position: absolute; bottom: 45px; left: 12px; right: 70px; z-index: 20; text-shadow: 0 1px 2px rgba(0,0,0,0.8); cursor: pointer; }
-        .viewer-desc { font-size: 15px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Updated Description Styles for Readability */
+        .viewer-desc { 
+            font-size: 14px; 
+            line-height: 1.4; 
+            /* Remove height restriction for scrolling */
+            max-height: 150px; 
+            overflow-y: auto; 
+            display: block;
+            pointer-events: auto; /* Allow touch interaction */
+            padding-right: 4px;
+        }
 
         /* Timeline */
         .viewer-timeline-area { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; z-index: 50; display: flex; align-items: center; cursor: pointer; touch-action: none; }
@@ -191,24 +253,7 @@
         .speed-overlay { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 30; backdrop-filter: blur(4px); }
         .speed-overlay.visible { opacity: 1; }
 
-        /* Improved Notification Badge */
-        .notif-badge { 
-            position: absolute; 
-            top: -2px; 
-            right: -4px; 
-            width: 18px; /* Slightly larger */
-            height: 18px; 
-            background-color: #ef4444; 
-            color: white; 
-            font-size: 10px; 
-            font-weight: bold; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border: 2px solid black; 
-            line-height: 1; /* Center vertically */
-        }
+        .notif-badge { position: absolute; top: -2px; right: -4px; width: 18px; height: 18px; background-color: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid black; line-height: 1; }
         
         .runaway-btn { transition: transform 0.15s ease-out; }
         @keyframes likeHeart { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
@@ -216,6 +261,31 @@
 
         #notif-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-200%); background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border: 1px solid #333; padding: 16px; border-radius: 12px; width: 90%; max-width: 400px; z-index: 200; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: start; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); cursor: pointer; }
         #notif-toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Search Flash Animation */
+        @keyframes flash {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .camera-flash {
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 300;
+        }
+        .camera-flash.active {
+            animation: flash 0.3s ease-out;
+        }
+        #search-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 250;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        #search-modal.active { opacity: 1; pointer-events: auto; }
+        
     </style>
 </head>
 <body class="text-white bg-black" onload="initSite()">
@@ -223,6 +293,16 @@
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="pulse-logo"><img src="logo.png" class="w-full h-full object-cover"></div>
+    </div>
+    
+    <!-- SEARCH MODAL (Custom) -->
+    <div id="search-modal" onclick="closeSearchModal()">
+        <div class="camera-flash" id="search-flash"></div>
+        <i class="fas fa-camera text-6xl mb-6 text-white animate-bounce"></i>
+        <h2 class="text-2xl font-bold text-center px-6 leading-relaxed">
+            You've already found<br>the best creator for yourself.
+        </h2>
+        <p class="text-neutral-500 text-sm mt-8">(Tap anywhere to close)</p>
     </div>
 
     <!-- X REDIRECT DIALOG (Reels/Camera) -->
@@ -240,37 +320,24 @@
         </div>
     </div>
 
-    <!-- STORIES VIEWER (UPDATED) -->
+    <!-- STORIES VIEWER -->
     <div id="stories-viewer">
-        <!-- Wrapper for adaptive sizing -->
-        <div class="story-content-wrapper">
-            <!-- Progress Bars -->
-            <div id="story-bars" class="story-progress-container">
-                <!-- Bars injected via JS -->
+        <div id="story-bars" class="story-progress-container"></div>
+        <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-2">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
+                <span class="font-bold text-sm text-shadow">ath.camera</span>
+                <span class="text-xs text-white/60 text-shadow">2h</span>
             </div>
-
-            <!-- Header -->
-            <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-4">
-                <div class="flex items-center gap-2">
-                    <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
-                    <span class="font-bold text-sm text-shadow">ath.camera</span>
-                    <span class="text-xs text-white/60 text-shadow">2h</span>
-                </div>
-                <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
-            </div>
-
-            <!-- Video -->
-            <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
-                <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
-                <!-- Gradient overlay -->
-                <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-black/20 pointer-events-none"></div>
-            </div>
-
-            <!-- Tap Zones -->
-            <div class="absolute inset-0 z-20 flex">
-                <div class="w-1/3 h-full" onclick="prevStory()"></div>
-                <div class="w-2/3 h-full" onclick="nextStory()"></div>
-            </div>
+            <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
+            <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
+            <div class="absolute inset-0 z-40 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none"></div>
+        </div>
+        <div class="absolute inset-0 z-20 flex">
+            <div class="w-1/3 h-full" onclick="prevStory()"></div>
+            <div class="w-2/3 h-full" onclick="nextStory()"></div>
         </div>
     </div>
 
@@ -282,7 +349,8 @@
         </div>
         <nav class="flex flex-col gap-6 text-lg">
             <button onclick="switchView('grid')" class="flex items-center gap-4 font-bold hover:text-gray-300"><i class="fas fa-home"></i> Home</button>
-            <button onclick="toggleSearch()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</button>
+            <!-- Search Button Desktop -->
+            <button onclick="triggerSearchExperience()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</button>
             <button onclick="showXDialogDelay()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</button>
             <!-- Direct DM Link -->
             <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-envelope"></i> Messages</a>
@@ -409,7 +477,8 @@
     <!-- MOBILE BOTTOM NAV -->
     <nav class="bottom-nav fixed bottom-0 w-full bg-black border-t border-neutral-800 z-50 flex justify-around items-center py-3 pb-safe">
         <button onclick="switchView('grid')" class="text-white text-2xl"><i class="fas fa-home"></i></button>
-        <button onclick="toggleSearch()" class="text-neutral-500 text-2xl"><i class="fas fa-search"></i></button>
+        <!-- Search Button Mobile -->
+        <button onclick="triggerSearchExperience()" class="text-neutral-500 text-2xl"><i class="fas fa-search"></i></button>
         <!-- Reels Button (Triggers X Dialog only) -->
         <button onclick="showXDialogDelay()" class="text-neutral-500 text-2xl"><i class="fas fa-film"></i></button>
         <a href="https://x.com/athcamera" target="_blank" class="text-neutral-500 text-2xl"><i class="far fa-user"></i></a>
@@ -417,74 +486,94 @@
 
     <!-- FULLSCREEN VIEWER (Overlay) -->
     <div id="video-viewer" class="no-select">
-        <div class="viewer-video-wrapper">
-            
-            <!-- Video Container for Event Listeners -->
-            <div id="video-touch-area" class="relative w-full h-full flex items-center justify-center">
-                <video id="viewer-video" playsinline loop>
-                    <source src="" type="video/mp4">
-                </video>
-            </div>
+        <!-- Close button on desktop - Top Right -->
+        <button onclick="closeViewer()" class="desk-close-btn absolute top-6 right-6 z-50 text-white text-3xl drop-shadow-md hover:text-gray-300 hidden md:block">
+            <i class="fas fa-times"></i>
+        </button>
 
-            <!-- Close / Back Button -->
-            <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md">
+        <div class="relative w-full h-full flex items-center justify-center">
+            <!-- Left Arrow (Desktop) -->
+            <button class="desk-nav-btn desk-prev hidden md:block" onclick="prevVideo(event)">
                 <i class="fas fa-chevron-left"></i>
             </button>
 
-            <!-- Mute Toggle -->
-            <button onclick="toggleMute()" class="absolute top-4 right-4 z-40 text-white text-xl bg-black/50 p-2 rounded-full backdrop-blur-sm">
-                <i id="mute-icon" class="fas fa-volume-xmark"></i>
+            <div class="viewer-video-wrapper relative">
+                
+                <!-- Video Container for Event Listeners -->
+                <div id="video-touch-area" class="relative w-full h-full flex items-center justify-center">
+                    <video id="viewer-video" playsinline loop>
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Close / Back Button (Mobile - Top Left) -->
+                <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md md:hidden">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+
+                <!-- Mute Toggle -->
+                <button onclick="toggleMute()" class="absolute top-4 right-4 z-40 text-white text-xl bg-black/50 p-2 rounded-full backdrop-blur-sm">
+                    <i id="mute-icon" class="fas fa-volume-xmark"></i>
+                </button>
+
+                <!-- Speed 2x Overlay -->
+                <div id="speed-overlay" class="speed-overlay">
+                    <i class="fas fa-forward"></i> Speed 2x
+                </div>
+
+                <!-- Play Icon (Center) -->
+                <div id="center-play" class="play-icon-overlay">
+                    <i class="fas fa-play text-3xl ml-1"></i>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="viewer-right-actions">
+                    <!-- New X Link Button -->
+                    <a id="x-link-btn" href="#" target="_blank" class="action-btn mb-2">
+                        <i class="fa-brands fa-x-twitter text-2xl"></i>
+                    </a>
+
+                    <button class="action-btn" onclick="handleLike()">
+                        <i id="viewer-heart" class="far fa-heart"></i>
+                        <span id="viewer-likes">12K</span>
+                    </button>
+                    <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn">
+                        <i class="far fa-comment-dots"></i>
+                        <span>DM</span>
+                    </a>
+                    <button class="action-btn">
+                        <i class="far fa-paper-plane"></i>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+
+                <!-- Bottom Info (Click to close/back logic integrated) -->
+                <div class="viewer-bottom-info" onclick="closeViewer()">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
+                        <span class="font-bold text-sm">ath.camera</span>
+                        <!-- Follow button leads to X -->
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
+                    </div>
+                    <!-- Description with Scroll and Click Protection -->
+                    <p class="viewer-desc text-gray-100" id="viewer-desc" onclick="event.stopPropagation()">Cinematic masterpiece #BetterCallATH</p>
+                    <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="viewer-timeline-area" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
+                    <div class="viewer-timeline-bg">
+                        <div class="viewer-timeline-fill" id="viewer-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Arrow (Desktop) -->
+            <button class="desk-nav-btn desk-next hidden md:block" onclick="nextVideo(event)">
+                <i class="fas fa-chevron-right"></i>
             </button>
-
-            <!-- Speed 2x Overlay -->
-            <div id="speed-overlay" class="speed-overlay">
-                <i class="fas fa-forward"></i> Speed 2x
-            </div>
-
-            <!-- Play Icon (Center) -->
-            <div id="center-play" class="play-icon-overlay">
-                <i class="fas fa-play text-3xl ml-1"></i>
-            </div>
-
-            <!-- Right Actions -->
-            <div class="viewer-right-actions">
-                <button class="action-btn" onclick="handleLike()">
-                    <i id="viewer-heart" class="far fa-heart"></i>
-                    <span id="viewer-likes">12K</span>
-                </button>
-                <!-- Direct DM Link -->
-                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn">
-                    <i class="far fa-comment-dots"></i>
-                    <span>DM</span>
-                </a>
-                <button class="action-btn">
-                    <i class="far fa-paper-plane"></i>
-                </button>
-                <button class="action-btn">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
-            </div>
-
-            <!-- Bottom Info (Click to close/back logic integrated) -->
-            <div class="viewer-bottom-info" onclick="closeViewer()">
-                <div class="flex items-center gap-2 mb-2">
-                    <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
-                    <span class="font-bold text-sm">ath.camera</span>
-                    <!-- Follow button leads to X -->
-                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
-                </div>
-                <!-- Description with Scroll and Click Protection -->
-                <p class="viewer-desc text-gray-100" id="viewer-desc" onclick="event.stopPropagation()">Cinematic masterpiece #BetterCallATH</p>
-                <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
-            </div>
-
-            <!-- Timeline -->
-            <div class="viewer-timeline-area" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
-                <div class="viewer-timeline-bg">
-                    <div class="viewer-timeline-fill" id="viewer-fill"></div>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -522,19 +611,123 @@
     <script>
         // --- DATA ---
         const videos = [
-            { file: 'Bags Cinematic AI trailer.mp4', title: 'Bags Cinematic', views: '2.3K', vertical: false, desc: 'Helicopters, money, Lamborghinis, chains, and excess as visual language. All the elements of a high budget rap video distilled into one bold cinematic piece for BEX. #BetterCallATH' },
-            { file: 'Pudgy Penguins Solana Wallets Gran Prix.mp4', title: 'Pudgy Penguins', views: '1.6K', vertical: false, desc: 'Pudgy Penguins is one of the most viral projects in crypto. We imagined a Grand Prix where every wallet in the Solana ecosystem is represented by its own Penguin ambassador. Playful, competitive, and instantly recognizable. #BetterCallATH' },
-            { file: 'Solflare Cinematic AI movie.mp4', title: 'Solflare AI', views: '8.4K', vertical: false, desc: 'A cinematic fragment built around the idea of security and trust. Using sound design and AI, we created a dramatic film moment that communicates one simple message. Solflare is always safe. A true cinematic experience. #BetterCallATH' },
-            { file: 'ATHCreativeAgency.mp4', title: 'Creative Agency', views: '1K', vertical: true, desc: 'A warm, cinematic visual that invites the viewer into our world. Soft light, calm pacing, and atmosphere first. Designed to feel like an opening scene rather than a promotion. #BetterCallATH' },
-            { file: 'ATHGlobalCompetition.mp4', title: 'Global Competition', views: '19.7K', vertical: false, desc: 'This film won first place at the Solana Global Content Competition and was created for Metaplex. Several full days of hands on production, manually built props, multiple locations, and real physical interaction. Treated as cinema, not content. If you want a true film for your brand, reach out. #BetterCallATH' },
-            { file: 'ATHJupiter.mp4', title: 'Jupiter', views: '1.7K', vertical: false, desc: 'Released just before Breakpoint, this short meme style trailer explores how a caricatured cultural entry point into the Solana ecosystem could look. A playful take on community, identity, and shared references. #BetterCallATH' },
-            { file: 'ATHSeries.mp4', title: 'ATH Series', views: '6.6K', vertical: false, desc: 'A series created one month before Breakpoint to document who we are, what we do, and how we prepared for the event. Over time, it evolved into short sketch driven episodes that helped us secure partnerships directly at Breakpoint. #BetterCallATH' },
-            { file: 'ATHSolanaSummit.mp4', title: 'Solana Summit', views: '3.8K', vertical: false, desc: 'Captured on the ground during Solana Summit. Fast, alive, and authentic. A visual reflection of the people, energy, and momentum of the ecosystem when it comes together offline. #BetterCallATH' },
-            { file: 'Solflaresink.mp4', title: 'Solflare Sink', views: '12K', vertical: true, desc: 'An experiment at the edge of format and tone. Short, bold, and humorous, with a clear message underneath. We enjoy taking creative risks, and it was rewarding to see the team receive this piece with warmth. #BetterCallATH' },
-            { file: 'Solflareviral.mp4', title: 'Solflare Viral', views: '430K', vertical: true, desc: 'Shot directly at Breakpoint. About thirty seconds of filming and roughly twenty minutes of editing resulted in four hundred and thirty thousand views. The video went viral during the conference itself. We study trends closely and know how to translate them into results for crypto native projects. This time, Solflare and ATH delivered a strong combo. #BetterCallATH' },
-            { file: 'bettercallath.mp4', title: 'Better Call ATH', views: '1.4K', vertical: true, desc: 'A reinterpretation of a classic cultural reference, adapted to our reality and constraints. A playful take on an iconic advertising format, reimagined for our agency. #BetterCallATH' },
-            { file: 'polaris.mp4', title: 'Polaris', views: '11K', vertical: false, desc: 'Emotion is the reason people engage and return. This piece won first place at a content competition by focusing on emotional contrast and sincerity. One of our most meaningful works. #BetterCallATH' },
-            { file: 'solflareshield.mp4', title: 'Solflare Shield', views: '4.6K', vertical: false, desc: 'Created directly at Breakpoint with limited time and resources. A hands on product and brand shoot built through elegant, minimal cinematography. The same approach can be applied to your product. #BetterCallATH' }
+            { 
+                file: 'Bags Cinematic AI trailer.mp4', 
+                title: 'Bags Cinematic', 
+                views: '2.3K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, // Random 36-79
+                vertical: false, 
+                desc: 'Helicopters, money, Lamborghinis, chains, and excess as visual language. All the elements of a high budget rap video distilled into one bold cinematic piece for BEX. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/2014572236305531346'
+            },
+            { 
+                file: 'Pudgy Penguins Solana Wallets Gran Prix.mp4', 
+                title: 'Pudgy Penguins', 
+                views: '1.6K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Pudgy Penguins is one of the most viral projects in crypto. We imagined a Grand Prix where every wallet in the Solana ecosystem is represented by its own Penguin ambassador. Playful, competitive, and instantly recognizable. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/2013915725266555291/video/1'
+            },
+            { 
+                file: 'Solflare Cinematic AI movie.mp4', 
+                title: 'Solflare AI', 
+                views: '8.4K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'A cinematic fragment built around the idea of security and trust. Using sound design and AI, we created a dramatic film moment that communicates one simple message. Solflare is always safe. A true cinematic experience. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/2013588299399479613'
+            },
+            { 
+                file: 'ATHCreativeAgency.mp4', 
+                title: 'Creative Agency', 
+                views: '1K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'A warm, cinematic visual that invites the viewer into our world. Soft light, calm pacing, and atmosphere first. Designed to feel like an opening scene rather than a promotion. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1995577640586281229/video/1'
+            },
+            { 
+                file: 'ATHGlobalCompetition.mp4', 
+                title: 'Global Competition', 
+                views: '19.7K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'This film won first place at the Solana Global Content Competition and was created for Metaplex. Several full days of hands on production, manually built props, multiple locations, and real physical interaction. Treated as cinema, not content. If you want a true film for your brand, reach out. #BetterCallATH',
+                xLink: 'https://x.com/ZametkiHodlera/status/1898652306478100757'
+            },
+            { 
+                file: 'ATHJupiter.mp4', 
+                title: 'Jupiter', 
+                views: '1.7K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Released just before Breakpoint, this short meme style trailer explores how a caricatured cultural entry point into the Solana ecosystem could look. A playful take on community, identity, and shared references. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1986033529042739205/video/1'
+            },
+            { 
+                file: 'ATHSeries.mp4', 
+                title: 'ATH Series', 
+                views: '6.6K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'A series created one month before Breakpoint to document who we are, what we do, and how we prepared for the event. Over time, it evolved into short sketch driven episodes that helped us secure partnerships directly at Breakpoint. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1988588061387804860/video/1'
+            },
+            { 
+                file: 'ATHSolanaSummit.mp4', 
+                title: 'Solana Summit', 
+                views: '3.8K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Captured on the ground during Solana Summit. Fast, alive, and authentic. A visual reflection of the people, energy, and momentum of the ecosystem when it comes together offline. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1933516183057416623/video/1'
+            },
+            { 
+                file: 'Solflaresink.mp4', 
+                title: 'Solflare Sink', 
+                views: '12K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'An experiment at the edge of format and tone. Short, bold, and humorous, with a clear message underneath. We enjoy taking creative risks, and it was rewarding to see the team receive this piece with warmth. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1929223432723378343/video/1'
+            },
+            { 
+                file: 'Solflareviral.mp4', 
+                title: 'Solflare Viral', 
+                views: '430K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'Shot directly at Breakpoint. About thirty seconds of filming and roughly twenty minutes of editing resulted in four hundred and thirty thousand views. The video went viral during the conference itself. We study trends closely and know how to translate them into results for crypto native projects. This time, Solflare and ATH delivered a strong combo. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1999759313540387157/video/1'
+            },
+            { 
+                file: 'bettercallath.mp4', 
+                title: 'Better Call ATH', 
+                views: '1.4K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'A reinterpretation of a classic cultural reference, adapted to our reality and constraints. A playful take on an iconic advertising format, reimagined for our agency. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1992535510448021662/video/1'
+            },
+            { 
+                file: 'polaris.mp4', 
+                title: 'Polaris', 
+                views: '11K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Emotion is the reason people engage and return. This piece won first place at a content competition by focusing on emotional contrast and sincerity. One of our most meaningful works. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1942560220787651024/video/1'
+            },
+            { 
+                file: 'solflareshield.mp4', 
+                title: 'Solflare Shield', 
+                views: '4.6K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Created directly at Breakpoint with limited time and resources. A hands on product and brand shoot built through elegant, minimal cinematography. The same approach can be applied to your product. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1999175139460808790/video/1'
+            }
         ];
 
         // Specific Stories Data
@@ -696,11 +889,25 @@
             dialog.classList.add('hidden');
         }
 
+        // --- SEARCH EXPERIENCE LOGIC ---
+        function triggerSearchExperience() {
+            const modal = document.getElementById('search-modal');
+            const flash = document.getElementById('search-flash');
+            
+            modal.classList.add('active');
+            // Trigger Flash
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+        }
+
+        function closeSearchModal() {
+            const modal = document.getElementById('search-modal');
+            modal.classList.remove('active');
+        }
+
         function toggleSearch() {
-            document.getElementById('search-overlay').classList.toggle('open');
-            if(document.getElementById('search-overlay').classList.contains('open')) {
-                document.getElementById('search-input').focus();
-            }
+            // Replaced default toggle with new experience
+            triggerSearchExperience();
         }
 
         function handleSearch(query) {
@@ -731,6 +938,7 @@
         const vFill = document.getElementById('viewer-fill');
         const vHeart = document.getElementById('viewer-heart');
         const touchArea = document.getElementById('video-touch-area');
+        const xLinkBtn = document.getElementById('x-link-btn');
         let isMuted = false;
         let scrollPosition = 0;
 
@@ -750,7 +958,7 @@
             vVideo.load();
             vVideo.play().catch(e => console.log("Autoplay blocked"));
             document.getElementById('center-play').style.opacity = '0';
-            document.getElementById('viewer-likes').innerText = data.views; // Using views instead of likes per request
+            document.getElementById('viewer-likes').innerText = data.likes;
             document.getElementById('viewer-desc').innerText = data.desc;
             vHeart.className = 'far fa-heart';
             vHeart.parentElement.classList.remove('liked');
@@ -758,6 +966,50 @@
                 vVideo.style.objectFit = 'cover';
             } else {
                 vVideo.style.objectFit = 'contain';
+            }
+            
+            // Update X Link
+            if (data.xLink) {
+                xLinkBtn.href = data.xLink;
+                xLinkBtn.style.display = 'flex';
+            } else {
+                xLinkBtn.style.display = 'none';
+            }
+        }
+
+        // --- KEYBOARD & MOUSE SUPPORT (Desktop) ---
+        document.addEventListener('keydown', (e) => {
+            if (!viewer.classList.contains('active')) return;
+            
+            if (e.key === 'ArrowRight') nextVideo();
+            if (e.key === 'ArrowLeft') prevVideo();
+            if (e.key === 'Escape') closeViewer();
+        });
+
+        viewer.addEventListener('wheel', (e) => {
+            if (!viewer.classList.contains('active')) return;
+            e.preventDefault(); // Prevent page scroll
+            
+            // Debounce or threshold to prevent rapid switching
+            if (Math.abs(e.deltaY) > 50) { 
+                if (e.deltaY > 0) nextVideo();
+                else prevVideo();
+            }
+        }, { passive: false });
+
+        function nextVideo(e) {
+            if (e) e.stopPropagation();
+            if (currentIndex < videos.length - 1) {
+                loadVideoInViewer(currentIndex + 1);
+                currentIndex++;
+            }
+        }
+
+        function prevVideo(e) {
+            if (e) e.stopPropagation();
+            if (currentIndex > 0) {
+                loadVideoInViewer(currentIndex - 1);
+                currentIndex--;
             }
         }
 
