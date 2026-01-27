@@ -182,36 +182,42 @@
                 margin: auto;
                 box-shadow: 0 0 40px rgba(0,0,0,0.8);
             }
+            /* Move actions outside video on desktop */
             .viewer-right-actions {
-                right: -60px !important; /* Move actions outside video on desktop */
+                right: -60px !important; 
                 bottom: 20px !important;
             }
+            /* Navigation Arrows */
             .desk-nav-btn {
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
-                font-size: 2rem;
-                color: rgba(255,255,255,0.5);
+                font-size: 2.5rem;
+                color: rgba(255,255,255,0.4);
                 cursor: pointer;
-                transition: color 0.2s;
+                transition: color 0.2s, transform 0.2s;
                 padding: 20px;
                 z-index: 60;
                 display: block !important;
             }
-            .desk-nav-btn:hover { color: white; }
-            .desk-prev { left: -80px; }
-            .desk-next { right: -80px; }
+            .desk-nav-btn:hover { 
+                color: white; 
+                transform: translateY(-50%) scale(1.1);
+            }
+            .desk-prev { left: -100px; } /* Position outside video */
+            .desk-next { right: -100px; }
             
-            /* Close button adjustment for desktop */
+            /* Close button adjustment for desktop - moved closer to video */
             .desk-close-btn {
                 position: absolute;
                 top: 20px;
                 right: 20px;
                 font-size: 2rem;
-                color: rgba(255,255,255,0.7);
+                color: rgba(255,255,255,0.6);
                 cursor: pointer;
                 z-index: 60;
                 display: block !important;
+                transition: color 0.2s;
             }
              .desk-close-btn:hover { color: white; }
         }
