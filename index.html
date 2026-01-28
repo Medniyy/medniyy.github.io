@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ATH | Visual Production</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overscroll-behavior-y: none; /* Prevent pull-to-refresh globally */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Lock Body Scroll Class */
+        body.lock-scroll {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .no-select { user-select: none; -webkit-user-select: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .touch-pan-y { touch-action: pan-y; }
+        .text-shadow { text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-out;
+        }
+        
+        .pulse-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* Sidebar (Desktop) */
+        .sidebar { display: none; }
+        @media (min-width: 768px) {
+            .sidebar {
+                display: flex;
+                position: fixed;
+                left: 0; top: 0; height: 100vh; width: 240px;
+                border-right: 1px solid rgba(255,255,255,0.1);
+                background: #000; z-index: 50;
+                flex-direction: column; padding: 2rem;
+            }
+            .main-content { margin-left: 240px; }
+            .bottom-nav { display: none !important; }
+        }
+
+        /* === STORY RING ANIMATION === */
+        @keyframes drawRing {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .story-ring-svg {
+            transform: rotate(-90deg); /* Start drawing from top */
+        }
+        
+        .story-ring-circle {
+            /* Circumference for r=46 is approx 289. 
+               7 segments means approx 41px per unit.
+               Let's do 38px dash and 3px gap. */
+            stroke-dasharray: 38 3.3; 
+            stroke-dashoffset: 289; /* Fully hidden initially */
+            
+            /* Apply both animations */
+            animation-name: drawRing, fadeIn;
+            animation-duration: 1.2s, 0.1s;
+            animation-delay: 2.5s, 2.5s; /* Wait for loading screen + slight delay */
+            animation-fill-mode: forwards, forwards;
+            animation-timing-function: ease-out, linear;
+            
+            opacity: 0; /* Hidden before animation starts */
+        }
+        
+        /* Stories Viewer */
+        #stories-viewer {
+            position: fixed; inset: 0; background: #1a1a1a; z-index: 200;
+            /* Flexbox for centering on desktop */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #stories-viewer.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        /* Stories Content Container - Adaptive */
+        .story-content-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* Default mobile style */
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Desktop Adaptation for Stories */
+        @media (min-width: 768px) {
+            .story-content-wrapper {
+                max-width: 450px; /* Constrain width like mobile */
+                height: 90vh;    /* Max height to fit screen */
+                border-radius: 12px; /* Rounded corners */
+                box-shadow: 0 0 40px rgba(0,0,0,0.5); /* Shadow for pop-out effect */
+            }
+            #stories-viewer {
+                background: rgba(0,0,0,0.9); /* Dimmed background on desktop */
+            }
+        }
+
+        .story-progress-container {
+            display: flex; gap: 4px; padding: 12px 8px; 
+            position: absolute; top: 0; left: 0; width: 100%; z-index: 20;
+        }
+        .story-bar {
+            height: 2px; flex: 1; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden;
+        }
+        .story-bar-fill {
+            height: 100%; background: #fff; width: 0%;
+        }
+
+        /* Grid Item */
+        .grid-item {
+            position: relative; padding-bottom: 100%; background: #111; cursor: pointer; overflow: hidden;
+        }
+        .grid-item video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+        }
+        .views-badge {
+            position: absolute; bottom: 5px; left: 5px; display: flex; align-items: center; gap: 4px;
+            font-size: 10px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.8); z-index: 10;
+        }
+
+        /* Search & Video Viewer (Common) */
+        #search-overlay { height: 0; overflow: hidden; transition: height 0.3s ease; background: #000; position: relative; z-index: 40; }
+        #search-overlay.open { height: 60px; }
+
+        #video-viewer {
+            position: fixed; inset: 0; background: #000; z-index: 100;
+            display: flex; flex-direction: column; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #video-viewer.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        .viewer-video-wrapper { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; }
+        .viewer-video-wrapper video { max-height: 100%; max-width: 100%; width: 100%; object-fit: contain; }
+
+        /* Desktop specific viewer adjustments */
+        @media (min-width: 768px) {
+            .viewer-video-wrapper {
+                max-width: 450px; 
+                max-height: 85vh; 
+                border-radius: 12px;
+                overflow: hidden;
+                margin: auto;
+                box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            }
+            .viewer-right-actions {
+                right: -60px !important; 
+                bottom: 20px !important;
+            }
+            .desk-nav-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 2.5rem;
+                color: rgba(255,255,255,0.4);
+                cursor: pointer;
+                transition: color 0.2s, transform 0.2s;
+                padding: 20px;
+                z-index: 60;
+                display: block !important;
+            }
+            .desk-nav-btn:hover { 
+                color: white; 
+                transform: translateY(-50%) scale(1.1);
+            }
+            .desk-prev { left: -100px; } 
+            .desk-next { right: -100px; }
+            
+            .desk-close-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 2rem;
+                color: rgba(255,255,255,0.6);
+                cursor: pointer;
+                z-index: 60;
+                display: block !important;
+                transition: color 0.2s;
+            }
+             .desk-close-btn:hover { color: white; }
+        }
+
+        .desk-nav-btn, .desk-close-btn { display: none; } /* Hidden on mobile */
+
+        .viewer-right-actions { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 24px; align-items: center; z-index: 20; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .action-btn i { font-size: 26px; }
+        .action-btn span { font-size: 13px; font-weight: 600; }
+
+        .viewer-bottom-info { position: absolute; bottom: 45px; left: 12px; right: 70px; z-index: 20; text-shadow: 0 1px 2px rgba(0,0,0,0.8); cursor: pointer; }
+        
+        .viewer-desc { 
+            font-size: 14px; 
+            line-height: 1.4; 
+            max-height: 150px; 
+            overflow-y: auto; 
+            display: block;
+            pointer-events: auto; 
+            padding-right: 4px;
+        }
+
+        /* Timeline */
+        .viewer-timeline-area { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; z-index: 50; display: flex; align-items: center; cursor: pointer; touch-action: none; }
+        .viewer-timeline-bg { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.3); position: relative; margin: 0 10px; border-radius: 2px; }
+        .viewer-timeline-area:active .viewer-timeline-bg { height: 8px; }
+        .viewer-timeline-fill { height: 100%; background: #fff; width: 0%; position: absolute; top: 0; left: 0; border-radius: 2px; }
+        .viewer-timeline-fill::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+        .play-icon-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; background: rgba(0,0,0,0.5); width: 70px; height: 70px; min-width: 70px; min-height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 10; }
+        .speed-overlay { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 30; backdrop-filter: blur(4px); }
+        .speed-overlay.visible { opacity: 1; }
+
+        .notif-badge { position: absolute; top: -2px; right: -4px; width: 18px; height: 18px; background-color: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid black; line-height: 1; }
+        
+        .runaway-btn { transition: transform 0.15s ease-out; }
+        @keyframes likeHeart { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+        .liked { color: #ef4444 !important; animation: likeHeart 0.4s ease-in-out; }
+
+        #notif-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-200%); background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); border: 1px solid #333; padding: 16px; border-radius: 12px; width: 90%; max-width: 400px; z-index: 200; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: start; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); cursor: pointer; }
+        #notif-toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Search Flash Animation */
+        @keyframes flash {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .camera-flash {
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 300;
+        }
+        .camera-flash.active {
+            animation: flash 0.3s ease-out;
+        }
+        #search-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 250;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        #search-modal.active { opacity: 1; pointer-events: auto; }
+        
+    </style>
+</head>
+<body class="text-white bg-black" onload="initSite()">
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="pulse-logo"><img src="logo.png" class="w-full h-full object-cover"></div>
+    </div>
+    
+    <!-- SEARCH MODAL (Custom) -->
+    <div id="search-modal" onclick="closeSearchModal()">
+        <div class="camera-flash" id="search-flash"></div>
+        <i class="fas fa-camera text-6xl mb-6 text-white animate-bounce"></i>
+        <h2 class="text-2xl font-bold text-center px-6 leading-relaxed">
+            You've already found<br>the best creator for yourself.
+        </h2>
+        <p class="text-neutral-500 text-sm mt-8">(Tap anywhere to close)</p>
+    </div>
+
+    <!-- X REDIRECT DIALOG (Reels/Camera) -->
+    <div id="x-dialog" class="fixed inset-0 z-[150] hidden flex items-center justify-center px-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeXDialog()"></div>
+        <!-- Modal -->
+        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 w-full max-w-xs relative z-10 text-center shadow-2xl transform transition-all scale-100">
+            <h3 class="text-lg font-bold mb-3 text-white leading-tight">You're seeing just part of our work here.</h3>
+            <p class="text-neutral-400 text-sm mb-6">We post more on X.</p>
+            <div class="flex gap-3">
+                <button onclick="closeXDialog()" class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-semibold transition text-sm">Stay here</button>
+                <a href="https://x.com/athcamera/highlights" target="_blank" onclick="closeXDialog()" class="flex-1 bg-white text-black hover:bg-gray-200 py-3 rounded-xl font-bold transition text-sm flex items-center justify-center">See on X</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- STORIES VIEWER (UPDATED) -->
+    <div id="stories-viewer">
+        <!-- Wrapper for adaptive sizing -->
+        <div class="story-content-wrapper">
+            <!-- Progress Bars -->
+            <div id="story-bars" class="story-progress-container">
+                <!-- Bars injected via JS -->
+            </div>
+
+            <!-- Header -->
+            <div class="absolute top-4 left-0 w-full px-3 flex items-center justify-between z-30 pt-4">
+                <div class="flex items-center gap-2">
+                    <img src="logo.png" class="w-8 h-8 rounded-full border border-white/20">
+                    <span class="font-bold text-sm text-shadow">ath.camera</span>
+                    <span class="text-xs text-white/60 text-shadow">2h</span>
+                </div>
+                <button onclick="closeStories()" class="text-white text-2xl drop-shadow-md"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Video -->
+            <div class="relative w-full h-full flex items-center justify-center bg-gray-900">
+                <video id="story-video" class="w-full h-full object-cover" playsinline webkit-playsinline></video>
+                <!-- Gradient overlay -->
+                <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-black/20 pointer-events-none"></div>
+            </div>
+
+            <!-- Tap Zones -->
+            <div class="absolute inset-0 z-20 flex">
+                <div class="w-1/3 h-full" onclick="prevStory()"></div>
+                <div class="w-2/3 h-full" onclick="nextStory()"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR (Desktop) -->
+    <aside class="sidebar">
+        <div class="flex items-center gap-3 mb-10">
+            <img src="logo.png" class="w-8 h-8 rounded-full">
+            <span class="font-bold tracking-widest text-lg">ATH.CAMERA</span>
+        </div>
+        <nav class="flex flex-col gap-6 text-lg">
+            <button onclick="switchView('grid')" class="flex items-center gap-4 font-bold hover:text-gray-300"><i class="fas fa-home"></i> Home</button>
+            <!-- Search Button Desktop -->
+            <button onclick="triggerSearchExperience()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-search"></i> Search</button>
+            <button onclick="showXDialogDelay()" class="flex items-center gap-4 hover:text-gray-300"><i class="fas fa-film"></i> Reels</button>
+            <!-- Direct DM Link -->
+            <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="flex items-center gap-4 hover:text-gray-300"><i class="far fa-envelope"></i> Messages</a>
+            <button onclick="showNotification()" class="flex items-center gap-4 hover:text-gray-300 relative">
+                <i class="far fa-heart"></i> Notifications
+                <div class="notif-badge" style="right: auto; left: 22px; top: 0;">1</div>
+            </button>
+            <div class="flex items-center gap-4 font-bold mt-4"><img src="logo.png" class="w-6 h-6 rounded-full"> Profile</div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content min-h-screen pb-20 md:pb-0 relative">
+        
+        <!-- SEARCH OVERLAY -->
+        <div id="search-overlay" class="px-4 flex items-center">
+            <div class="bg-neutral-800 rounded-lg flex items-center px-3 py-2 w-full">
+                <i class="fas fa-search text-gray-400 mr-2"></i>
+                <input type="text" id="search-input" placeholder="Search videos..." class="bg-transparent outline-none w-full text-sm text-white" oninput="handleSearch(this.value)">
+                <button onclick="toggleSearch()" class="text-gray-400"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <!-- PROFILE VIEW (Grid) -->
+        <div id="view-profile" class="max-w-2xl mx-auto pt-4 md:pt-10 transition-opacity duration-300">
+            
+            <!-- Mobile Header -->
+            <div class="md:hidden flex justify-between items-center px-4 py-2 border-b border-neutral-800 mb-2">
+                <span class="font-bold text-lg">ath.camera</span>
+                <div class="flex gap-4 text-xl">
+                    <button onclick="showNotification()" class="relative">
+                        <i class="far fa-heart"></i>
+                        <div class="notif-badge">1</div>
+                    </button>
+                    <!-- Direct DM Link -->
+                    <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank"><i class="fab fa-facebook-messenger"></i></a>
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="px-4 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    
+                    <!-- AVATAR WITH ANIMATED RING (NO ROTATION) -->
+                    <div class="relative w-20 h-20 shrink-0 mr-4 cursor-pointer" onclick="openStories()">
+                        <!-- SVG Ring -->
+                        <svg class="absolute inset-0 w-full h-full story-ring-svg z-0" viewBox="0 0 100 100">
+                            <defs>
+                                <linearGradient id="insta-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#f9ce34" />
+                                    <stop offset="50%" stop-color="#ee2a7b" />
+                                    <stop offset="100%" stop-color="#6228d7" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="46" fill="none" stroke="url(#insta-grad)" stroke-width="3"
+                                    stroke-linecap="round"
+                                    class="story-ring-circle" />
+                        </svg>
+                        
+                        <!-- Image Container (Centered inside ring) -->
+                        <div class="absolute inset-[6px] rounded-full overflow-hidden border-2 border-black z-10 bg-black">
+                            <img src="logo.png" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex-1 flex justify-around text-center">
+                        <div><div class="font-bold text-lg">13</div><div class="text-xs">Posts</div></div>
+                        <div><div class="font-bold text-lg">2946</div><div class="text-xs">Followers</div></div>
+                        <div><div class="font-bold text-lg">42</div><div class="text-xs">Following</div></div>
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="text-sm mb-4">
+                    <p class="font-bold">ATH Production</p>
+                    <p class="text-neutral-200">Bangers Only. 🎬</p>
+                    <p class="text-neutral-400">Cinematic | Trending | Exclusive</p>
+                    <a href="https://x.com/athcamera" target="_blank" class="text-blue-400 flex items-center gap-1 mt-1">
+                        <i class="fa-brands fa-x-twitter"></i> x.com/athcamera
+                    </a>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2 mb-6">
+                    <!-- About Us triggers Stories -->
+                    <button onclick="openStories()" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center hover:bg-neutral-700 transition">About Us</button>
+                    <button id="runaway-btn" class="flex-1 bg-neutral-800 py-1.5 rounded-lg text-sm font-semibold text-center">Book a Call</button>
+                </div>
+
+                <!-- Highlights -->
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2 mb-2">
+                    <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border border-neutral-700 p-[2px]"><div class="w-full h-full rounded-full overflow-hidden bg-neutral-900"><img src="xlogo.jpg" class="w-full h-full object-cover"></div></div>
+                        <span class="text-xs">Join us</span>
+                    </a>
+                    <!-- Direct DM Link -->
+                    <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border border-neutral-700 bg-neutral-900 flex items-center justify-center text-xl"><i class="fa-regular fa-envelope"></i></div>
+                        <span class="text-xs">DM us</span>
+                    </a>
+                    <a href="https://x.com/athcamera/highlights" target="_blank" class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border border-neutral-700 bg-neutral-900 flex items-center justify-center text-xl"><i class="fa-solid fa-star"></i></div>
+                        <span class="text-xs">Highlights</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex justify-around border-t border-neutral-800 text-2xl text-gray-500">
+                <button class="flex-1 py-2 border-b-2 border-white text-white"><i class="fas fa-th"></i></button>
+                <!-- Only trigger Dialog -->
+                <button class="flex-1 py-2" onclick="showXDialogDelay()"><i class="fas fa-video"></i></button>
+            </div>
+
+            <!-- THE GRID -->
+            <div id="grid-container" class="grid grid-cols-3 gap-0.5">
+                <!-- JS Populated -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="bottom-nav fixed bottom-0 w-full bg-black border-t border-neutral-800 z-50 flex justify-around items-center py-3 pb-safe">
+        <button onclick="switchView('grid')" class="text-white text-2xl"><i class="fas fa-home"></i></button>
+        <!-- Search Button Mobile -->
+        <button onclick="triggerSearchExperience()" class="text-neutral-500 text-2xl"><i class="fas fa-search"></i></button>
+        <!-- Reels Button (Triggers X Dialog only) -->
+        <button onclick="showXDialogDelay()" class="text-neutral-500 text-2xl"><i class="fas fa-film"></i></button>
+        <a href="https://x.com/athcamera" target="_blank" class="text-neutral-500 text-2xl"><i class="far fa-user"></i></a>
+    </nav>
+
+    <!-- FULLSCREEN VIEWER (Overlay) -->
+    <div id="video-viewer" class="no-select">
+        <!-- Close button on desktop - Top Right -->
+        <button onclick="closeViewer()" class="desk-close-btn absolute top-6 right-6 z-50 text-white text-3xl drop-shadow-md hover:text-gray-300 hidden md:block">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="relative w-full h-full flex items-center justify-center">
+            <!-- Left Arrow (Desktop) -->
+            <button class="desk-nav-btn desk-prev hidden md:block" onclick="prevVideo(event)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="viewer-video-wrapper relative">
+                
+                <!-- Video Container for Event Listeners -->
+                <div id="video-touch-area" class="relative w-full h-full flex items-center justify-center">
+                    <video id="viewer-video" playsinline loop>
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Close / Back Button (Mobile - Top Left) -->
+                <button onclick="closeViewer()" class="absolute top-4 left-4 z-40 text-white text-2xl drop-shadow-md md:hidden">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+
+                <!-- Mute Toggle -->
+                <button onclick="toggleMute()" class="absolute top-4 right-4 z-40 text-white text-xl bg-black/50 p-2 rounded-full backdrop-blur-sm">
+                    <i id="mute-icon" class="fas fa-volume-xmark"></i>
+                </button>
+
+                <!-- Speed 2x Overlay -->
+                <div id="speed-overlay" class="speed-overlay">
+                    <i class="fas fa-forward"></i> Speed 2x
+                </div>
+
+                <!-- Play Icon (Center) -->
+                <div id="center-play" class="play-icon-overlay">
+                    <i class="fas fa-play text-3xl ml-1"></i>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="viewer-right-actions">
+                    <!-- New X Link Button -->
+                    <a id="x-link-btn" href="#" target="_blank" class="action-btn mb-2">
+                        <i class="fa-brands fa-x-twitter text-2xl"></i>
+                    </a>
+
+                    <button class="action-btn" onclick="handleLike()">
+                        <i id="viewer-heart" class="far fa-heart"></i>
+                        <span id="viewer-likes">12K</span>
+                    </button>
+                    <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="action-btn">
+                        <i class="far fa-comment-dots"></i>
+                        <span>DM</span>
+                    </a>
+                    <button class="action-btn">
+                        <i class="far fa-paper-plane"></i>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+
+                <!-- Bottom Info (Click to close/back logic integrated) -->
+                <div class="viewer-bottom-info" onclick="closeViewer()">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="logo.png" class="w-8 h-8 rounded-full border border-white">
+                        <span class="font-bold text-sm">ath.camera</span>
+                        <!-- Follow button leads to X -->
+                        <a href="https://x.com/intent/follow?screen_name=athcamera" target="_blank" class="bg-transparent border border-white/50 text-xs px-2 py-0.5 rounded text-white" onclick="event.stopPropagation()">Follow</a>
+                    </div>
+                    <!-- Description with Scroll and Click Protection -->
+                    <p class="viewer-desc text-gray-100" id="viewer-desc" onclick="event.stopPropagation()">Cinematic masterpiece #BetterCallATH</p>
+                    <div class="text-xs opacity-70 mt-1"><i class="fas fa-music mr-1"></i> Original Audio - ATH</div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="viewer-timeline-area" onmousedown="startScrub(event)" ontouchstart="startScrub(event)">
+                    <div class="viewer-timeline-bg">
+                        <div class="viewer-timeline-fill" id="viewer-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Arrow (Desktop) -->
+            <button class="desk-nav-btn desk-next hidden md:block" onclick="nextVideo(event)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="notif-toast" onclick="hideNotification()">
+        <div class="w-10 h-10 bg-gradient-to-tr from-yellow-400 to-fuchsia-600 rounded-full flex items-center justify-center shrink-0">
+            <i class="fas fa-heart text-white"></i>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm">ATH Team</h4>
+            <p class="text-xs text-gray-300 mt-1">Hey, we're attention engineers! Check stories to learn about us or click messages to DM us! ❤️</p>
+        </div>
+    </div>
+
+    <!-- Like Modal -->
+    <div id="contactModal" class="fixed inset-0 z-[110] hidden">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[450px] bg-neutral-900 md:rounded-2xl rounded-t-2xl p-6 transition-transform duration-300 ease-out translate-y-full touch-pan-y" id="modalPanel">
+            <div class="w-12 h-1 bg-neutral-700 rounded-full mx-auto mb-6 md:hidden"></div>
+            <div class="text-center pb-8">
+                <div class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-red-500">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <p class="text-neutral-300 text-lg font-medium mb-8 leading-relaxed px-4">
+                    Enjoyed this video and want outstanding videos for your project?
+                </p>
+                <a href="https://x.com/messages/compose?recipient_id=1806926077446774785" target="_blank" class="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition flex justify-center items-center gap-2 mx-auto">
+                    <i class="fa-brands fa-x-twitter"></i> Let's chat on X
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        // --- DATA ---
+        const videos = [
+            { 
+                file: 'Bags Cinematic AI trailer.mp4', 
+                title: 'Bags Cinematic', 
+                views: '2.3K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, // Random 36-79
+                vertical: false, 
+                desc: 'Helicopters, money, Lamborghinis, chains, and excess as visual language. All the elements of a high budget rap video distilled into one bold cinematic piece for BEX. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/2014572236305531346'
+            },
+            { 
+                file: 'Pudgy Penguins Solana Wallets Gran Prix.mp4', 
+                title: 'Pudgy Penguins', 
+                views: '1.6K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Pudgy Penguins is one of the most viral projects in crypto. We imagined a Grand Prix where every wallet in the Solana ecosystem is represented by its own Penguin ambassador. Playful, competitive, and instantly recognizable. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/2013915725266555291/video/1'
+            },
+            { 
+                file: 'Solflare Cinematic AI movie.mp4', 
+                title: 'Solflare AI', 
+                views: '8.4K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'A cinematic fragment built around the idea of security and trust. Using sound design and AI, we created a dramatic film moment that communicates one simple message. Solflare is always safe. A true cinematic experience. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/2013588299399479613'
+            },
+            { 
+                file: 'ATHCreativeAgency.mp4', 
+                title: 'Creative Agency', 
+                views: '1K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'A warm, cinematic visual that invites the viewer into our world. Soft light, calm pacing, and atmosphere first. Designed to feel like an opening scene rather than a promotion. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1995577640586281229/video/1'
+            },
+            { 
+                file: 'ATHGlobalCompetition.mp4', 
+                title: 'Global Competition', 
+                views: '19.7K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'This film won first place at the Solana Global Content Competition and was created for Metaplex. Several full days of hands on production, manually built props, multiple locations, and real physical interaction. Treated as cinema, not content. If you want a true film for your brand, reach out. #BetterCallATH',
+                xLink: 'https://x.com/ZametkiHodlera/status/1898652306478100757'
+            },
+            { 
+                file: 'ATHJupiter.mp4', 
+                title: 'Jupiter', 
+                views: '1.7K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Released just before Breakpoint, this short meme style trailer explores how a caricatured cultural entry point into the Solana ecosystem could look. A playful take on community, identity, and shared references. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1986033529042739205/video/1'
+            },
+            { 
+                file: 'ATHSeries.mp4', 
+                title: 'ATH Series', 
+                views: '6.6K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'A series created one month before Breakpoint to document who we are, what we do, and how we prepared for the event. Over time, it evolved into short sketch driven episodes that helped us secure partnerships directly at Breakpoint. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1988588061387804860/video/1'
+            },
+            { 
+                file: 'ATHSolanaSummit.mp4', 
+                title: 'Solana Summit', 
+                views: '3.8K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Captured on the ground during Solana Summit. Fast, alive, and authentic. A visual reflection of the people, energy, and momentum of the ecosystem when it comes together offline. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1933516183057416623/video/1'
+            },
+            { 
+                file: 'Solflaresink.mp4', 
+                title: 'Solflare Sink', 
+                views: '12K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'An experiment at the edge of format and tone. Short, bold, and humorous, with a clear message underneath. We enjoy taking creative risks, and it was rewarding to see the team receive this piece with warmth. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1929223432723378343/video/1'
+            },
+            { 
+                file: 'Solflareviral.mp4', 
+                title: 'Solflare Viral', 
+                views: '430K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'Shot directly at Breakpoint. About thirty seconds of filming and roughly twenty minutes of editing resulted in four hundred and thirty thousand views. The video went viral during the conference itself. We study trends closely and know how to translate them into results for crypto native projects. This time, Solflare and ATH delivered a strong combo. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1999759313540387157/video/1'
+            },
+            { 
+                file: 'bettercallath.mp4', 
+                title: 'Better Call ATH', 
+                views: '1.4K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: true, 
+                desc: 'A reinterpretation of a classic cultural reference, adapted to our reality and constraints. A playful take on an iconic advertising format, reimagined for our agency. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1992535510448021662/video/1'
+            },
+            { 
+                file: 'polaris.mp4', 
+                title: 'Polaris', 
+                views: '11K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Emotion is the reason people engage and return. This piece won first place at a content competition by focusing on emotional contrast and sincerity. One of our most meaningful works. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1942560220787651024/video/1'
+            },
+            { 
+                file: 'solflareshield.mp4', 
+                title: 'Solflare Shield', 
+                views: '4.6K', 
+                likes: Math.floor(Math.random() * (79 - 36 + 1)) + 36, 
+                vertical: false, 
+                desc: 'Created directly at Breakpoint with limited time and resources. A hands on product and brand shoot built through elegant, minimal cinematography. The same approach can be applied to your product. #BetterCallATH',
+                xLink: 'https://x.com/athcamera/status/1999175139460808790/video/1'
+            }
+        ];
+
+        // Specific Stories Data
+        const storiesData = [
+            { file: 'story1.mp4' },
+            { file: 'story2.mp4' },
+            { file: 'story3.mp4' },
+            { file: 'story4.mp4' },
+            { file: 'story5.mp4' },
+            { file: 'story6.mp4' }
+        ];
+
+        // --- INIT ---
+        function initSite() {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 800);
+            }, 1200);
+            renderGrid(videos);
+            
+            // Add click listener to close notification toast anywhere
+            document.addEventListener('click', function(e) {
+                const toast = document.getElementById('notif-toast');
+                if (toast.classList.contains('show') && !e.target.closest('button[onclick="showNotification()"]')) {
+                   hideNotification();
+                }
+            });
+        }
+
+        // --- STORIES LOGIC ---
+        let currentStoryIndex = 0;
+        const storiesViewer = document.getElementById('stories-viewer');
+        const storyVideo = document.getElementById('story-video');
+        const storyBarsContainer = document.getElementById('story-bars');
+
+        function openStories() {
+            if (storiesData.length === 0) return;
+            
+            // Build Bars
+            storyBarsContainer.innerHTML = '';
+            storiesData.forEach((_, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'story-bar';
+                bar.innerHTML = `<div class="story-bar-fill" id="story-fill-${i}"></div>`;
+                storyBarsContainer.appendChild(bar);
+            });
+
+            currentStoryIndex = 0;
+            storiesViewer.classList.add('active');
+            playStory(0);
+        }
+
+        function playStory(index) {
+            if (index >= storiesData.length) {
+                closeStories();
+                return;
+            }
+            if (index < 0) {
+                closeStories(); 
+                return;
+            }
+
+            currentStoryIndex = index;
+            const data = storiesData[index];
+            
+            // Reset all bars
+            storiesData.forEach((_, i) => {
+                const fill = document.getElementById(`story-fill-${i}`);
+                fill.style.width = (i < index) ? '100%' : '0%';
+                fill.style.transition = 'none'; // Instant reset
+            });
+
+            storyVideo.src = data.file;
+            storyVideo.load();
+            storyVideo.play();
+        }
+
+        storyVideo.ontimeupdate = () => {
+            if (storyVideo.duration) {
+                const pct = (storyVideo.currentTime / storyVideo.duration) * 100;
+                const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
+                if (fill) {
+                    fill.style.width = pct + '%';
+                    // Force linear transition for smooth fill
+                    fill.style.transition = 'width 0.1s linear';
+                }
+            }
+        };
+
+        storyVideo.onended = () => nextStory();
+
+        function nextStory() {
+            const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
+            if (fill) fill.style.width = '100%';
+            playStory(currentStoryIndex + 1);
+        }
+
+        function prevStory() {
+            const fill = document.getElementById(`story-fill-${currentStoryIndex}`);
+            if (fill) fill.style.width = '0%';
+            playStory(currentStoryIndex - 1);
+        }
+
+        function closeStories() {
+            storiesViewer.classList.remove('active');
+            storyVideo.pause();
+            storyVideo.src = "";
+        }
+
+        // Stories Swipe Down Logic
+        let sStartY = 0;
+        storiesViewer.addEventListener('touchstart', e => sStartY = e.touches[0].clientY);
+        storiesViewer.addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].clientY - sStartY;
+            if (diff > 100) closeStories(); // Swipe down to close
+        });
+
+
+        // --- RENDERING ---
+        function renderGrid(data) {
+            const grid = document.getElementById('grid-container');
+            grid.innerHTML = '';
+            data.forEach((vid, index) => {
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.id = `grid-item-${index}`; // ID for updates
+                div.onclick = () => openViewer(index);
+                
+                div.innerHTML = `
+                    <video muted playsinline preload="auto">
+                        <source src="${vid.file}#t=0.1" type="video/mp4">
+                    </video>
+                    <div class="views-badge"><i class="fas fa-play text-[8px]"></i> ${vid.views}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // --- NAVIGATION ---
+        function switchView(view) {
+            if (view === 'grid') {
+                document.getElementById('view-profile').classList.remove('hidden');
+                // No reels view to switch to/from anymore
+            }
+        }
+        
+        // --- X DIALOG LOGIC ---
+        function showXDialogDelay() {
+            setTimeout(showXDialog, 800);
+        }
+
+        function showXDialog() {
+            const dialog = document.getElementById('x-dialog');
+            dialog.classList.remove('hidden');
+        }
+        
+        function closeXDialog() {
+            const dialog = document.getElementById('x-dialog');
+            dialog.classList.add('hidden');
+        }
+
+        // --- SEARCH EXPERIENCE LOGIC ---
+        function triggerSearchExperience() {
+            const modal = document.getElementById('search-modal');
+            const flash = document.getElementById('search-flash');
+            
+            modal.classList.add('active');
+            // Trigger Flash
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+        }
+
+        function closeSearchModal() {
+            const modal = document.getElementById('search-modal');
+            modal.classList.remove('active');
+        }
+
+        function toggleSearch() {
+            // Replaced default toggle with new experience
+            triggerSearchExperience();
+        }
+
+        function handleSearch(query) {
+            const lower = query.toLowerCase();
+            const filtered = videos.filter(v => v.title.toLowerCase().includes(lower));
+            renderGrid(filtered);
+        }
+
+        function showNotification() {
+            const toast = document.getElementById('notif-toast');
+            // Reset hide timeout if exists
+            if (toast.hideTimeout) clearTimeout(toast.hideTimeout);
+            
+            toast.classList.add('show');
+            // Auto hide after 5s
+            toast.hideTimeout = setTimeout(() => hideNotification(), 5000);
+        }
+        
+        function hideNotification() {
+            const toast = document.getElementById('notif-toast');
+            toast.classList.remove('show');
+        }
+
+        // --- VIEWER LOGIC (MAIN PLAYER) ---
+        let currentIndex = 0;
+        const viewer = document.getElementById('video-viewer');
+        const vVideo = document.getElementById('viewer-video');
+        const vFill = document.getElementById('viewer-fill');
+        const vHeart = document.getElementById('viewer-heart');
+        const touchArea = document.getElementById('video-touch-area');
+        const xLinkBtn = document.getElementById('x-link-btn');
+        let isMuted = false;
+        let scrollPosition = 0;
+
+        function openViewer(index) {
+            currentIndex = index;
+            scrollPosition = window.scrollY;
+            document.body.style.top = `-${scrollPosition}px`;
+            document.body.classList.add('lock-scroll');
+            loadVideoInViewer(index);
+            viewer.classList.add('active');
+        }
+
+        function loadVideoInViewer(index) {
+            const data = videos[index];
+            vVideo.src = data.file;
+            vVideo.muted = isMuted;
+            vVideo.load();
+            vVideo.play().catch(e => console.log("Autoplay blocked"));
+            document.getElementById('center-play').style.opacity = '0';
+            document.getElementById('viewer-likes').innerText = data.likes;
+            document.getElementById('viewer-desc').innerText = data.desc;
+            vHeart.className = 'far fa-heart';
+            vHeart.parentElement.classList.remove('liked');
+            if (data.vertical) {
+                vVideo.style.objectFit = 'cover';
+            } else {
+                vVideo.style.objectFit = 'contain';
+            }
+            
+            // Update X Link
+            if (data.xLink) {
+                xLinkBtn.href = data.xLink;
+                xLinkBtn.style.display = 'flex';
+            } else {
+                xLinkBtn.style.display = 'none';
+            }
+        }
+
+        // --- KEYBOARD & MOUSE SUPPORT (Desktop) ---
+        document.addEventListener('keydown', (e) => {
+            if (!viewer.classList.contains('active')) return;
+            
+            if (e.key === 'ArrowRight') nextVideo();
+            if (e.key === 'ArrowLeft') prevVideo();
+            if (e.key === 'Escape') closeViewer();
+        });
+
+        viewer.addEventListener('wheel', (e) => {
+            if (!viewer.classList.contains('active')) return;
+            e.preventDefault(); // Prevent page scroll
+            
+            // Debounce or threshold to prevent rapid switching
+            if (Math.abs(e.deltaY) > 50) { 
+                if (e.deltaY > 0) nextVideo();
+                else prevVideo();
+            }
+        }, { passive: false });
+
+        function nextVideo(e) {
+            if (e) e.stopPropagation();
+            if (currentIndex < videos.length - 1) {
+                loadVideoInViewer(currentIndex + 1);
+                currentIndex++;
+            }
+        }
+
+        function prevVideo(e) {
+            if (e) e.stopPropagation();
+            if (currentIndex > 0) {
+                loadVideoInViewer(currentIndex - 1);
+                currentIndex--;
+            }
+        }
+
+        function closeViewer() {
+            viewer.classList.remove('active');
+            vVideo.pause();
+            vVideo.src = "";
+            document.body.classList.remove('lock-scroll');
+            document.body.style.top = '';
+            window.scrollTo(0, scrollPosition);
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            vVideo.muted = isMuted;
+            document.getElementById('mute-icon').className = isMuted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
+        }
+
+        function handleLike() {
+            vHeart.className = 'fas fa-heart';
+            vHeart.parentElement.classList.add('liked');
+            setTimeout(() => {
+                const modal = document.getElementById('contactModal');
+                const panel = document.getElementById('modalPanel');
+                modal.classList.remove('hidden');
+                setTimeout(() => panel.classList.remove('translate-y-full'), 10);
+            }, 800);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('contactModal');
+            const panel = document.getElementById('modalPanel');
+            panel.classList.add('translate-y-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // --- GESTURES & SCRUBBER ---
+        let longPressTimer;
+        let isLongPress = false;
+        let touchStartY = 0;
+
+        touchArea.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            isLongPress = false;
+            
+            // Long Press for 2x Speed
+            longPressTimer = setTimeout(() => {
+                isLongPress = true;
+                vVideo.playbackRate = 2.0;
+                document.getElementById('speed-overlay').classList.add('visible');
+            }, 300);
+        }, {passive: true});
+
+        touchArea.addEventListener('touchend', (e) => {
+            clearTimeout(longPressTimer);
+            document.getElementById('speed-overlay').classList.remove('visible');
+            vVideo.playbackRate = 1.0;
+
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            const screenHeight = window.innerHeight;
+            const isTopZone = touchStartY < (screenHeight * 0.55);
+
+            if (Math.abs(diff) > 35) { 
+                if (diff > 0) {
+                    if (currentIndex < videos.length - 1) {
+                        loadVideoInViewer(currentIndex + 1);
+                        currentIndex++;
+                    }
+                } else {
+                    if (isTopZone) {
+                        closeViewer();
+                    } else {
+                        if (currentIndex > 0) {
+                            loadVideoInViewer(currentIndex - 1);
+                            currentIndex--;
+                        }
+                    }
+                }
+                return; 
+            }
+
+            if (!isLongPress && Math.abs(diff) < 10) {
+                if(vVideo.paused) {
+                    vVideo.play();
+                    document.getElementById('center-play').style.opacity = '0';
+                } else {
+                    vVideo.pause();
+                    document.getElementById('center-play').style.opacity = '1';
+                }
+            }
+        });
+        
+        touchArea.addEventListener('mousedown', () => {
+            longPressTimer = setTimeout(() => {
+                vVideo.playbackRate = 2.0;
+                document.getElementById('speed-overlay').classList.add('visible');
+            }, 300);
+        });
+        touchArea.addEventListener('mouseup', () => {
+            clearTimeout(longPressTimer);
+            document.getElementById('speed-overlay').classList.remove('visible');
+            vVideo.playbackRate = 1.0;
+        });
+
+        vVideo.ontimeupdate = () => {
+            if(vVideo.duration) {
+                const pct = (vVideo.currentTime / vVideo.duration) * 100;
+                vFill.style.width = pct + '%';
+            }
+        };
+
+        function startScrub(e) {
+            e.stopPropagation();
+            const update = (evt) => {
+                const rect = document.querySelector('.viewer-timeline-area').getBoundingClientRect();
+                const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                let pct = (clientX - rect.left) / rect.width;
+                if(pct < 0) pct = 0; if(pct > 1) pct = 1;
+                vFill.style.width = (pct*100) + '%';
+                vVideo.currentTime = pct * vVideo.duration;
+            };
+            update(e);
+            const move = (evt) => { evt.preventDefault(); update(evt); };
+            const up = () => {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('mouseup', up);
+                document.removeEventListener('touchend', up);
+            };
+            document.addEventListener('mousemove', move);
+            document.addEventListener('touchmove', move, {passive: false});
+            document.addEventListener('mouseup', up);
+            document.addEventListener('touchend', up);
+        }
+
+        const btn = document.getElementById('runaway-btn');
+        const run = () => {
+            const x = (Math.random() - 0.5) * 150;
+            const y = (Math.random() - 0.5) * 150;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        };
+        btn.onmouseover = run;
+        btn.ontouchstart = (e) => { e.preventDefault(); run(); };
+
+        const modalPanel = document.getElementById('modalPanel');
+        let mStartY = 0;
+        modalPanel.addEventListener('touchstart', e => mStartY = e.touches[0].clientY);
+        modalPanel.addEventListener('touchmove', e => {
+            const delta = e.touches[0].clientY - mStartY;
+            if(delta > 0) modalPanel.style.transform = `translateY(${delta}px)`;
+        });
+        modalPanel.addEventListener('touchend', e => {
+            if((e.changedTouches[0].clientY - mStartY) > 100) closeModal();
+            else modalPanel.style.transform = '';
+        });
+
+    </script>
+</body>
+</html>

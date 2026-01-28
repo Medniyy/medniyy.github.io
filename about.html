@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - ATH | Attention Engineers</title>
+    
+    <meta name="description" content="ATH Production - Attention Engineers. We don't just make videos, we engineer attention.">
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .mono { font-family: 'Space Mono', monospace; }
+
+        /* Glass Nav */
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section - Full Screen Vertical Scroll Style */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(12, 196, 83, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(10, 154, 213, 0.15) 0%, transparent 50%),
+                #000;
+            animation: gradientPulse 8s ease infinite;
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Animated Grid Background */
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(12, 196, 83, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(10, 154, 213, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Elements */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        .float-element {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Card Sections - TikTok Style */
+        .snap-section {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            padding: 4rem 1rem;
+        }
+
+        .card-3d {
+            background: linear-gradient(135deg, rgba(12, 196, 83, 0.1), rgba(10, 154, 213, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-3d::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(12, 196, 83, 0.2), rgba(10, 154, 213, 0.2));
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(12, 196, 83, 0.5);
+            box-shadow: 0 30px 60px rgba(12, 196, 83, 0.3);
+        }
+
+        .card-3d:hover::before {
+            opacity: 1;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-alt {
+            background: linear-gradient(90deg, #0CC453, #0A9AD5, #0CC453);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        /* Service Icons */
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(12, 196, 83, 0.2), rgba(10, 154, 213, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .service-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-icon:hover::before {
+            opacity: 0.3;
+        }
+
+        .service-icon i {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stats Counter */
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            background: rgba(12, 196, 83, 0.1);
+            border-color: rgba(12, 196, 83, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Process Timeline - Vertical Mobile Style */
+        .timeline {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-number {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            box-shadow: 0 10px 30px rgba(12, 196, 83, 0.5);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .timeline-content:hover {
+            background: rgba(12, 196, 83, 0.1);
+            border-color: rgba(12, 196, 83, 0.5);
+            transform: translateX(10px);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(135deg, #0CC453, #0A9AD5);
+            border: none;
+            padding: 1.25rem 3rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(12, 196, 83, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0A9AD5, #0CC453);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(12, 196, 83, 0.6);
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Scroll Indicator */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .stat-number { font-size: 2.5rem; }
+            .card-3d { padding: 2rem; }
+            .timeline-number { width: 50px; height: 50px; font-size: 1.25rem; }
+        }
+
+        /* Reveal on Scroll Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Parallax Elements */
+        .parallax {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="glass-nav fixed top-0 w-full z-50 px-4 py-4">
+        <div class="container mx-auto flex justify-between items-center max-w-6xl">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 overflow-hidden rounded-full border border-neutral-700">
+                    <img src="logo.png" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=ATH'" class="w-full h-full object-cover">
+                </div>
+                <a href="index.html" class="font-bold tracking-widest text-lg mono">ATH.CAMERA</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-sm hover:text-[#0CC453] transition">Portfolio</a>
+                <a href="about.html" class="text-sm text-[#0CC453]">About</a>
+                <a href="https://calendly.com/athcamera" target="_blank" class="text-xs font-bold border border-white/20 px-3 py-1.5 rounded-full hover:bg-white hover:text-black transition uppercase">
+                    BOOK
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="grid-bg"></div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="reveal active">
+                <div class="inline-block mb-6">
+                    <div class="w-24 h-24 mx-auto float-element">
+                        <img src="logo.png" class="w-full h-full object-contain opacity-80">
+                    </div>
+                </div>
+                <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">
+                    ATTENTION<br>
+                    <span class="gradient-text-alt">ENGINEERS</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-neutral-300 mb-8 max-w-2xl mx-auto font-light">
+                    We engineer the moments that make people<br class="hidden md:block">
+                    <span class="gradient-text font-semibold">stop scrolling.</span>
+                </p>
+                <div class="flex gap-4 justify-center flex-wrap mb-16">
+                    <a href="https://calendly.com/athcamera" target="_blank" class="cta-button">
+                        <span>Start a Project</span>
+                    </a>
+                    <a href="index.html" class="border-2 border-[#0CC453] text-white px-8 py-4 rounded-full font-bold hover:bg-[#0CC453]/10 transition">
+                        View Work
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator absolute bottom-8 left-1/2 transform -translate-x-1/2">
+                <div class="flex flex-col items-center gap-2 text-neutral-500">
+                    <span class="text-xs uppercase tracking-widest mono">Scroll</span>
+                    <i class="fas fa-chevron-down text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHILOSOPHY SECTION -->
+    <section class="snap-section bg-black">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-[#0CC453]/20 rounded-full mb-4">
+                        <span class="text-[#0CC453] font-bold text-sm uppercase tracking-wider mono">Our Philosophy</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-8">Why We're Different</h2>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="card-3d text-center">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <h3 class="text-xl font-bold mb-3 gradient-text">Data-Driven</h3>
+                        <p class="text-neutral-400 leading-relaxed">
+                            Every frame is calculated based on engagement metrics and platform algorithms.
+                        </p>
+                    </div>
+                    
+                    <div class="card-3d text-center">
+                        <div class="text-5xl mb-4">⚡</div>
+                        <h3 class="text-xl font-bold mb-3 gradient-text">Hook in 3s</h3>
+                        <p class="text-neutral-400 leading-relaxed">
+                            We know you have 3 seconds to capture attention. We make every millisecond count.
+                        </p>
+                    </div>
+                    
+                    <div class="card-3d text-center">
+                        <div class="text-5xl mb-4">🔥</div>
+                        <h3 class="text-xl font-bold mb-3 gradient-text">Viral Mechanics</h3>
+                        <p class="text-neutral-400 leading-relaxed">
+                            Combining cinematic quality with viral content formulas for maximum reach.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <p class="text-3xl md:text-4xl font-bold gradient-text-alt">
+                        "Bangers Only."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section class="snap-section bg-black">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-[#0A9AD5]/20 rounded-full mb-4">
+                        <span class="text-[#0A9AD5] font-bold text-sm uppercase tracking-wider mono">What We Do</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-4">Services</h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Viral Content Creation</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            Short-form videos engineered for maximum engagement. TikTok, Instagram Reels, YouTube Shorts.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">15-60s clips</span>
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">Hook optimization</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-camera-retro"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Event Coverage</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            Capture your events with cinematic quality. Live coverage, highlight reels, behind-the-scenes.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Full-day shoots</span>
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Fast turnaround</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Brand Campaigns</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            End-to-end creative campaigns that build brand identity and drive measurable results.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">Multi-platform</span>
+                            <span class="px-3 py-1 bg-[#0CC453]/20 rounded-full text-sm text-[#0CC453]">A/B testing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Content Strategy</h3>
+                        <p class="text-neutral-400 leading-relaxed mb-4">
+                            Data-driven content planning. We analyze what works and create strategies that perform.
+                        </p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Analytics</span>
+                            <span class="px-3 py-1 bg-[#0A9AD5]/20 rounded-full text-sm text-[#0A9AD5]">Optimization</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="snap-section bg-gradient-to-b from-black to-neutral-950">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-6xl font-black mb-4">By The Numbers</h2>
+                    <p class="text-xl text-neutral-400">Real results, real impact</p>
+                </div>
+                
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="stat-item">
+                        <div class="stat-number">50M+</div>
+                        <p class="text-neutral-400 font-semibold">Total Views</p>
+                        <p class="text-xs text-neutral-600 mt-1">Across all platforms</p>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <p class="text-neutral-400 font-semibold">Projects</p>
+                        <p class="text-xs text-neutral-600 mt-1">Successfully delivered</p>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">8.5%</div>
+                        <p class="text-neutral-400 font-semibold">Avg Engagement</p>
+                        <p class="text-xs text-neutral-600 mt-1">3x industry standard</p>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">24h</div>
+                        <p class="text-neutral-400 font-semibold">Turnaround</p>
+                        <p class="text-xs text-neutral-600 mt-1">For urgent projects</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS SECTION -->
+    <section class="snap-section bg-black">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-[#0CC453]/20 rounded-full mb-4">
+                        <span class="text-[#0CC453] font-bold text-sm uppercase tracking-wider mono">How We Work</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-4">Our Process</h2>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-number">1</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Discovery Call</h3>
+                            <p class="text-neutral-400">
+                                15-min call to understand your brand, goals, and audience. We analyze your current content performance.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">2</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Strategy & Concept</h3>
+                            <p class="text-neutral-400">
+                                We develop viral content strategies backed by data. Present concepts, scripts, and mood boards.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">3</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Production</h3>
+                            <p class="text-neutral-400">
+                                Professional crews, cinema-grade equipment. We handle everything from pre-production to final delivery.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">4</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Post & Optimization</h3>
+                            <p class="text-neutral-400">
+                                Editing, color grading, sound design. We create multiple formats optimized for each platform.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step">
+                        <div class="timeline-number">5</div>
+                        <div class="timeline-content">
+                            <h3 class="text-xl font-bold mb-2">Launch & Analyze</h3>
+                            <p class="text-neutral-400">
+                                Deliver final assets with posting recommendations. Track performance and iterate for next projects.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="snap-section bg-gradient-to-b from-neutral-950 to-black relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0CC453] rounded-full blur-3xl"></div>
+            <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-[#0A9AD5] rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="reveal max-w-3xl mx-auto">
+                <h2 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                    Ready to Go<br>
+                    <span class="gradient-text-alt">Viral?</span>
+                </h2>
+                <p class="text-xl md:text-2xl text-neutral-300 mb-12 leading-relaxed">
+                    Let's engineer content that doesn't just exist<br class="hidden md:block">
+                    — it <span class="font-bold text-[#0CC453]">dominates</span>.
+                </p>
+                
+                <div class="flex gap-6 justify-center flex-wrap mb-12">
+                    <a href="https://calendly.com/athcamera" target="_blank" class="cta-button">
+                        <span>Book a Call →</span>
+                    </a>
+                    <a href="https://x.com/athcamera" target="_blank" class="border-2 border-white/20 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition flex items-center gap-3">
+                        <i class="fa-brands fa-x-twitter"></i>
+                        Follow on X
+                    </a>
+                </div>
+                
+                <div class="flex justify-center gap-8 text-neutral-500 text-sm">
+                    <a href="https://x.com/i/chat/1806926077446774785-1806926077446774785" target="_blank" class="hover:text-[#0CC453] transition">
+                        <i class="fa-regular fa-envelope text-xl"></i>
+                    </a>
+                    <a href="https://x.com/athcamera" target="_blank" class="hover:text-[#0CC453] transition">
+                        <i class="fa-brands fa-x-twitter text-xl"></i>
+                    </a>
+                    <a href="https://calendly.com/athcamera" target="_blank" class="hover:text-[#0CC453] transition">
+                        <i class="fas fa-calendar text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-neutral-900 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-neutral-600 text-sm mono">© 2025 ATH.CAMERA — Attention Engineers</p>
+            <p class="text-neutral-700 text-xs mt-2">Bangers Only.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Reveal on Scroll Animation
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        });
+        
+        reveals.forEach(reveal => {
+            revealObserver.observe(reveal);
+        });
+
+        // Parallax Effect on Scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            parallaxElements.forEach(element => {
+                const speed = element.dataset.speed || 0.5;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
