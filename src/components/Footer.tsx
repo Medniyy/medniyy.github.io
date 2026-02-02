@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { links } from "@/lib/constants";
 
 function XIcon({ className }: { className?: string }) {
@@ -19,13 +20,16 @@ export default function Footer() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center font-bold text-lg text-zinc-950">
-              A
+            <div className="relative w-10 h-10 flex-shrink-0">
+              <Image
+                src="/logo.png"
+                alt="ATH Creative Studio"
+                width={40}
+                height={40}
+                className="object-contain w-10 h-10"
+              />
             </div>
-            <div>
-              <p className="text-white font-semibold">ATH Creative Studio</p>
-              <p className="text-zinc-600 text-xs">Web3 Media Partner</p>
-            </div>
+            <p className="text-white font-semibold">ATH Creative Studio</p>
           </div>
 
           <div className="flex gap-8 text-zinc-400 text-sm">

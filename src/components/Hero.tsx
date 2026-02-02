@@ -134,10 +134,10 @@ export default function Hero() {
             From quick clips to full-time embedded media teams — we do it all.
           </p>
           <p className="text-sm text-zinc-600 mb-12">
-            <span className="text-emerald-500 font-medium">32</span> services • Zero fluff • Built for Web3
+            <span className="text-emerald-500 font-medium">32</span> services • Tailored approach • Permanently onchain
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex items-center justify-center">
             <Button
               size="lg"
               onClick={scrollToForm}
@@ -147,13 +147,6 @@ export default function Hero() {
                 Get Free Media Audit
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="lg"
-              className="px-8 py-6 text-zinc-300 hover:text-white hover:bg-white/5 rounded-full text-lg"
-            >
-              View Case Studies
             </Button>
           </div>
         </motion.div>

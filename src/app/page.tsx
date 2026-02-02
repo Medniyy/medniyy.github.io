@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Hero from "@/components/Hero";
 import CapabilityTicker from "@/components/CapabilityTicker";
 import StatsTicker from "@/components/StatsTicker";
@@ -19,10 +20,15 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative w-8 h-8">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center font-bold text-sm text-zinc-950">
-                A
-              </div>
+            <div className="relative w-8 h-8 flex-shrink-0">
+              <Image
+                src="/logo.png"
+                alt="ATH Creative Studio"
+                width={32}
+                height={32}
+                className="object-contain w-8 h-8"
+                priority
+              />
             </div>
             <span className="font-semibold text-white hidden sm:block">
               ATH Creative Studio

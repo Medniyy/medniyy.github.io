@@ -9,11 +9,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ATH Creative Studio | Web3 Media Partner",
+  title: "ATH Creative Studio",
   description:
     "Strategic video content for Web3 projects. 500+ videos produced, 5 years in crypto, trusted by the Solana ecosystem.",
   openGraph: {
-    title: "ATH Creative Studio | Web3 Media Partner",
+    title: "ATH Creative Studio",
     description: "We help Web3 projects build trust through media",
     type: "website",
   },

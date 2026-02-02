@@ -17,18 +17,15 @@ export default function ProblemSolution() {
               The Problem
             </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-              Inconsistent communication{" "}
-              <span className="text-zinc-600">kills trust.</span>
+              Web3 projects live and die{" "}
+              <span className="text-zinc-600">by momentum.</span>
             </h2>
             <div className="space-y-6 text-zinc-400 text-lg leading-relaxed">
               <p>
-                Web3 projects live and die by visibility. But between shipping
-                code and managing communities, founders rarely have time to
-                produce high-quality media.
+                You work hard to generate hype, but between shipping code and managing communities, the narrative often breaks.
               </p>
               <p>
-                Silence breeds FUD. Without a consistent narrative, even the
-                best technology gets ignored.
+                Silence doesn&apos;t just breed FUD; it drains liquidity. When communication drops, potential investors become passive observers. You are letting your most valuable asset (attention) leak away to louder, less capable competitors.
               </p>
             </div>
           </motion.div>

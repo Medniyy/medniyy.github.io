@@ -19,15 +19,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { TelegramIcon } from "@/components/ui/telegram-icon";
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwvqnqno";
 
 const formSchema = z.object({
   project: z.string().min(3, "Project name or link is required"),
   goal: z.enum(["audit", "specific"]),
   needs: z.string().optional(),
   timeline: z.string().optional(),
-  revenue: z.string().min(1, "Please select your revenue range"),
+  revenue: z.string().optional(),
   contact: z.string().optional(),
   email: z.string().email("Valid email required"),
+  telegramHandle: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -127,11 +131,38 @@ export default function AuditForm() {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log("Form submitted:", data);
-    setIsSubmitting(false);
-    setSubmitSuccess(true);
-    setTimeout(() => setSubmitSuccess(false), 3000);
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          project: data.project,
+          goal: data.goal || "Free audit of current media presence",
+          needs: data.needs || "",
+          timeline: data.timeline || "ASAP",
+          revenue: data.revenue || "",
+          email: data.email,
+          contact: data.contact || "X DM",
+          telegramHandle: data.telegramHandle || "",
+          _subject: `New Media Audit Request: ${data.project}`,
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setTimeout(() => setSubmitSuccess(false), 5000);
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -165,7 +196,7 @@ export default function AuditForm() {
                 htmlFor="project"
                 className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
               >
-                Project Name + Link *
+                PROJECT NAME + LINK *
               </Label>
               <Input
                 id="project"
@@ -180,7 +211,7 @@ export default function AuditForm() {
 
             <div className="space-y-4">
               <Label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
-                What are you looking for?
+                WHAT ARE YOU LOOKING FOR?
               </Label>
               <RadioGroup
                 value={goalValue}
@@ -221,11 +252,16 @@ export default function AuditForm() {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <Textarea
-                      placeholder="Tell us what you need..."
-                      className="mt-4 bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 min-h-[120px]"
-                      {...register("needs")}
-                    />
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
+                        Tell us what do you have in mind
+                      </Label>
+                      <Textarea
+                        placeholder="e.g., 'Need hype videos for our token launch', 'X engagement is dead', 'Want AI cinematic clips' 'Need event coverage on site'..."
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 min-h-[120px]"
+                        {...register("needs")}
+                      />
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -233,7 +269,7 @@ export default function AuditForm() {
 
             <div className="space-y-3">
               <Label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
-                Timeline
+                TIMELINE
               </Label>
               <SegmentedControl
                 value={timelineValue || "ASAP"}
@@ -244,10 +280,29 @@ export default function AuditForm() {
 
             <div className="space-y-3">
               <Label
+                htmlFor="email"
+                className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
+              >
+                EMAIL *
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-red-400 text-sm">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <Label
                 htmlFor="revenue"
                 className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
               >
-                Monthly Revenue *
+                MONTHLY REVENUE (OPTIONAL*)
               </Label>
               <Select
                 value={revenueValue}
@@ -264,40 +319,24 @@ export default function AuditForm() {
                   <SelectItem value="100k+">$100k+</SelectItem>
                 </SelectContent>
               </Select>
-              {errors.revenue && (
-                <p className="text-red-400 text-sm">{errors.revenue.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <Label
-                htmlFor="email"
-                className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
-              >
-                Email *
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
-                {...register("email")}
-              />
-              {errors.email && (
-                <p className="text-red-400 text-sm">{errors.email.message}</p>
-              )}
             </div>
 
             <div className="space-y-3">
               <Label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
-                Best way to reach you?
+                BEST WAY TO REACH YOU?
               </Label>
-              <div className="flex gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 <ToggleCard
                   icon={XIcon}
                   title="X DM"
                   selected={contactValue === "twitter"}
                   onClick={() => setValue("contact", "twitter")}
+                />
+                <ToggleCard
+                  icon={TelegramIcon}
+                  title="Telegram"
+                  selected={contactValue === "telegram"}
+                  onClick={() => setValue("contact", "telegram")}
                 />
                 <ToggleCard
                   icon={Phone}
@@ -306,6 +345,34 @@ export default function AuditForm() {
                   onClick={() => setValue("contact", "call")}
                 />
               </div>
+
+              <AnimatePresence>
+                {contactValue === "telegram" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-4 space-y-2">
+                      <Label
+                        htmlFor="telegramHandle"
+                        className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
+                      >
+                        Telegram handle (optional)
+                      </Label>
+                      <Input
+                        id="telegramHandle"
+                        type="text"
+                        placeholder="@username"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                        {...register("telegramHandle")}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <div className="pt-4">
@@ -325,7 +392,7 @@ export default function AuditForm() {
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
-                    Submit Request
+                    Get My Free Audit
                     <ArrowRight className="w-5 h-5" />
                   </span>
                 )}
