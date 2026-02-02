@@ -109,7 +109,7 @@ export default function Hero() {
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
             We Help Web3 Projects{" "}
             <br className="hidden md:block" />
-            Build Trust Through{" "}
+            Convert Attention Into Revenue Through{" "}
             <br className="hidden sm:block md:hidden" />
             {/* Fixed-height slot so longer rotating text doesn't shift layout */}
             <span className="inline-block min-h-[2.2em] align-top" style={{ lineHeight: 1.1 }}>

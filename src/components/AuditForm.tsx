@@ -32,6 +32,8 @@ const formSchema = z.object({
   contact: z.string().optional(),
   email: z.string().email("Valid email required"),
   telegramHandle: z.string().optional(),
+  xHandle: z.string().optional(),
+  callLink: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -147,6 +149,8 @@ export default function AuditForm() {
           email: data.email,
           contact: data.contact || "X DM",
           telegramHandle: data.telegramHandle || "",
+          xHandle: data.xHandle || "",
+          callLink: data.callLink || "",
           _subject: `New Media Audit Request: ${data.project}`,
         }),
       });
@@ -347,6 +351,32 @@ export default function AuditForm() {
               </div>
 
               <AnimatePresence>
+                {contactValue === "twitter" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-4 space-y-2">
+                      <Label
+                        htmlFor="xHandle"
+                        className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
+                      >
+                        X handle (optional)
+                      </Label>
+                      <Input
+                        id="xHandle"
+                        type="text"
+                        placeholder="@handle"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                        {...register("xHandle")}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
                 {contactValue === "telegram" && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
@@ -368,6 +398,32 @@ export default function AuditForm() {
                         placeholder="@username"
                         className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
                         {...register("telegramHandle")}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {contactValue === "call" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-4 space-y-2">
+                      <Label
+                        htmlFor="callLink"
+                        className="text-xs font-medium text-zinc-400 uppercase tracking-wide"
+                      >
+                        Calendly or other booking link (optional)
+                      </Label>
+                      <Input
+                        id="callLink"
+                        type="text"
+                        placeholder="Calendly or other booking link"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                        {...register("callLink")}
                       />
                     </div>
                   </motion.div>
