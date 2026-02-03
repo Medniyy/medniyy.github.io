@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 const siteUrl = "https://ath.camera";
-const ogImageUrl = "https://ath.camera/ath-logo-og.png?v=2";
+const ogImageUrl = "https://ath.camera/ath-logo-og.png?v=7";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImageUrl,
-        width: 1200,
-        height: 1200,
-        alt: "ATH",
+        width: 600,
+        height: 600,
+        alt: "ATH Logo",
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "ATH",
     description: "We Help Web3 Projects Convert Attention Into Revenue in 32 ways.",
     images: [ogImageUrl],
