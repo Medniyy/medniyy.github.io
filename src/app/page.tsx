@@ -20,13 +20,13 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative w-8 h-8 flex-shrink-0">
+            <div className="relative w-10 h-10 flex-shrink-0">
               <Image
                 src="/logo.png"
-                alt="ATH Creative Studio"
-                width={32}
-                height={32}
-                className="object-contain w-8 h-8"
+                alt="ATH"
+                width={40}
+                height={40}
+                className="object-contain w-10 h-10"
                 priority
               />
             </div>
@@ -38,7 +38,7 @@ export default function Home() {
           <Button
             size="sm"
             onClick={scrollToForm}
-            className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-medium"
+            className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-medium min-h-[44px] min-w-[44px] touch-manipulation"
           >
             Get Free Audit
           </Button>

@@ -8,14 +8,36 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ath.camera";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "ATH Creative Studio",
   description:
     "Strategic video content for Web3 projects. 500+ videos produced, 5 years in crypto, trusted by the Solana ecosystem.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
-    title: "ATH Creative Studio",
-    description: "We help Web3 projects build trust through media",
+    title: "ATH",
+    description: "We Help Web3 Projects Convert Attention Into Revenue in 32 ways.",
     type: "website",
+    url: siteUrl,
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 1200,
+        alt: "ATH",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ATH",
+    description: "We Help Web3 Projects Convert Attention Into Revenue in 32 ways.",
+    images: ["/logo.png"],
   },
 };
 

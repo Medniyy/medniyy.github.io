@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowRight, Phone, Loader2 } from "lucide-react";
+import { ArrowRight, Video, Mail, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { TelegramIcon } from "@/components/ui/telegram-icon";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwvqnqno";
 
@@ -48,13 +47,13 @@ function SegmentedControl({
   options: string[];
 }) {
   return (
-    <div className="flex bg-zinc-900/50 p-1 rounded-xl border border-white/10">
+    <div className="flex flex-col sm:flex-row bg-zinc-900/50 p-1 rounded-xl border border-white/10 gap-1 sm:gap-0">
       {options.map((option) => (
         <button
           key={option}
           type="button"
           onClick={() => onChange(option)}
-          className={`flex-1 py-2.5 px-4 text-sm font-medium rounded-lg transition-all ${
+          className={`flex-1 min-h-[56px] sm:min-h-0 py-3 px-5 sm:py-2.5 sm:px-4 text-sm font-medium rounded-lg transition-all touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             value === option
               ? "bg-zinc-800 text-white shadow-sm"
               : "text-zinc-500 hover:text-zinc-300"
@@ -82,13 +81,13 @@ function ToggleCard({
     <button
       type="button"
       onClick={onClick}
-      className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl border transition-all duration-200 ${
+      className={`w-full max-w-[95%] md:max-w-none md:flex-1 md:min-w-0 flex flex-row items-center justify-center gap-2 min-h-[48px] h-12 py-2.5 px-4 rounded-lg border transition-all duration-200 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 active:ring-emerald-500/40 ${
         selected
           ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400 shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)]"
           : "bg-zinc-900/30 border-white/10 text-zinc-400 hover:bg-zinc-900/50 hover:border-white/20"
       }`}
     >
-      <Icon className="w-5 h-5" />
+      <Icon className="w-5 h-5 flex-shrink-0" />
       <span className="text-sm font-medium">{title}</span>
     </button>
   );
@@ -103,6 +102,19 @@ function XIcon({ className }: { className?: string }) {
       aria-hidden
     >
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function TelegramPaperPlaneIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
     </svg>
   );
 }
@@ -122,7 +134,7 @@ export default function AuditForm() {
     defaultValues: {
       goal: "audit",
       timeline: "ASAP",
-      contact: "twitter",
+      contact: "email",
     },
   });
 
@@ -147,7 +159,7 @@ export default function AuditForm() {
           timeline: data.timeline || "ASAP",
           revenue: data.revenue || "",
           email: data.email,
-          contact: data.contact || "X DM",
+          contact: data.contact || "Email",
           telegramHandle: data.telegramHandle || "",
           xHandle: data.xHandle || "",
           callLink: data.callLink || "",
@@ -170,7 +182,7 @@ export default function AuditForm() {
   };
 
   return (
-    <section className="py-24 md:py-32 bg-zinc-950" id="audit">
+    <section className="py-12 md:py-32 bg-zinc-950" id="audit">
       <div className="max-w-2xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -194,7 +206,7 @@ export default function AuditForm() {
           transition={{ delay: 0.1 }}
           className="bg-zinc-900/30 border border-white/10 rounded-2xl p-6 md:p-10 backdrop-blur-xl shadow-2xl"
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 md:space-y-8">
             <div className="space-y-3">
               <Label
                 htmlFor="project"
@@ -204,8 +216,8 @@ export default function AuditForm() {
               </Label>
               <Input
                 id="project"
-                placeholder="e.g., YourProject.xyz or @YourTwitter"
-                className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                placeholder="e.g., solana.com or @solana"
+                className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 h-12 text-base py-4 px-5 md:py-2 md:px-3 min-h-[44px] placeholder:text-gray-400 placeholder:opacity-80 placeholder:italic"
                 {...register("project")}
               />
               {errors.project && (
@@ -262,7 +274,7 @@ export default function AuditForm() {
                       </Label>
                       <Textarea
                         placeholder="e.g., 'Need hype videos for our token launch', 'X engagement is dead', 'Want AI cinematic clips' 'Need event coverage on site'..."
-                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 min-h-[120px]"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 min-h-[120px] py-4 px-5 md:py-2 md:px-3 text-base placeholder:text-gray-400 placeholder:opacity-80 placeholder:italic"
                         {...register("needs")}
                       />
                     </div>
@@ -293,7 +305,7 @@ export default function AuditForm() {
                 id="email"
                 type="email"
                 placeholder="your@email.com"
-                className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 h-12 text-base py-4 px-5 md:py-2 md:px-3 min-h-[44px] text-[16px] md:text-base placeholder:text-gray-400 placeholder:opacity-80 placeholder:italic"
                 {...register("email")}
               />
               {errors.email && (
@@ -312,7 +324,7 @@ export default function AuditForm() {
                 value={revenueValue}
                 onValueChange={(value) => setValue("revenue", value)}
               >
-                <SelectTrigger className="bg-zinc-900/50 border-white/10 h-12 text-base">
+                <SelectTrigger className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 h-12 text-base py-4 px-5 md:py-2 md:px-3 min-h-[48px]">
                   <SelectValue placeholder="Select your revenue range..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -329,7 +341,13 @@ export default function AuditForm() {
               <Label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
                 BEST WAY TO REACH YOU?
               </Label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col md:flex-row md:flex-wrap gap-7 md:gap-3 items-center md:items-stretch w-full">
+                <ToggleCard
+                  icon={Mail}
+                  title="Email"
+                  selected={contactValue === "email"}
+                  onClick={() => setValue("contact", "email")}
+                />
                 <ToggleCard
                   icon={XIcon}
                   title="X DM"
@@ -337,13 +355,13 @@ export default function AuditForm() {
                   onClick={() => setValue("contact", "twitter")}
                 />
                 <ToggleCard
-                  icon={TelegramIcon}
+                  icon={TelegramPaperPlaneIcon}
                   title="Telegram"
                   selected={contactValue === "telegram"}
                   onClick={() => setValue("contact", "telegram")}
                 />
                 <ToggleCard
-                  icon={Phone}
+                  icon={Video}
                   title="15min Call"
                   selected={contactValue === "call"}
                   onClick={() => setValue("contact", "call")}
@@ -369,8 +387,8 @@ export default function AuditForm() {
                       <Input
                         id="xHandle"
                         type="text"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 placeholder:text-gray-400 placeholder:opacity-80 placeholder:italic h-12 text-base py-4 px-5 md:py-2 md:px-3 min-h-[44px]"
                         placeholder="@handle"
-                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
                         {...register("xHandle")}
                       />
                     </div>
@@ -396,7 +414,7 @@ export default function AuditForm() {
                         id="telegramHandle"
                         type="text"
                         placeholder="@username"
-                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 h-12 text-base py-4 px-5 md:py-2 md:px-3 min-h-[44px] placeholder:text-gray-400 placeholder:opacity-80 placeholder:italic"
                         {...register("telegramHandle")}
                       />
                     </div>
@@ -422,7 +440,7 @@ export default function AuditForm() {
                         id="callLink"
                         type="text"
                         placeholder="Calendly or other booking link"
-                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 text-base"
+                        className="bg-zinc-900/50 border-white/10 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-0 h-12 text-base py-4 px-5 md:py-2 md:px-3 min-h-[44px] placeholder:text-gray-400 placeholder:opacity-80 placeholder:italic"
                         {...register("callLink")}
                       />
                     </div>
@@ -435,7 +453,7 @@ export default function AuditForm() {
               <Button
                 type="submit"
                 disabled={isSubmitting || submitSuccess}
-                className="w-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold py-6 text-lg rounded-xl shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/40 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full min-h-[48px] bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold py-6 text-lg rounded-xl shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/40 hover:scale-[1.02] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 touch-manipulation"
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">

@@ -5,7 +5,7 @@ import { CheckCircle2, Play, Layers } from "lucide-react";
 
 export default function ProblemSolution() {
   return (
-    <section className="py-24 md:py-32 bg-zinc-950 relative">
+    <section className="py-12 md:py-32 bg-zinc-950 relative">
       <div className="max-w-5xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           <motion.div

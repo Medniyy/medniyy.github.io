@@ -91,7 +91,7 @@ export default function ServiceDiscovery() {
   const [activeCategory, setActiveCategory] = useState(0);
 
   return (
-    <div className="max-w-6xl mx-auto py-24 px-6">
+    <div className="max-w-6xl mx-auto py-12 md:py-24 px-6">
       <div className="text-center mb-16">
         <p className="text-xs font-semibold text-emerald-500 uppercase tracking-widest mb-4">
           Our Approach

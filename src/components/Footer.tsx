@@ -23,7 +23,7 @@ export default function Footer() {
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image
                 src="/logo.png"
-                alt="ATH Creative Studio"
+                alt="ATH"
                 width={40}
                 height={40}
                 className="object-contain w-10 h-10"
