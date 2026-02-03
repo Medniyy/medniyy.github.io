@@ -47,16 +47,16 @@ function SegmentedControl({
   options: string[];
 }) {
   return (
-    <div className="flex flex-col sm:flex-row bg-zinc-900/50 p-1 rounded-xl border border-white/10 gap-1 sm:gap-0">
+    <div className="flex flex-col sm:flex-row gap-6 sm:gap-3 w-full max-w-[95%] sm:max-w-none mx-auto sm:mx-0">
       {options.map((option) => (
         <button
           key={option}
           type="button"
           onClick={() => onChange(option)}
-          className={`flex-1 min-h-[56px] sm:min-h-0 py-3 px-5 sm:py-2.5 sm:px-4 text-sm font-medium rounded-lg transition-all touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
+          className={`flex-1 min-h-[48px] h-12 py-2.5 px-4 text-sm font-medium rounded-lg border transition-all duration-200 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             value === option
-              ? "bg-zinc-800 text-white shadow-sm"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400 shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)]"
+              : "bg-zinc-900/30 border-white/10 text-zinc-500 hover:bg-zinc-900/50 hover:border-white/20 hover:text-zinc-300"
           }`}
         >
           {option}
