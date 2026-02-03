@@ -9,22 +9,19 @@ const inter = Inter({
 });
 
 const siteUrl = "https://ath.camera";
-const ogImageUrl = "https://ath.camera/ath-logo-og.png?v=7";
+const ogImageUrl = "https://ath.camera/ath-logo-og.png?v=8";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "ATH",
+  title: "ATH Creative Studio",
   description:
     "Strategic video content for Web3 projects. 500+ videos produced, 5 years in crypto, trusted by the Solana ecosystem.",
-  icons: [
-    { rel: "icon", url: "/favicon.ico?v=2", type: "image/x-icon" },
-    { rel: "shortcut icon", url: "/favicon.ico?v=2" },
-    { rel: "apple-touch-icon", sizes: "180x180", url: "/ath-logo-180.png?v=2" },
-    { rel: "icon", type: "image/png", sizes: "32x32", url: "/ath-logo-32.png?v=2" },
-    { rel: "icon", type: "image/png", sizes: "16x16", url: "/ath-logo-16.png?v=2" },
-  ],
+  icons: {
+    icon: [{ url: "/favicon.ico?v=2", type: "image/x-icon" }, { url: "/ath-logo-32.png?v=2", type: "image/png", sizes: "32x32" }],
+    apple: "/ath-logo-180.png?v=2",
+  },
   openGraph: {
-    title: "ATH",
+    title: "ATH Creative Studio",
     description: "We Help Web3 Projects Convert Attention Into Revenue in 32 ways.",
     type: "website",
     url: "https://ath.camera/",
@@ -39,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "ATH",
+    title: "ATH Creative Studio",
     description: "We Help Web3 Projects Convert Attention Into Revenue in 32 ways.",
     images: [ogImageUrl],
   },
