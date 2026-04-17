@@ -1,0 +1,5 @@
+# Source footage — not needed for the live site (carousel uses videos/optimized + posters)
+videos/raw/
+
+# Local design explorations
+stitch-proposals/
