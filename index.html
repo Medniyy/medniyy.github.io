@@ -1,722 +1,530 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>ATH</title>
-    <meta
-      name="description"
-      content="We help Web3 projects convert attention into revenue through event coverage."
-    />
-    <link rel="canonical" href="https://ath.camera/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="ATH" />
-    <meta
-      property="og:description"
-      content="We help Web3 projects convert attention into revenue through event coverage."
-    />
-    <meta property="og:url" content="https://ath.camera/" />
-    <meta property="og:image" content="https://ath.camera/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="ATH — creative studio for Web3 media (ath.camera)"
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ATH" />
-    <meta
-      name="twitter:description"
-      content="We help Web3 projects convert attention into revenue through event coverage."
-    />
-    <meta name="twitter:image" content="https://ath.camera/og-image.png" />
-    <meta name="twitter:site" content="@athcamera" />
-    <meta name="twitter:creator" content="@athcamera" />
-    <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
-    <link rel="alternate icon" href="favicon.ico?v=2" type="image/x-icon" />
+<html lang="en">
+<head>
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-      rel="stylesheet"
-    />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATH — Landing Page Redesign</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
 
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "accent-1": "#BFE8F2",
-              "accent-2": "#93D2E8",
-              "accent-3": "#7BC4DF",
-              silver: "rgb(158, 165, 176)",
-              "bg-dark": "#0A0A0A",
-              "surface-1": "#111111",
-              "surface-2": "#1A1A1A",
-              "surface-3": "#2A2A2A",
-              outline: "#404040",
-              "text-main": "#F5F5F5",
-              "text-muted": "#737373",
-              "text-tertiary": "#525252",
-            },
-            borderRadius: {
-              DEFAULT: "0.25rem",
-              full: "9999px",
-            },
-            fontFamily: {
-              headline: ["Source Serif 4", "serif"],
-              body: ["DM Sans", "sans-serif"],
-              label: ["DM Sans", "sans-serif"],
-            },
-            animation: {
-              scroll: "scroll 80s linear infinite",
-            },
-            keyframes: {
-              scroll: {
-                "0%": { transform: "translateX(0)" },
-                "100%": { transform: "translateX(-50%)" },
-              },
-            },
-          },
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..800;1,8..60,300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "ink":    "#0A0A0A",
+          "ink-2":  "#111111",
+          "ink-3":  "#17181A",
+          "ink-4":  "#1F2124",
+          "line":   "#2A2D31",
+          "line-2": "#3A3E44",
+          "silver": "#9EA5B0",
+          "fg":     "#F5F5F5",
+          "mute":   "#737373",
+          "dim":    "#525252",
+          "ice-1":  "#BFE8F2",
+          "ice-2":  "#93D2E8",
+          "ice-3":  "#7BC4DF",
+          "warn":   "#F2C37A",
         },
-      };
-    </script>
+        fontFamily: {
+          serif: ['"Source Serif 4"', "serif"],
+          sans:  ['"DM Sans"', "sans-serif"],
+          mono:  ['"JetBrains Mono"', "monospace"],
+        },
+        borderRadius: { DEFAULT: "0.25rem" },
+      }
+    }
+  }
+</script>
 
-    <style>
-      body {
-        font-family: "DM Sans", sans-serif;
-        background-color: #0a0a0a;
-        color: #f5f5f5;
-      }
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6,
-      .font-headline {
-        font-family: "Source Serif 4", serif;
-      }
-      .material-symbols-outlined {
-        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-      }
+<style>
+  html, body { background: #0A0A0A; color: #F5F5F5; font-family: "DM Sans", sans-serif; }
+  .font-serif { font-family: "Source Serif 4", serif; font-feature-settings: "ss01"; }
+  .label { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
 
-      .glass-nav {
-        background: rgba(10, 10, 10, 0.8);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border-bottom: 1px solid color-mix(in srgb, #bfe8f2 12%, rgba(64, 64, 64, 0.55));
-      }
+  .type-display { font-size: clamp(3rem, 7.4vw, 7.5rem); line-height: 0.95; letter-spacing: -0.03em; }
+  .type-h1      { font-size: clamp(2.2rem, 4.2vw, 3.8rem); line-height: 1.02; letter-spacing: -0.025em; }
+  .type-h2      { font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1.1;  letter-spacing: -0.02em; }
 
-      .glow-hover:hover {
-        box-shadow: 0 0 20px rgba(123, 196, 223, 0.18);
-        transition: box-shadow 0.3s ease;
-      }
+  /* Ticker */
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker { display: inline-flex; animation: tick 45s linear infinite; }
 
-      .brand-mark img {
-        width: 40px;
-        height: 40px;
-        display: block;
-      }
+  /* Marker annotations on the "before" panel */
+  .marker {
+    position: absolute;
+    width: 26px; height: 26px; border-radius: 9999px;
+    background: #F2C37A; color: #0A0A0A;
+    font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 3px rgba(242,195,122,0.18), 0 0 22px rgba(242,195,122,0.45);
+    z-index: 4;
+    cursor: help;
+  }
+  .marker::after {
+    content: "";
+    position: absolute; inset: -6px; border-radius: 9999px;
+    border: 1px solid rgba(242,195,122,0.35);
+    animation: pulse 2.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.85); opacity: 0.9; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
 
-      /* Type scale (tuned to reduce size imbalance) */
-      .type-hero {
-        font-size: clamp(2.4rem, 4.4vw, 4.15rem);
-        line-height: 1.05;
-      }
-      .type-lead {
-        font-size: clamp(1.05rem, 1.25vw, 1.25rem);
-      }
-      .type-h2 {
-        font-size: clamp(1.9rem, 2.6vw, 2.75rem);
-        line-height: 1.12;
-      }
-      .type-metric {
-        font-size: clamp(2.1rem, 2.6vw, 2.5rem);
-        line-height: 1;
-      }
-      .type-marquee {
-        font-size: clamp(1.05rem, 1.35vw, 1.25rem);
-      }
+  /* Scroll-snap screen showcase (before/after) */
+  .screen {
+    background: #0A0A0A;
+    border: 1px solid #2A2D31;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .screen-scroll {
+    height: 720px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2A2D31 transparent;
+  }
+  .screen-scroll::-webkit-scrollbar { width: 8px; }
+  .screen-scroll::-webkit-scrollbar-thumb { background: #2A2D31; border-radius: 4px; }
 
-      .scroller {
-        overflow: hidden;
-        white-space: nowrap;
-        position: relative;
-      }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 9999px;
+    border: 1px solid #2A2D31; background: rgba(255,255,255,0.02);
+    font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #9EA5B0;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 9999px; background: #7BC4DF; box-shadow: 0 0 10px #7BC4DF; }
 
-      .scroller-content {
-        display: inline-flex;
-        white-space: nowrap;
-      }
+  .hairline { background-image: linear-gradient(to right, #2A2D31 50%, transparent 50%); background-size: 8px 1px; background-repeat: repeat-x; background-position: 0 100%; }
 
-      /* Carousel */
-      .carousel-viewport {
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-      }
-      .carousel-viewport::-webkit-scrollbar {
-        height: 8px;
-      }
-      .carousel-viewport::-webkit-scrollbar-thumb {
-        background: rgba(158, 165, 176, 0.18);
-        border-radius: 9999px;
-      }
-      .carousel-track {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(320px, 1fr);
-        gap: 16px;
-        padding-bottom: 8px;
-      }
-      @media (min-width: 768px) {
-        .carousel-track {
-          grid-auto-columns: minmax(420px, 1fr);
-          gap: 24px;
-        }
-      }
-      @media (min-width: 1280px) {
-        .carousel-track {
-          grid-auto-columns: minmax(520px, 1fr);
-        }
-      }
-      .carousel-slide {
-        scroll-snap-align: start;
-      }
+  .grainy {
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(191,232,242,0.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, rgba(123,196,223,0.05), transparent 60%);
+  }
 
-      @media (prefers-reduced-motion: reduce) {
-        .carousel-viewport {
-          scroll-behavior: auto;
-        }
-      }
-    </style>
-  </head>
+  .stripe-placeholder {
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 10px, rgba(255,255,255,0.01) 10px 20px);
+  }
 
-  <body class="bg-bg-dark text-text-main antialiased selection:bg-accent-2 selection:text-bg-dark min-h-screen flex flex-col">
-    <nav aria-label="Main Navigation" class="fixed top-0 w-full z-50 glass-nav">
-      <div class="flex justify-between items-center px-8 py-6 w-full max-w-[1440px] mx-auto">
-        <a class="brand-mark inline-flex items-center justify-center scale-95 active:scale-90 transition-transform" href="#" aria-label="ATH home">
-          <img alt="ATH logo" src="favicon.svg?v=2" width="40" height="40" decoding="async" />
-        </a>
+  /* In-page nav */
+  .jumpnav a { transition: color .2s; }
+  .jumpnav a:hover { color: #BFE8F2; }
 
-        <div class="flex items-center gap-3">
-          <a class="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-accent-1 text-bg-dark font-bold text-sm tracking-wide hover:bg-accent-2 transition-colors duration-200" href="#contact">
-            Get a free quote
-          </a>
-        </div>
-      </div>
-    </nav>
+  /* Mini video tile */
+  .tile { position: relative; overflow: hidden; border-radius: 4px; border: 1px solid #2A2D31; background: #111111; }
+  .tile video, .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile .overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(10,10,10,0.9) 100%); }
+  .tile .caption { position: absolute; left: 14px; bottom: 12px; right: 14px; }
 
-    <main class="flex-grow pt-32 pb-24">
-      <!-- 1) Hero Section -->
-      <section class="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 mb-16 flex flex-col items-center text-center mt-12">
-        <h1 class="font-headline type-hero tracking-tighter mb-8 max-w-5xl">
-          We Help Web3 Projects Convert Attention Into Revenue
-        </h1>
-      </section>
+  /* Horizontal work rail */
+  .work-rail { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 32px 16px; scroll-padding-left: 32px; -webkit-overflow-scrolling: touch; }
+  .work-rail::-webkit-scrollbar { height: 8px; }
+  .work-rail::-webkit-scrollbar-thumb { background: #2A2D31; border-radius: 4px; }
+  .work-card { flex: 0 0 auto; width: min(620px, 82vw); scroll-snap-align: start; }
+  .work-card .tile { aspect-ratio: 16 / 9; }
+  .work-card .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+  .work-card .meta .x-link { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9EA5B0; display: inline-flex; align-items: center; gap: 6px; }
+  .work-card .meta .x-link:hover { color: #BFE8F2; }
 
-      <!-- 2) Recent Work (Carousel) -->
-      <section class="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 mb-24" id="work">
-        <div class="flex items-end justify-between gap-6 mb-6">
-          <div>
-            <h2 class="font-headline type-h2 mb-2 text-text-main">Recent work</h2>
-          </div>
+  /* Comparison column headers */
+  .col-head {
+    position: sticky; top: 0; z-index: 3;
+    background: rgba(10,10,10,0.88); backdrop-filter: blur(14px);
+    border-bottom: 1px solid #2A2D31;
+  }
 
-          <div class="hidden md:flex items-center gap-2">
-            <button class="carousel-prev px-3 py-2 rounded border border-outline bg-surface-1 text-silver hover:text-accent-2 transition-colors" type="button" aria-label="Previous videos">
-              <span class="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button class="carousel-next px-3 py-2 rounded border border-outline bg-surface-1 text-silver hover:text-accent-2 transition-colors" type="button" aria-label="Next videos">
-              <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-          </div>
-        </div>
+  /* KPI */
+  .kpi-num { font-family: "Source Serif 4", serif; font-size: clamp(2.6rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -0.02em; }
 
-        <div class="carousel-viewport" aria-label="Recent work videos" tabindex="0">
-          <div class="carousel-track" id="workCarousel">
-            <!-- Slides populated by script -->
-          </div>
-        </div>
-      </section>
+  /* Hover lift */
+  .lift { transition: transform .25s ease, border-color .25s ease; }
+  .lift:hover { transform: translateY(-2px); border-color: #3A3E44; }
 
-      <!-- 3) 32 Ways We Can Help -->
-      <section class="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 mb-20" id="services">
-        <div class="text-center mb-10">
-          <h2 class="font-headline type-h2 text-text-main mb-4">25 Ways We Can Help</h2>
-          <p class="text-text-muted text-lg">From one-off campaigns to becoming your full external media team</p>
-        </div>
+  /* Critique list numbering */
+  .crit-num {
+    font-family: "JetBrains Mono", monospace; font-size: 11px; color: #F2C37A;
+    border: 1px solid rgba(242,195,122,0.4); background: rgba(242,195,122,0.07);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: .1em;
+  }
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="bg-surface-1 border border-outline rounded p-8">
-            <h3 class="font-headline text-xl text-accent-1 border-b border-outline pb-4 mb-6">Video Production</h3>
-            <ul class="space-y-3 text-silver text-sm">
-              <li>Event coverage &amp; recap videos</li>
-              <li>AI product videos</li>
-              <li>Product videos</li>
-              <li>Personal brand videos for founders</li>
-              <li>On-location filming (we travel to you)</li>
-              <li>Multi-camera production</li>
-              <li>Green screen setup and filming</li>
-              <li>Brand narrative films</li>
-            </ul>
-          </div>
-          <div class="bg-surface-1 border border-outline rounded p-8">
-            <h3 class="font-headline text-xl text-accent-2 border-b border-outline pb-4 mb-6">Content &amp; Strategy</h3>
-            <ul class="space-y-3 text-silver text-sm">
-              <li>Content strategy</li>
-              <li>Platform adaptation</li>
-              <li>Social media packages</li>
-              <li>Seasonal campaigns</li>
-              <li>Quarterly strategy</li>
-              <li>Launch campaign content</li>
-            </ul>
-          </div>
-          <div class="bg-surface-1 border border-outline rounded p-8">
-            <h3 class="font-headline text-xl text-accent-3 border-b border-outline pb-4 mb-6">Editing &amp; Post</h3>
-            <ul class="space-y-3 text-silver text-sm">
-              <li>Editing your footage</li>
-              <li>Creating clips from long-form</li>
-              <li>Podcast repurposing</li>
-              <li>Sound design</li>
-              <li>Subtitling</li>
-              <li>Color grading</li>
-            </ul>
-          </div>
-          <div class="bg-surface-1 border border-outline rounded p-8">
-            <h3 class="font-headline text-xl text-silver border-b border-outline pb-4 mb-6">Ongoing Partnership</h3>
-            <ul class="space-y-3 text-silver text-sm">
-              <li>Monthly media partnership</li>
-              <li>Ambassador content programs</li>
-              <li>Stream setup</li>
-              <li>Full recording services</li>
-              <li>Podcast production</li>
-            </ul>
-          </div>
-        </div>
-      </section>
+  /* Button */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 9999px;
+    background: #BFE8F2; color: #0A0A0A; font-weight: 700; letter-spacing: 0.01em;
+    transition: background .2s, transform .2s;
+  }
+  .btn-primary:hover { background: #93D2E8; transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 9999px;
+    border: 1px solid #2A2D31; color: #F5F5F5;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-ghost:hover { border-color: #7BC4DF; color: #BFE8F2; }
 
-      <!-- 4) Get a free quote (Contact) -->
-      <section class="w-full max-w-[900px] mx-auto px-6 md:px-12 mb-8" id="contact">
-        <div class="bg-surface-2 border border-outline rounded p-10 md:p-12 relative overflow-hidden">
-          <div class="absolute -top-32 -left-32 w-72 h-72 bg-accent-2/10 rounded-full blur-[90px] z-0 pointer-events-none"></div>
-          <div class="relative z-10">
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-              <div>
-                <h2 class="font-headline type-h2 text-text-main mb-3">Get a free quote</h2>
-                <p class="text-text-muted text-lg max-w-xl">
-                  Drop your contact and what you need. We’ll reply fast.
-                </p>
-              </div>
-              <div class="text-sm text-text-muted">
-                Or email us at
-                <a class="text-silver hover:text-accent-2 transition-colors" href="mailto:athmedia21@gmail.com">athmedia21@gmail.com</a>
+  /* Subtle divider line */
+  .rule { height: 1px; background: linear-gradient(to right, transparent, #2A2D31 20%, #2A2D31 80%, transparent); }
+</style>
+
+</head>
+<body class="bg-ink text-bone antialiased">
+<main id="proposed">
+        <!-- =========================== -->
+        <!-- Proposed landing page v2     -->
+        <!-- =========================== -->
+
+        <!-- Sticky nav -->
+        <div class="sticky top-0 z-20 backdrop-blur-md bg-ink/80 border-b border-line">
+          <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-5">
+              <img src="favicon.ico" class="w-6 h-6" alt="" />
+              <div class="hidden md:flex items-center gap-5 label text-silver">
+                <a href="#v2-work">Work</a>
+                <a href="#v2-services">What we do</a>
+                <a href="#v2-process">Process</a>
               </div>
             </div>
-
-            <div class="space-y-3">
-              <p class="hidden text-sm text-center text-accent-2" data-fs-success>Submitted. We’ll reach out shortly.</p>
-              <p class="hidden text-sm text-center text-red-300" data-fs-error></p>
+            <div class="flex items-center gap-3">
+              <a href="https://calendly.com/athcamera" target="_blank" rel="noopener" class="label text-silver hidden md:inline">Book a call</a>
+              <a href="#v2-contact" class="btn-primary text-xs !py-2 !px-4">Get in touch</a>
             </div>
-
-            <form id="quoteForm" class="space-y-6" action="https://formspree.io/f/xeevggdd" method="POST">
-              <input type="hidden" name="_subject" value="" />
-              <input type="hidden" name="_replyto" value="" />
-              <input type="hidden" name="email" value="" />
-              <input class="hidden" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
-              <fieldset class="space-y-3">
-                <legend class="block text-sm font-medium text-silver">WHAT DO YOU NEED?</legend>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label class="flex items-center gap-3 rounded border border-outline bg-surface-1 px-4 py-3 cursor-pointer hover:border-accent-2/40 transition-colors">
-                    <input class="text-accent-2" type="radio" name="need" value="Event coverage" required data-fs-field />
-                    <span class="text-silver">Event coverage</span>
-                  </label>
-                  <label class="flex items-center gap-3 rounded border border-outline bg-surface-1 px-4 py-3 cursor-pointer hover:border-accent-2/40 transition-colors">
-                    <input class="text-accent-2" type="radio" name="need" value="Product video" data-fs-field />
-                    <span class="text-silver">Product video</span>
-                  </label>
-                  <label class="flex items-center gap-3 rounded border border-outline bg-surface-1 px-4 py-3 cursor-pointer hover:border-accent-2/40 transition-colors">
-                    <input class="text-accent-2" type="radio" name="need" value="Launch campaign" data-fs-field />
-                    <span class="text-silver">Launch campaign</span>
-                  </label>
-                  <label class="flex items-center gap-3 rounded border border-outline bg-surface-1 px-4 py-3 cursor-pointer hover:border-accent-2/40 transition-colors">
-                    <input class="text-accent-2" type="radio" name="need" value="Ongoing media partner" data-fs-field />
-                    <span class="text-silver">Ongoing media partner</span>
-                  </label>
-                  <label class="flex items-center gap-3 rounded border border-outline bg-surface-1 px-4 py-3 cursor-pointer hover:border-accent-2/40 transition-colors sm:col-span-2">
-                    <input class="text-accent-2" type="radio" name="need" value="Other" data-fs-field />
-                    <span class="text-silver">Other</span>
-                  </label>
-                </div>
-              </fieldset>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-silver mb-2">CONTACT METHOD</label>
-                  <select class="w-full bg-surface-1 border border-outline text-text-main rounded focus:outline-none focus:ring-2 focus:ring-accent-2" name="contact_method" required data-fs-field>
-                    <option value="" disabled selected>Select…</option>
-                    <option>Telegram</option>
-                    <option>Email</option>
-                    <option>X</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-silver mb-2">YOUR TG / EMAIL / X *</label>
-                  <input class="w-full bg-surface-1 border border-outline text-text-main rounded focus:outline-none focus:ring-2 focus:ring-accent-2" name="contact" placeholder="@username / you@domain.com / https://x.com/..." required type="text" data-fs-field />
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-silver mb-2">MESSAGE (OPTIONAL)</label>
-                <textarea class="w-full bg-surface-1 border border-outline text-text-main rounded focus:outline-none focus:ring-2 focus:ring-accent-2 min-h-[110px]" name="message" placeholder="A quick brief, deadline, budget range, etc." data-fs-field></textarea>
-              </div>
-
-              <button class="w-full py-4 rounded-full bg-accent-1 text-bg-dark font-bold text-lg hover:bg-accent-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed" type="submit" data-fs-submit-btn>
-                Contact us
-              </button>
-              <p class="text-xs text-text-muted text-center">No spam. We’ll reply with next steps.</p>
-            </form>
           </div>
         </div>
-      </section>
-    </main>
 
-    <footer aria-label="Footer" class="w-full border-t border-outline bg-surface-1">
-      <div class="flex flex-col md:flex-row justify-between items-center px-12 py-12 w-full max-w-[1440px] mx-auto gap-8">
-        <div class="flex items-center space-x-6">
-          <a class="font-body uppercase text-[10px] tracking-[0.2em] text-silver hover:text-accent-2 transition-colors duration-200 flex items-center gap-2" href="https://x.com/athcamera" target="_blank" rel="noopener noreferrer">
-            <svg aria-hidden="true" class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 4.09H5.078z"></path></svg>
-            Follow on X
-          </a>
+        <!-- HERO : full-bleed showreel -->
+        <div class="relative overflow-hidden">
+          <!-- NOTE: swap src to the real showreel export when available -->
+          <video class="absolute inset-0 w-full h-full object-cover opacity-60" autoplay muted loop playsinline poster="videos/posters/status_2044066170471624711_1.jpg">
+            <source src="videos/optimized/status_2044066170471624711_1.mp4" type="video/mp4" />
+          </video>
+          <div class="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/70 to-ink"></div>
+
+          <div class="relative px-8 pt-24 pb-24">
+            <div class="pill mb-6"><span class="dot"></span> Showreel · 2026</div>
+            <h1 class="font-serif text-5xl leading-[0.98] tracking-tight max-w-3xl">
+              Cinematic media<br />
+              <em class="italic text-ice-1">for the projects</em><br />shaping Web3.
+            </h1>
+            <p class="text-silver text-base mt-6 max-w-xl leading-relaxed">
+              We're a small, versatile media team. We make content around your product — AI films, event coverage, promos, tutorials — and figure out what the story needs to be.
+            </p>
+            <div class="flex flex-wrap items-center gap-3 mt-8">
+              <a href="#v2-contact" class="btn-primary">Tell us what you need →</a>
+              <a href="#v2-work" class="btn-ghost">Watch recent work</a>
+            </div>
+          </div>
         </div>
-        <div class="font-body uppercase text-[10px] tracking-[0.2em] text-text-muted text-center md:text-right">
-          © 2026 ATH. Working globally.
+
+        <!-- RESULTS STRIP (KPIs) -->
+        <div class="px-8 py-16 border-b border-line">
+          <div class="label text-silver mb-6">Since 2021</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+              <div class="kpi-num">100+</div>
+              <div class="label text-mute mt-2">Videos delivered in Q1</div>
+            </div>
+            <div>
+              <div class="kpi-num">15</div>
+              <div class="label text-mute mt-2">Events covered globally</div>
+            </div>
+            <div>
+              <div class="kpi-num">1M+</div>
+              <div class="label text-mute mt-2">Views on delivered work</div>
+            </div>
+            <div>
+              <div class="kpi-num">1st</div>
+              <div class="label text-mute mt-2">Solana Summit Content Comp.</div>
+            </div>
+          </div>
         </div>
-      </div>
-    </footer>
 
-    <script>
-      // Recent work video carousel
-      const VIDEO_SOURCES = [
-        {
-          src: "videos/optimized/status_2044066170471624711_1.mp4",
-          poster: "videos/posters/status_2044066170471624711_1.jpg",
-          xUrl: "https://x.com/solflare/status/2044066170471624711",
-        },
-        {
-          src: "videos/optimized/status_2043323417328488876_1.mp4",
-          poster: "videos/posters/status_2043323417328488876_1.jpg",
-          xUrl: "https://x.com/frame_tailor_/status/2043323417328488876",
-        },
-        {
-          src: "videos/optimized/status_2043323417328488876_2.mp4",
-          poster: "videos/posters/status_2043323417328488876_2.jpg",
-          xUrl: "https://x.com/frame_tailor_/status/2043323417328488876",
-        },
-        {
-          src: "videos/optimized/status_2040060787524571575_1.mp4",
-          poster: "videos/posters/status_2040060787524571575_1.jpg",
-          xUrl: "https://x.com/frame_tailor_/status/2040060787524571575",
-        },
-        {
-          src: "videos/optimized/status_2036765297856926051_1.mp4",
-          poster: "videos/posters/status_2036765297856926051_1.jpg",
-          xUrl: "https://x.com/frame_tailor_/status/2036765297856926051",
-        },
-        {
-          src: "videos/optimized/status_2033907638787051843_1.mp4",
-          poster: "videos/posters/status_2033907638787051843_1.jpg",
-          xUrl: "https://x.com/athcamera/status/2033907638787051843",
-        },
-        {
-          src: "videos/optimized/status_2030998054514667826_1.mp4",
-          poster: "videos/posters/status_2030998054514667826_1.jpg",
-          xUrl: "https://x.com/athcamera/status/2030998054514667826",
-        },
-        {
-          src: "videos/optimized/status_2029551642614616278_1.mp4",
-          poster: "videos/posters/status_2029551642614616278_1.jpg",
-          xUrl: "https://x.com/athcamera/status/2029551642614616278",
-        },
-        {
-          src: "videos/optimized/status_2029551642614616278_2.mp4",
-          poster: "videos/posters/status_2029551642614616278_2.jpg",
-          xUrl: "https://x.com/athcamera/status/2029551642614616278",
-        },
-        {
-          src: "videos/optimized/status_2026620994853679146_1.mp4",
-          poster: "videos/posters/status_2026620994853679146_1.jpg",
-          xUrl: "https://x.com/athcamera/status/2026620994853679146",
-        },
-        {
-          src: "videos/optimized/status_2023769377783627785_1.mp4",
-          poster: "videos/posters/status_2023769377783627785_1.jpg",
-          xUrl: "https://x.com/athcamera/status/2023769377783627785",
-        },
-        {
-          src: "videos/optimized/status_2021224132394811791_1.mp4",
-          poster: "videos/posters/status_2021224132394811791_1.jpg",
-          xUrl: "https://x.com/athcamera/status/2021224132394811791",
-        },
-        {
-          src: "videos/optimized/status_2032811076463865937_1.mp4",
-          poster: "videos/posters/status_2032811076463865937_1.jpg",
-          xUrl: "https://x.com/validotxyz/status/2032811076463865937",
-        },
-        {
-          src: "videos/optimized/status_1898652306478100757_1.mp4",
-          poster: "videos/posters/status_1898652306478100757_1.jpg",
-          xUrl: "https://x.com/validotxyz/status/1898652306478100757",
-        },
-      ];
+        <!-- WORK : horizontal carousel -->
+        <div id="v2-work" class="py-16 border-b border-line">
+          <div class="flex items-end justify-between mb-6 px-8">
+            <h2 class="font-serif text-3xl">Our recent work</h2>
+            <div class="hidden md:flex items-center gap-2">
+              <button id="workPrev" aria-label="Previous" class="w-9 h-9 rounded border border-line text-silver hover:text-ice-1 hover:border-line-2 flex items-center justify-center">‹</button>
+              <button id="workNext" aria-label="Next" class="w-9 h-9 rounded border border-line text-silver hover:text-ice-1 hover:border-line-2 flex items-center justify-center">›</button>
+            </div>
+          </div>
+          <div id="workRail" class="work-rail"></div>
+        </div>
 
-      const VIDEO_CAPTIONS = [
-        { title: "Solana", subtitle: "Moon camp trailer" },
-        { title: "Solflare", subtitle: "Visual aesthetics trailer 1" },
-        { title: "Solflare", subtitle: "Visual aesthetics trailer 2" },
-        { title: "Solflare", subtitle: "Shield promo" },
-        { title: "Solflare", subtitle: "Wallet Dealers clip" },
-        { title: "Thread visuals", subtitle: "Private sends" },
-        { title: "Solflare", subtitle: "GTA 6 Trailer" },
-        { title: "Solflare", subtitle: "Shield cinematic promo" },
-        { title: "Solflare", subtitle: "Shield overview" },
-        { title: "Solflare", subtitle: "Comedy sketch promo 1" },
-        { title: "Solflare", subtitle: "Comedy sketch promo 2" },
-        { title: "Solflare", subtitle: "Feature cinematic promo" },
-        { title: "Pudgy Penguins", subtitle: "Pudgy Malaysia trip vlog" },
-        { title: "Solana Global Content Competition", subtitle: "Metaplex Movie (1st prize winner)" },
-      ];
+        <script>
+          (function(){
+            const items = [
+              { src: "videos/optimized/status_2044066170471624711_1.mp4",              poster: "videos/posters/status_2044066170471624711_1.jpg",       client: "Solana",           title: "Moon Camp trailer",                 x: "https://x.com/solflare/status/2044066170471624711" },
+              { src: "videos/optimized/status_2043323417328488876_1.mp4",           poster: "videos/posters/status_2043323417328488876_1.jpg",  client: "Solflare",         title: "Visual aesthetics — trailer 1",       x: "https://x.com/frame_tailor_/status/2043323417328488876" },
+              { src: "videos/optimized/status_2043323417328488876_2.mp4",poster: "videos/posters/status_2043323417328488876_2.jpg",  client: "Solflare",         title: "Visual aesthetics — trailer 2",       x: "https://x.com/frame_tailor_/status/2043323417328488876" },
+              { src: "videos/optimized/status_2040060787524571575_1.mp4",               poster: "videos/posters/status_2040060787524571575_1.jpg",        client: "Solflare",         title: "Shield — promo",                      x: "https://x.com/frame_tailor_/status/2040060787524571575" },
+              { src: "videos/optimized/status_2036765297856926051_1.mp4",              poster: "videos/posters/status_2036765297856926051_1.jpg",       client: "Solflare",         title: "Wallet Dealers clip",                 x: "https://x.com/frame_tailor_/status/2036765297856926051" },
+              { src: "videos/optimized/status_2033907638787051843_1.mp4",                poster: "videos/posters/status_2033907638787051843_1.jpg",         client: "Thread visuals",   title: "Private sends",                       x: "https://x.com/athcamera/status/2033907638787051843" },
+              { src: "videos/optimized/status_2030998054514667826_1.mp4",                 poster: "videos/posters/status_2030998054514667826_1.jpg",          client: "Solflare",         title: "GTA 6 Trailer",                       x: "https://x.com/athcamera/status/2030998054514667826" },
+              { src: "videos/optimized/status_2029551642614616278_1.mp4",poster: "videos/posters/status_2029551642614616278_1.jpg", client: "Solflare",         title: "Shield cinematic promo",              x: "https://x.com/athcamera/status/2029551642614616278" },
+              { src: "videos/optimized/status_2029551642614616278_2.mp4",poster: "videos/posters/status_2029551642614616278_1.jpg", client: "Solflare",         title: "Shield overview",                     x: "https://x.com/athcamera/status/2029551642614616278" },
+              { src: "videos/optimized/status_2026620994853679146_1.mp4",             poster: "videos/posters/status_2026620994853679146_1.jpg",      client: "Solflare",         title: "Comedy sketch promo 1",               x: "https://x.com/athcamera/status/2026620994853679146" },
+              { src: "videos/optimized/status_2023769377783627785_1.mp4",poster: "videos/posters/status_2023769377783627785_1.jpg",     client: "Solflare",         title: "Comedy sketch promo 2",               x: "https://x.com/athcamera/status/2023769377783627785" },
+              { src: "videos/optimized/status_2021224132394811791_1.mp4",poster: "videos/posters/status_2023769377783627785_1.jpg",     client: "Solflare",         title: "Feature cinematic promo",             x: "https://x.com/athcamera/status/2021224132394811791" },
+              { src: "videos/optimized/status_2032811076463865937_1.mp4",                poster: "videos/posters/status_2032811076463865937_1.jpg",         client: "Pudgy Penguins",   title: "Malaysia trip vlog",                  x: "https://x.com/validotxyz/status/2032811076463865937" },
+              { src: "videos/optimized/status_1898652306478100757_1.mp4",                poster: "videos/posters/status_1898652306478100757_1.jpg",         client: "Metaplex · 1st prize", title: "Solana Summit Content Comp.",     x: "https://x.com/validotxyz/status/1898652306478100757" },
+            ];
+            const rail = document.getElementById('workRail');
+            if (!rail) return;
+            rail.innerHTML = items.map((it, i) => `
+              <article class="work-card" data-i="${i}">
+                <div class="tile relative group">
+                  <video data-video muted loop playsinline preload="metadata" poster="${it.poster}">
+                    <source src="${it.src}" type="video/mp4" />
+                  </video>
+                  <div class="overlay pointer-events-none"></div>
+                  <button data-mute aria-label="Toggle sound" class="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-black/55 border border-line text-silver hover:text-ice-1 flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-4 h-4" data-icon-muted viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM23 9l-6 6M17 9l6 6"/></svg>
+                    <svg class="w-4 h-4 hidden" data-icon-on viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+                  </button>
+                  <div class="caption pointer-events-none">
+                    <div class="label text-ice-1">${it.client}</div>
+                    <div class="font-serif text-lg">${it.title}</div>
+                  </div>
+                </div>
+                <div class="meta">
+                  <span class="label text-mute">${String(i+1).padStart(2,'0')} / ${String(items.length).padStart(2,'0')}</span>
+                  <a href="${it.x}" target="_blank" rel="noopener" class="x-link">
+                    View on X
+                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 4.09H5.078z"/></svg>
+                  </a>
+                </div>
+              </article>
+            `).join('');
 
-      const WORK_VIDEOS = VIDEO_SOURCES.map((s, i) => ({ ...s, ...VIDEO_CAPTIONS[i] }));
-
-      const track = document.getElementById("workCarousel");
-      const viewport = document.querySelector(".carousel-viewport");
-
-      function el(tag, attrs = {}, children = []) {
-        const node = document.createElement(tag);
-        for (const [k, v] of Object.entries(attrs)) {
-          if (k === "class") node.className = v;
-          else if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2).toLowerCase(), v);
-          else node.setAttribute(k, v);
-        }
-        for (const child of children) node.appendChild(typeof child === "string" ? document.createTextNode(child) : child);
-        return node;
-      }
-
-      function pauseAll(except) {
-        document.querySelectorAll("#workCarousel video").forEach((v) => {
-          if (v !== except) v.pause();
-        });
-      }
-
-      function muteAll(except) {
-        document.querySelectorAll("#workCarousel video").forEach((v) => {
-          if (v !== except) v.muted = true;
-        });
-      }
-
-      function renderSlides() {
-        if (!track) return;
-        track.innerHTML = "";
-
-        WORK_VIDEOS.forEach((item) => {
-          const video = el("video", {
-            class: "w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300",
-            muted: "",
-            playsinline: "",
-            preload: "metadata",
-            poster: item.poster,
-          });
-          video.src = item.src;
-
-          const playBadge = el(
-            "div",
-            { class: "absolute inset-0 flex items-center justify-center pointer-events-none opacity-100 group-hover:opacity-0 transition-opacity duration-300" },
-            [
-              el(
-                "div",
-                {
-                  class:
-                    "w-12 h-12 rounded-full border border-outline bg-black/30 backdrop-blur-sm flex items-center justify-center",
-                },
-                [el("span", { class: "material-symbols-outlined text-accent-2", style: "font-variation-settings: 'FILL' 1;" }, ["play_arrow"])],
-              ),
-            ],
-          );
-
-          const xLink = el(
-            "a",
-            {
-              class:
-                "font-body text-xs uppercase tracking-widest text-text-muted hover:text-accent-2 transition-colors inline-flex items-center gap-1",
-              href: item.xUrl,
-              target: "_blank",
-              rel: "noopener noreferrer",
-              "aria-label": `Open ${item.title} on X`,
-            },
-            [
-              "Open on X",
-              el("span", { class: "material-symbols-outlined text-[16px]" }, ["open_in_new"]),
-            ],
-          );
-
-          const caption = el("div", { class: "p-4 flex items-start justify-between gap-3" }, [
-            el("div", {}, [
-              el("p", { class: "font-body text-xs uppercase tracking-widest text-text-muted mb-1" }, [item.title]),
-              el("h3", { class: "font-headline text-lg text-text-main" }, [item.subtitle]),
-            ]),
-            xLink,
-          ]);
-
-          const muteButton = el(
-            "button",
-            {
-              type: "button",
-              class:
-                "absolute top-3 right-3 z-10 px-2.5 py-2 rounded-full border border-outline bg-black/35 backdrop-blur-sm text-silver hover:text-accent-2 transition-colors",
-              "aria-label": "Toggle sound",
-            },
-            [el("span", { class: "material-symbols-outlined text-[18px]" }, ["volume_off"])],
-          );
-
-          const slide = el("article", { class: "carousel-slide group relative bg-surface-1 rounded overflow-hidden border border-outline" }, [
-            el("div", { class: "aspect-video relative overflow-hidden bg-surface-2" }, [
-              video,
-              el("div", { class: "absolute inset-0 bg-gradient-to-t from-bg-dark via-transparent to-transparent opacity-90 pointer-events-none" }),
-              playBadge,
-              muteButton,
-            ]),
-            caption,
-          ]);
-
-          function updateBadge() {
-            const isPlaying = !video.paused && !video.ended;
-            slide.classList.toggle("is-playing", isPlaying);
-            playBadge.style.opacity = isPlaying ? "0" : "";
-          }
-          video.addEventListener("play", updateBadge);
-          video.addEventListener("pause", updateBadge);
-          video.addEventListener("ended", updateBadge);
-
-          muteButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const shouldUnmute = video.muted;
-            if (shouldUnmute) {
-              muteAll(video);
-              video.muted = false;
-              muteButton.querySelector(".material-symbols-outlined").textContent = "volume_up";
-            } else {
-              video.muted = true;
-              muteButton.querySelector(".material-symbols-outlined").textContent = "volume_off";
+            const prevBtn = document.getElementById('workPrev');
+            const nextBtn = document.getElementById('workNext');
+            function scrollByCard(dir){
+              const card = rail.querySelector('.work-card');
+              if (!card) return;
+              const step = card.getBoundingClientRect().width + 16;
+              rail.scrollBy({ left: dir * step, behavior: 'smooth' });
             }
-          });
+            prevBtn && prevBtn.addEventListener('click', () => scrollByCard(-1));
+            nextBtn && nextBtn.addEventListener('click', () => scrollByCard(1));
 
-          // Desktop: hover/focus plays
-          const finePointer = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
-          if (finePointer) {
-            slide.addEventListener("mouseenter", async () => {
-              pauseAll(video);
-              // keep muted for autoplay policy; user can unmute via button
-              video.muted = true;
-              try { await video.play(); } catch {}
-            });
-            slide.addEventListener("mouseleave", () => video.pause());
-            slide.addEventListener("focusin", async () => {
-              pauseAll(video);
-              video.muted = true;
-              try { await video.play(); } catch {}
-            });
-            slide.addEventListener("focusout", () => video.pause());
-          } else {
-            // Mobile: tap toggles play/pause
-            slide.addEventListener("click", async () => {
-              if (video.paused) {
-                pauseAll(video);
-                video.muted = true;
-                try { await video.play(); } catch {}
-              } else {
-                video.pause();
+            function muteAll(except){
+              rail.querySelectorAll('video[data-video]').forEach(v => {
+                if (v !== except) {
+                  v.muted = true;
+                  const card = v.closest('article');
+                  card.querySelector('[data-icon-muted]').classList.remove('hidden');
+                  card.querySelector('[data-icon-on]').classList.add('hidden');
+                }
+              });
+            }
+
+            rail.querySelectorAll('article').forEach(card => {
+              const v = card.querySelector('video[data-video]');
+              const muteBtn = card.querySelector('[data-mute]');
+              const iconMuted = card.querySelector('[data-icon-muted]');
+              const iconOn = card.querySelector('[data-icon-on]');
+              const fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+              const tileEl = card.querySelector('.tile');
+
+              if (fine) {
+                tileEl.addEventListener('mouseenter', () => { v.play().catch(()=>{}); });
+                tileEl.addEventListener('mouseleave', () => { v.pause(); });
               }
+              tileEl.addEventListener('click', (e) => {
+                if (e.target.closest('[data-mute]')) return;
+                if (v.paused) v.play().catch(()=>{}); else v.pause();
+              });
+
+              muteBtn.addEventListener('click', (e) => {
+                e.preventDefault(); e.stopPropagation();
+                if (v.muted) {
+                  muteAll(v);
+                  v.muted = false;
+                  v.play().catch(()=>{});
+                  iconMuted.classList.add('hidden');
+                  iconOn.classList.remove('hidden');
+                } else {
+                  v.muted = true;
+                  iconMuted.classList.remove('hidden');
+                  iconOn.classList.add('hidden');
+                }
+              });
             });
-          }
+          })();
+        </script>
 
-          track.appendChild(slide);
-        });
-      }
+        <!-- WHY ATH -->
+        <div class="px-8 py-16 border-b border-line">
+          <div class="label text-silver mb-8">Why ATH</div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div class="font-serif text-2xl mb-3">We travel.</div>
+              <p class="text-silver text-sm leading-relaxed">Breakpoint, Korea Blockchain Week, DevConnect, Cosmoverse. We land with kit, shoot your booth and keynote, and deliver on location.</p>
+            </div>
+            <div>
+              <div class="font-serif text-2xl mb-3">We adapt.</div>
+              <p class="text-silver text-sm leading-relaxed">We take on different briefs and formats. When the deadline's tight, we ship — fast and clean. When the concept needs time, we give it time.</p>
+            </div>
+            <div>
+              <div class="font-serif text-2xl mb-3">We have taste.</div>
+              <p class="text-silver text-sm leading-relaxed">We understand cinematic, we understand trends, we understand formats. We're not just creators — we're creative directors and mentors. We care about the story.</p>
+            </div>
+          </div>
+        </div>
 
-      function scrollBySlide(dir) {
-        const firstSlide = track?.querySelector(".carousel-slide");
-        if (!firstSlide || !viewport) return;
-        const slideWidth = firstSlide.getBoundingClientRect().width;
-        viewport.scrollBy({ left: dir * (slideWidth + 20), behavior: "smooth" });
-      }
+        <!-- SERVICES : four offers, no prices -->
+        <div id="v2-services" class="px-8 py-16 border-b border-line">
+          <div class="flex items-end justify-between mb-8">
+            <div>
+              <div class="label text-silver mb-2">What we do</div>
+              <h2 class="font-serif text-3xl">A few ways to work with us.</h2>
+            </div>
+          </div>
 
-      document.querySelector(".carousel-prev")?.addEventListener("click", () => scrollBySlide(-1));
-      document.querySelector(".carousel-next")?.addEventListener("click", () => scrollBySlide(1));
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-line rounded p-6 bg-ink-2 lift">
+              <div class="flex items-baseline justify-between mb-3">
+                <div class="font-mono text-ice-1 text-sm">01</div>
+                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
+              </div>
+              <div class="font-serif text-2xl mb-2">AI cinematic trailer</div>
+              <p class="text-silver text-sm leading-relaxed">AI-driven film made around your brand. Cinematic, on-concept, built to feel like a proper trailer — not a moodboard.</p>
+            </div>
+            <div class="border border-line rounded p-6 bg-ink-2 lift">
+              <div class="flex items-baseline justify-between mb-3">
+                <div class="font-mono text-ice-1 text-sm">02</div>
+                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
+              </div>
+              <div class="font-serif text-2xl mb-2">Product &amp; promo videos</div>
+              <p class="text-silver text-sm leading-relaxed">Promos, walkthroughs, tutorials, short-form. Content built around your product — we figure out the angle, you approve the brief.</p>
+            </div>
+            <div class="border border-line rounded p-6 bg-ink-2 lift">
+              <div class="flex items-baseline justify-between mb-3">
+                <div class="font-mono text-ice-1 text-sm">03</div>
+                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
+              </div>
+              <div class="font-serif text-2xl mb-2">Event coverage</div>
+              <p class="text-silver text-sm leading-relaxed">We fly out, shoot your booth, keynote, or side event, and deliver a recap film plus cutdowns.</p>
+            </div>
+            <div class="border border-line rounded p-6 bg-ink-2 lift">
+              <div class="flex items-baseline justify-between mb-3">
+                <div class="font-mono text-ice-1 text-sm">04</div>
+                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
+              </div>
+              <div class="font-serif text-2xl mb-2">Always-on media partner</div>
+              <p class="text-silver text-sm leading-relaxed">Your external media team. Ongoing content across formats and platforms — long-term engagements where we sit inside the work.</p>
+            </div>
+          </div>
+          <p class="text-mute text-sm mt-6 max-w-2xl">We're generalists by design. If you have a product, we can build the content around it — including launch campaigns, podcasts, and creator training.</p>
+        </div>
 
-      renderSlides();
-    </script>
-    <!-- Formspree: official CDN order (queue stub first, library deferred) — https://github.com/formspree/formspree-js/blob/main/packages/formspree-ajax/README.md -->
-    <script>
-      window.formspree =
-        window.formspree ||
-        function () {
-          (formspree.q = formspree.q || []).push(arguments);
-        };
-      formspree("initForm", { formElement: "#quoteForm", formId: "xeevggdd" });
-    </script>
-    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
-    <script>
-      // Sync hidden Formspree fields before submit (reCAPTCHA off in dashboard, or use custom keys for AJAX + captcha).
-      (function bindFormspreeMeta() {
-        const form = document.getElementById("quoteForm");
-        if (!form) return;
+        <!-- PROCESS -->
+        <div id="v2-process" class="px-8 py-16 border-b border-line">
+          <div class="label text-silver mb-6">How we work</div>
+          <ol class="space-y-6">
+            <li class="grid grid-cols-12 gap-6 border-b border-line pb-6">
+              <div class="col-span-2 font-mono text-ice-1">01 · Day 0</div>
+              <div class="col-span-3 font-serif text-lg">15-minute intro call</div>
+              <div class="col-span-7 text-silver text-sm leading-relaxed">You tell us the event, the goal, the timeline. We tell you — honestly — whether we're the right team and what it costs.</div>
+            </li>
+            <li class="grid grid-cols-12 gap-6 border-b border-line pb-6">
+              <div class="col-span-2 font-mono text-ice-1">02 · Day 1–3</div>
+              <div class="col-span-3 font-serif text-lg">Brief + treatment</div>
+              <div class="col-span-7 text-silver text-sm leading-relaxed">Written brief, shot list, and a reference board. One round of notes, then we lock.</div>
+            </li>
+            <li class="grid grid-cols-12 gap-6 border-b border-line pb-6">
+              <div class="col-span-2 font-mono text-ice-1">03 · On site</div>
+              <div class="col-span-3 font-serif text-lg">We show up, fully crewed</div>
+              <div class="col-span-7 text-silver text-sm leading-relaxed">Two-camera minimum, audio, lighting. We embed with your team — not background crew.</div>
+            </li>
+            <li class="grid grid-cols-12 gap-6">
+              <div class="col-span-2 font-mono text-ice-1">04 · +24h</div>
+              <div class="col-span-3 font-serif text-lg">Ship</div>
+              <div class="col-span-7 text-silver text-sm leading-relaxed">Recap + 3–5 short-form cuts delivered within 24h of wrap. Color-graded, captioned, platform-ready.</div>
+            </li>
+          </ol>
+        </div>
 
-        const methodEl = form.elements.namedItem("contact_method");
-        const contactEl = form.elements.namedItem("contact");
-        const replyToEl = form.elements.namedItem("_replyto");
-        const emailEl = form.elements.namedItem("email");
-        const subjectEl = form.elements.namedItem("_subject");
+        <!-- CONTACT -->
+        <div id="v2-contact" class="px-8 py-20 relative overflow-hidden">
+          <div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-ice-2/10 rounded-full blur-[120px] pointer-events-none"></div>
+          <div class="relative grid grid-cols-12 gap-8">
+            <div class="col-span-12 md:col-span-5">
+              <div class="label text-silver mb-4">Get in touch</div>
+              <h2 class="font-serif text-4xl leading-tight mb-4">Tell us what you need. We'll reply.</h2>
+              <p class="text-silver text-sm leading-relaxed mb-6">Or book a 30-minute call directly:</p>
+              <a href="https://calendly.com/athcamera" target="_blank" rel="noopener" class="btn-ghost">Book on Calendly →</a>
+              <div class="rule my-8"></div>
+              <div class="label text-mute">Email</div>
+              <a href="mailto:athmedia21@gmail.com" class="text-silver hover:text-ice-1 block mb-4">athmedia21@gmail.com</a>
+              <div class="label text-mute">Based in</div>
+              <div class="text-silver">Southeast Asia</div>
+            </div>
+            <div class="col-span-12 md:col-span-7">
+              <form class="space-y-5 border border-line rounded p-6 bg-ink-2">
+                <div>
+                  <div class="label text-silver mb-3">What do you need?</div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver"><input type="radio" name="v2need" class="accent-ice-2" /> AI cinematic trailer</label>
+                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver"><input type="radio" name="v2need" class="accent-ice-2" /> Product / promo video</label>
+                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver"><input type="radio" name="v2need" class="accent-ice-2" /> Event coverage</label>
+                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver"><input type="radio" name="v2need" class="accent-ice-2" /> Always-on media</label>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <div class="label text-silver mb-2">Contact method</div>
+                    <div class="h-10 border border-line rounded bg-ink px-3 flex items-center text-sm text-mute">Telegram / Email / X</div>
+                  </div>
+                  <div>
+                    <div class="label text-silver mb-2">Your @ or email</div>
+                    <div class="h-10 border border-line rounded bg-ink px-3 flex items-center text-sm text-mute">@you</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="label text-silver mb-2">Brief</div>
+                  <div class="h-24 border border-line rounded bg-ink px-3 py-2 text-sm text-mute">What you're shipping, when you need it.</div>
+                </div>
+                <button type="button" class="btn-primary w-full justify-center">Send →</button>
+              </form>
+            </div>
+          </div>
+        </div>
 
-        // Same inbox as the public mailto on this page; plus-tag filters in Gmail. Avoids empty _replyto/email rows.
-        const fallbackReply = "athmedia21+web-quote@gmail.com";
-
-        function selectedNeed() {
-          const checked = form.querySelector('input[name="need"]:checked');
-          return (checked?.value || "").trim() || "Unknown";
-        }
-
-        function sync() {
-          const method = (methodEl?.value || "").trim();
-          const methodKey = method.toLowerCase();
-          const contact = (contactEl?.value || "").trim();
-
-          const visitorEmail =
-            methodKey === "email" && contact.includes("@") ? contact : "";
-          const reply = visitorEmail || fallbackReply;
-
-          if (replyToEl) replyToEl.value = reply;
-          if (emailEl) emailEl.value = reply;
-
-          const subject = `ATH quote — ${selectedNeed()} — ${method || "Unknown method"}`;
-          if (subjectEl) subjectEl.value = subject;
-        }
-
-        methodEl?.addEventListener("change", sync);
-        contactEl?.addEventListener("input", sync);
-        form.querySelectorAll('input[name="need"]').forEach((el) => el.addEventListener("change", sync));
-        form.addEventListener("submit", sync, true);
-
-        sync();
-      })();
-    </script>
-  </body>
+        <!-- FOOTER -->
+        <footer class="px-8 py-10 border-t border-line">
+          <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+            <div class="flex items-center gap-3">
+              <img src="favicon.ico" class="w-7 h-7" alt="" />
+              <div class="label text-silver">ATH</div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-x-12 gap-y-6 label text-silver">
+              <div>
+                <div class="text-mute mb-3">Contact</div>
+                <div>athmedia21@gmail.com</div>
+                <div>@athcamera</div>
+                <div><a href="https://calendly.com/athcamera" target="_blank" rel="noopener" class="hover:text-ice-1">Book a call</a></div>
+              </div>
+              <div>
+                <div class="text-mute mb-3">Based in</div>
+                <div>Southeast Asia</div>
+              </div>
+            </div>
+          </div>
+          <div class="rule my-8"></div>
+          <div class="label text-mute">© 2026 ATH</div>
+        </footer>
+  </main>
+</body>
 </html>
