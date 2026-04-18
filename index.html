@@ -479,11 +479,11 @@
               <div class="text-silver">Southeast Asia</div>
             </div>
             <div class="col-span-12 md:col-span-7">
-              <form action="https://formspree.io/f/xeevggdd" method="POST" class="space-y-5 border border-line rounded p-6 bg-ink-2">
+              <form id="contactForm" class="space-y-5 border border-line rounded p-6 bg-ink-2">
                 <div>
                   <div class="label text-silver mb-3">What do you need?</div>
                   <div class="grid grid-cols-2 gap-2">
-                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="AI cinematic trailer" class="accent-ice-2" /> AI cinematic trailer</label>
+                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="AI cinematic trailer" class="accent-ice-2" required /> AI cinematic trailer</label>
                     <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="Product / promo video" class="accent-ice-2" /> Product / promo video</label>
                     <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="Event coverage" class="accent-ice-2" /> Event coverage</label>
                     <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="Always-on media" class="accent-ice-2" /> Always-on media</label>
@@ -492,19 +492,50 @@
                 <div class="grid grid-cols-2 gap-3">
                   <div>
                     <div class="label text-silver mb-2">Contact method</div>
-                    <input type="text" name="contact_method" placeholder="Telegram / Email / X" class="w-full h-10 border border-line rounded bg-ink px-3 text-sm text-fg placeholder-mute focus:outline-none focus:border-line-2" />
+                    <select name="contact_method" required class="w-full h-10 border border-line rounded bg-ink px-3 text-sm text-fg focus:outline-none focus:border-line-2 appearance-none cursor-pointer">
+                      <option value="" disabled selected class="text-mute">Pick one</option>
+                      <option value="Telegram">Telegram</option>
+                      <option value="Email">Email</option>
+                      <option value="X">X</option>
+                    </select>
                   </div>
                   <div>
                     <div class="label text-silver mb-2">Your @ or email</div>
-                    <input type="text" name="contact" placeholder="@you" class="w-full h-10 border border-line rounded bg-ink px-3 text-sm text-fg placeholder-mute focus:outline-none focus:border-line-2" />
+                    <input type="text" name="contact" placeholder="@you" required class="w-full h-10 border border-line rounded bg-ink px-3 text-sm text-fg placeholder-mute focus:outline-none focus:border-line-2" />
                   </div>
                 </div>
                 <div>
                   <div class="label text-silver mb-2">Brief</div>
                   <textarea name="brief" placeholder="What you're shipping, when you need it." rows="4" class="w-full border border-line rounded bg-ink px-3 py-2 text-sm text-fg placeholder-mute focus:outline-none focus:border-line-2 resize-none"></textarea>
                 </div>
-                <button type="submit" class="btn-primary w-full justify-center">Send →</button>
+                <div id="formSuccess" class="hidden text-center py-4">
+                  <div class="font-serif text-2xl text-ice-1 mb-2">Success!</div>
+                  <div class="text-silver text-sm">We'll get back to you shortly.</div>
+                </div>
+                <button type="submit" id="formSubmit" class="btn-primary w-full justify-center">Send →</button>
               </form>
+              <script>
+                document.getElementById('contactForm').addEventListener('submit', async function(e) {
+                  e.preventDefault();
+                  const btn = document.getElementById('formSubmit');
+                  btn.textContent = 'Sending…';
+                  btn.disabled = true;
+                  const res = await fetch('https://formspree.io/f/xeevggdd', {
+                    method: 'POST',
+                    body: new FormData(this),
+                    headers: { 'Accept': 'application/json' }
+                  });
+                  if (res.ok) {
+                    this.reset();
+                    btn.classList.add('hidden');
+                    document.getElementById('formSuccess').classList.remove('hidden');
+                  } else {
+                    btn.textContent = 'Send →';
+                    btn.disabled = false;
+                    alert('Something went wrong. Please try again.');
+                  }
+                });
+              </script>
             </div>
           </div>
         </div>
