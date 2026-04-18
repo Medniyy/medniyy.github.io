@@ -238,19 +238,19 @@
           <div class="label text-silver mb-6">Since 2021</div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
-              <div class="kpi-num">1000+</div>
+              <div class="kpi-num" data-count="1000" data-suffix="+">0+</div>
               <div class="label text-mute mt-2">Videos delivered</div>
             </div>
             <div>
-              <div class="kpi-num">15</div>
+              <div class="kpi-num" data-count="15" data-suffix="">0</div>
               <div class="label text-mute mt-2">Events covered globally</div>
             </div>
             <div>
-              <div class="kpi-num">1M+</div>
+              <div class="kpi-num" data-count="1" data-suffix="M+">0M+</div>
               <div class="label text-mute mt-2">Views on delivered work</div>
             </div>
             <div>
-              <div class="kpi-num">1st</div>
+              <div class="kpi-num" data-static="1st">1st</div>
               <div class="label text-mute mt-2">Solana Summit Content Comp.</div>
             </div>
           </div>
@@ -568,6 +568,31 @@
   if (window.location.hash) {
     history.replaceState(null, document.title, window.location.pathname);
   }
+
+  // Count-up animation for KPI numbers
+  (function() {
+    const els = document.querySelectorAll('.kpi-num[data-count]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        const el = entry.target;
+        const target = +el.dataset.count;
+        const suffix = el.dataset.suffix || '';
+        const duration = 1600;
+        const start = performance.now();
+        function tick(now) {
+          const elapsed = Math.min((now - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - elapsed, 3);
+          el.textContent = Math.floor(ease * target) + suffix;
+          if (elapsed < 1) requestAnimationFrame(tick);
+          else el.textContent = target + suffix;
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.3 });
+    els.forEach(el => observer.observe(el));
+  })();
 </script>
 </body>
 </html>
