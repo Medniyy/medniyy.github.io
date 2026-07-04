@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>ATH - Cinematic media</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon" />
 <link rel="canonical" href="https://ath.camera" />
-<meta name="description" content="ATH is a small, versatile media team making cinematic content for Web3 projects — AI films, event coverage, promos, and always-on media." />
 <meta name="robots" content="index, follow" />
 <meta name="google-site-verification" content="vC552hNdFY_Tz6fxU_hffGBICVqzzgnL51Wm6FLjQC0" />
+<meta name="description" content="ATH is a duo — extra content and growth layer for projects on Solana. Content, community-driven campaigns, and anything that grabs attention." />
 <meta property="og:title" content="ATH - Cinematic media" />
-<meta property="og:description" content="ATH is a small, versatile media team making cinematic content for Web3 projects — AI films, event coverage, promos, and always-on media." />
+<meta property="og:description" content="ATH is a duo — extra content and growth layer for projects on Solana. Content, community-driven campaigns, and anything that grabs attention." />
 <meta property="og:image" content="https://ath.camera/og-image.png" />
 <meta property="og:url" content="https://ath.camera" />
 <meta property="og:type" content="website" />
@@ -19,8 +18,307 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@athcamera" />
 <meta name="twitter:title" content="ATH - Cinematic media" />
-<meta name="twitter:description" content="ATH is a small, versatile media team making cinematic content for Web3 projects — AI films, event coverage, promos, and always-on media." />
+<meta name="twitter:description" content="ATH is a duo — extra content and growth layer for projects on Solana. Content, community-driven campaigns, and anything that grabs attention." />
 <meta name="twitter:image" content="https://ath.camera/og-image.png" />
+<script defer src="https://umami-service-production-3ded.up.railway.app/script.js" data-website-id="c6a909fb-aee0-4738-a319-eff57127ea98"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --ink:    #0A0A0A;
+    --ink-2:  #111111;
+    --ink-3:  #17181A;
+    --line:   #2A2D31;
+    --line-2: #3A3E44;
+    --silver: #9EA5B0;
+    --fg:     #F5F5F5;
+    --mute:   #737373;
+    --ice-1:  #BFE8F2;
+    --ice-2:  #93D2E8;
+    --ice-3:  #7BC4DF;
+    --bevel-hi: rgba(255,255,255,0.14);
+    --bevel-lo: rgba(0,0,0,0.65);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--ink);
+    color: var(--fg);
+    font-family: "DM Sans", sans-serif;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "JetBrains Mono", monospace; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── retro bevel ───────────────────────────── */
+  .bevel {
+    border: 1px solid var(--line);
+    box-shadow: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo);
+    background: var(--ink-2);
+  }
+  .bevel:active, .bevel[aria-expanded="true"] {
+    box-shadow: inset 1px 1px 0 var(--bevel-lo), inset -1px -1px 0 var(--bevel-hi);
+    transform: translate(1px, 1px);
+  }
+
+  /* ── top / bottom bars ─────────────────────── */
+  .bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--mute);
+    flex: 0 0 auto;
+  }
+  .bar a { color: var(--mute); text-decoration: none; transition: color .2s; }
+  .bar a:hover { color: var(--ice-1); }
+
+  /* ── hero cluster: wordmark + slogan + menu ── */
+  .hero {
+    flex: 0 0 auto;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: clamp(24px, 6vh, 64px) 16px 0;
+  }
+  .hero-core { will-change: transform; visibility: hidden; }
+  .hero-core.settle { transition: transform 1.5s cubic-bezier(0.4, 0, 0.1, 1); }
+  .wordmark {
+    font-family: "Source Serif 4", serif;
+    font-weight: 700;
+    font-size: clamp(3rem, 9vh, 5.5rem);
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+  .slogan {
+    margin-top: clamp(8px, 1.6vh, 16px);
+    color: var(--silver);
+    font-size: clamp(0.9rem, 2vh, 1.1rem);
+    letter-spacing: 0.02em;
+    min-height: 1.5em;
+  }
+  .cursor {
+    display: inline-block; width: 0.55em; height: 1.05em;
+    background: var(--ice-1); vertical-align: text-bottom; margin-left: 4px;
+    animation: blink 1.15s steps(1) infinite;
+  }
+  @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.08; } }
+
+  /* ── intro reveal ──────────────────────────── */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 1.2s ease, transform 1.2s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal-x { opacity: 0; transform: translateX(64px); transition: opacity 1.5s cubic-bezier(0.3, 0, 0.15, 1), transform 1.5s cubic-bezier(0.3, 0, 0.15, 1); }
+  .reveal-x.in { opacity: 1; transform: none; }
+
+  /* ── co-founders: label above the buttons, below the gallery ── */
+  .cofounders {
+    flex: 0 0 auto;
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(10px, 1.8vh, 14px);
+    padding: 0 12px clamp(8px, 1.6vh, 16px);
+  }
+  .cf-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(10.5px, 1.4vh, 12px); letter-spacing: 0.14em;
+    color: var(--silver);
+  }
+  .cf-btns { display: flex; gap: clamp(10px, 2.2vw, 16px); }
+  .cf-btn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(10.5px, 1.5vh, 12px); letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--silver); text-decoration: none;
+    padding: 11px clamp(18px, 3.5vw, 28px);
+    transition: color .18s, transform .1s, box-shadow .1s;
+    white-space: nowrap;
+  }
+  .cf-btn:hover { color: var(--ice-1); }
+
+  /* ── section buttons ───────────────────────── */
+  .menu {
+    flex: 0 0 auto;
+    display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(8px, 1.8vw, 14px);
+    margin-top: clamp(24px, 4.5vh, 44px);
+  }
+  .menu button {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(10.5px, 1.5vh, 12px); letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--silver);
+    padding: 12px clamp(12px, 2.8vw, 24px);
+    cursor: pointer;
+    transition: color .18s, transform .1s, box-shadow .1s;
+    white-space: nowrap;
+  }
+  .menu button:hover { color: var(--ice-1); }
+  .menu button[aria-expanded="true"] { color: var(--ice-1); background: var(--ink-3); }
+  .menu button .caret { display: inline-block; margin-right: 6px; color: var(--ice-3); transition: transform .18s ease; }
+  .menu button[aria-expanded="true"] .caret { transform: rotate(90deg); }
+
+  /* ── panel dialog ──────────────────────────── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 40;
+    background: rgba(10,10,10,0.55);
+    backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s ease;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .panel {
+    width: min(92vw, 540px);
+    max-height: min(78dvh, 560px);
+    display: flex; flex-direction: column;
+    background: var(--ink-2);
+    border: 1px solid var(--line-2);
+    box-shadow: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo), 0 20px 60px rgba(0,0,0,0.6);
+    transform: scale(0.96) translateY(6px);
+    transition: transform .18s ease;
+  }
+  .overlay.open .panel { transform: scale(1) translateY(0); }
+  .panel-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px 8px 14px;
+    background: linear-gradient(180deg, var(--ink-3), var(--ink-2));
+    border-bottom: 1px solid var(--line);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ice-1);
+    flex: 0 0 auto;
+  }
+  .panel-close {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--silver); cursor: pointer;
+    transition: color .15s;
+  }
+  .panel-close:hover { color: var(--fg); }
+  .panel-body { padding: 20px 22px 24px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+  .panel-body p { color: var(--silver); font-size: 14px; line-height: 1.65; }
+  .panel-body p + p { margin-top: 12px; }
+  .panel-body p em { color: var(--fg); font-style: normal; }
+
+  .what-row { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px dashed var(--line); align-items: baseline; }
+  .what-row:last-child { border-bottom: none; }
+  .what-row .num { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ice-3); flex: 0 0 auto; }
+  .what-row .name { font-family: "Source Serif 4", serif; font-weight: 600; font-size: 17px; flex: 0 0 auto; }
+  .what-row .desc { color: var(--mute); font-size: 13px; line-height: 1.5; }
+
+  .touch-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 12px; margin-bottom: 8px;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    box-shadow: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo);
+    background: var(--ink-3);
+    transition: border-color .18s, transform .1s;
+  }
+  .touch-row:hover { border-color: var(--ice-3); }
+  .touch-row:active { box-shadow: inset 1px 1px 0 var(--bevel-lo), inset -1px -1px 0 var(--bevel-hi); transform: translate(1px,1px); }
+  .touch-row .kind { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); }
+  .touch-row .val { color: var(--fg); font-size: 14px; }
+  .touch-row .arrow { color: var(--ice-3); font-family: "JetBrains Mono", monospace; }
+
+  /* ── gallery ───────────────────────────────── */
+  .stage {
+    flex: 1 1 0; min-height: 0;
+    display: flex; flex-direction: column;
+    position: relative;
+    /* more room below than above nudges the gallery up */
+    padding: clamp(10px, 2.5vh, 26px) 0 clamp(20px, 4.5vh, 48px);
+  }
+  @media (max-width: 719px) {
+    .stage { padding-bottom: 11vh; }
+  }
+  .rail-wrap { position: relative; flex: 1 1 0; min-height: 0; display: flex; align-items: center; }
+  .rail {
+    display: flex; gap: 14px;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    padding: 4px calc(50% - var(--cardw) / 2);
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  @media (pointer: fine) { .rail { cursor: grab; } }
+  .rail.dragging { scroll-snap-type: none; cursor: grabbing; user-select: none; }
+  .card {
+    flex: 0 0 var(--cardw);
+    width: var(--cardw);
+    aspect-ratio: 16 / 9;
+    scroll-snap-align: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--ink-3);
+    border: 1px solid var(--line);
+    box-shadow: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo);
+    transition: border-color .25s;
+    cursor: pointer;
+  }
+  .card:hover { border-color: var(--line-2); }
+  .card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .shade {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent 45%, rgba(10,10,10,0.88) 100%);
+  }
+  .card .scan {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0;
+    background: repeating-linear-gradient(0deg, rgba(191,232,242,0.05) 0 1px, transparent 1px 3px);
+    transition: opacity .3s;
+  }
+  .card:hover .scan { opacity: 1; }
+  .card .cap { position: absolute; left: 14px; right: 52px; bottom: 12px; pointer-events: none; }
+  .card .cap .client { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice-1); }
+  .card .cap .title { font-family: "Source Serif 4", serif; font-weight: 600; font-size: clamp(14px, 2vh, 18px); line-height: 1.2; margin-top: 3px; text-shadow: 0 1px 8px rgba(0,0,0,.8); }
+  .card .xlink {
+    position: absolute; right: 12px; bottom: 12px; z-index: 5;
+    width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    background: rgba(10,10,10,0.55); border: 1px solid var(--line);
+    color: var(--silver); transition: color .15s, border-color .15s;
+  }
+  .card .xlink:hover { color: var(--ice-1); border-color: var(--ice-3); }
+  .card .mute-btn {
+    position: absolute; top: 10px; right: 10px; z-index: 5;
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(10,10,10,0.55); border: 1px solid var(--line);
+    color: var(--silver); cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: color .15s, border-color .15s;
+  }
+  .card .mute-btn:hover { color: var(--ice-1); border-color: var(--ice-3); }
+  .card .play-hint {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    pointer-events: none; transition: opacity .25s;
+  }
+  .card .play-hint span {
+    width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+    background: rgba(10,10,10,0.5); border: 1px solid var(--line-2);
+    color: var(--ice-1); font-size: 16px;
+    backdrop-filter: blur(4px);
+  }
+  .card.playing .play-hint { opacity: 0; }
+
+  button { background: none; border: none; font: inherit; color: inherit; }
+
+  /* ── sizing: fallback; JS refines from the real free height ── */
+  :root { --cardw: min(92vw, 52vh * 16 / 9, 900px); }
+
+  /* keep all three menu buttons on one row on small phones */
+  @media (max-width: 460px) {
+    .menu { gap: 7px; }
+    .menu button { padding: 11px 9px; font-size: 10px; letter-spacing: 0.06em; }
+    .menu button .caret { margin-right: 4px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -32,7 +330,7 @@
       "url": "https://ath.camera",
       "logo": "https://ath.camera/favicon.ico",
       "image": "https://ath.camera/og-image.png",
-      "description": "ATH is a small, versatile media team making cinematic content for Web3 projects — AI films, event coverage, promos, and always-on media.",
+      "description": "ATH is a small, versatile media team making cinematic content for Web3 projects â€” AI films, event coverage, promos, and always-on media.",
       "email": "athmedia21@gmail.com",
       "areaServed": "Worldwide",
       "sameAs": ["https://x.com/athcamera"],
@@ -41,7 +339,7 @@
     {
       "@type": "VideoObject",
       "name": "Solana Summer Song",
-      "description": "Solflare — Solana Summer Song.",
+      "description": "Solflare â€” Solana Summer Song.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2067549038333858281_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2067549038333858281_1.mp4",
       "uploadDate": "2026-06-18",
@@ -50,7 +348,7 @@
     {
       "@type": "VideoObject",
       "name": "Friends Edition",
-      "description": "Solana — Friends Edition.",
+      "description": "Solana â€” Friends Edition.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2047721279416131865_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2047721279416131865_1.mp4",
       "uploadDate": "2026-01-01",
@@ -68,7 +366,7 @@
     {
       "@type": "VideoObject",
       "name": "Seeker",
-      "description": "Seeker — Live motion.",
+      "description": "Seeker â€” Live motion.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2072637765699977466_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2072637765699977466_1.mp4",
       "uploadDate": "2026-07-02",
@@ -77,7 +375,7 @@
     {
       "@type": "VideoObject",
       "name": "Launch Video",
-      "description": "Superteam Thailand — Launch Video.",
+      "description": "Superteam Thailand â€” Launch Video.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2073358201744175422_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2073358201744175422_1.mp4",
       "uploadDate": "2026-07-04",
@@ -86,7 +384,7 @@
     {
       "@type": "VideoObject",
       "name": "Return to Monke trailer",
-      "description": "MonkeDAO — Return to Monke trailer.",
+      "description": "MonkeDAO â€” Return to Monke trailer.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2058151170733191561_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2058151170733191561_1.mp4",
       "uploadDate": "2026-01-01",
@@ -95,7 +393,7 @@
     {
       "@type": "VideoObject",
       "name": "IRL ELI5 tutorials",
-      "description": "Solflare — IRL ELI5 tutorials. PHYSICAL vs DIGITAL.",
+      "description": "Solflare â€” IRL ELI5 tutorials. PHYSICAL vs DIGITAL.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2073010933564342558_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2073010933564342558_1.mp4",
       "uploadDate": "2026-07-03",
@@ -104,7 +402,7 @@
     {
       "@type": "VideoObject",
       "name": "Me and Solana every night. Debut Single 2026",
-      "description": "Solana — Me and Solana every night. Debut Single 2026.",
+      "description": "Solana â€” Me and Solana every night. Debut Single 2026.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2052767900910731569_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2052767900910731569_1.mp4",
       "uploadDate": "2026-01-01",
@@ -113,7 +411,7 @@
     {
       "@type": "VideoObject",
       "name": "Solana Summer Vibes",
-      "description": "IslandDAO — Solana Summer Vibes.",
+      "description": "IslandDAO â€” Solana Summer Vibes.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2066887600003277054_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2066887600003277054_1.mp4",
       "uploadDate": "2026-06-16",
@@ -130,7 +428,7 @@
     },
     {
       "@type": "VideoObject",
-      "name": "Solana Global Content Comp. — 1st prize",
+      "name": "Solana Global Content Comp. â€” 1st prize",
       "description": "Award-winning Metaplex film. 1st place at the Solana Global Content Competition.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_1898652306478100757_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_1898652306478100757_1.mp4",
@@ -167,7 +465,7 @@
     {
       "@type": "VideoObject",
       "name": "Beyond Speculation",
-      "description": "Solflare — Beyond Speculation.",
+      "description": "Solflare â€” Beyond Speculation.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2037549403414646827_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2037549403414646827_1.mp4",
       "uploadDate": "2026-01-01",
@@ -176,7 +474,7 @@
     {
       "@type": "VideoObject",
       "name": "Solana Birthday clip",
-      "description": "Solflare — Solana Birthday clip.",
+      "description": "Solflare â€” Solana Birthday clip.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2033602532367282617_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2033602532367282617_1.mp4",
       "uploadDate": "2026-01-01",
@@ -184,7 +482,7 @@
     },
     {
       "@type": "VideoObject",
-      "name": "Visual aesthetics — trailer 1",
+      "name": "Visual aesthetics â€” trailer 1",
       "description": "Visual aesthetics trailer for Solflare.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2043323417328488876_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2043323417328488876_1.mp4",
@@ -193,7 +491,7 @@
     },
     {
       "@type": "VideoObject",
-      "name": "Visual aesthetics — trailer 2",
+      "name": "Visual aesthetics â€” trailer 2",
       "description": "Visual aesthetics trailer 2 for Solflare.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2043323417328488876_2.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2043323417328488876_2.mp4",
@@ -202,7 +500,7 @@
     },
     {
       "@type": "VideoObject",
-      "name": "Shield — promo",
+      "name": "Shield â€” promo",
       "description": "Promotional video for Solflare Shield.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2040060787524571575_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2040060787524571575_1.mp4",
@@ -248,7 +546,7 @@
     {
       "@type": "VideoObject",
       "name": "Private sends",
-      "description": "Thread visuals — Private sends.",
+      "description": "Thread visuals â€” Private sends.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2033907638787051843_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2033907638787051843_1.mp4",
       "uploadDate": "2026-01-01",
@@ -257,7 +555,7 @@
     {
       "@type": "VideoObject",
       "name": "Solana Summit Berlin 2026 trailer",
-      "description": "Solana — Solana Summit Berlin 2026 trailer.",
+      "description": "Solana â€” Solana Summit Berlin 2026 trailer.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2061408037789913499_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2061408037789913499_1.mp4",
       "uploadDate": "2026-01-01",
@@ -266,7 +564,7 @@
     {
       "@type": "VideoObject",
       "name": "Accelerate Miami trailer",
-      "description": "Solflare — Accelerate Miami trailer.",
+      "description": "Solflare â€” Accelerate Miami trailer.",
       "thumbnailUrl": "https://ath.camera/videos/posters/status_2051320555933171725_1.jpg",
       "contentUrl": "https://ath.camera/videos/optimized/status_2051320555933171725_1.mp4",
       "uploadDate": "2026-01-01",
@@ -275,599 +573,345 @@
   ]
 }
 </script>
-<script defer src="https://umami-service-production-3ded.up.railway.app/script.js" data-website-id="c6a909fb-aee0-4738-a319-eff57127ea98"></script>
+</head>
+<body>
 
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..800;1,8..60,300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <section class="hero">
+    <div class="hero-core" id="heroCore">
+      <h1 class="wordmark reveal">ATH</h1>
+      <p class="slogan"><span id="sloganText"></span><span class="cursor" id="sloganCursor"></span></p>
+    </div>
+
+    <nav class="menu reveal" aria-label="Sections">
+      <button class="bevel" data-panel="who" aria-expanded="false"><span class="caret">▸</span>Who we are</button>
+      <button class="bevel" data-panel="what" aria-expanded="false"><span class="caret">▸</span>What we do</button>
+      <button class="bevel" data-panel="touch" aria-expanded="false"><span class="caret">▸</span>Get in touch</button>
+    </nav>
+  </section>
+
+  <main class="stage reveal-x">
+    <div class="rail-wrap">
+      <div class="rail" id="rail"></div>
+    </div>
+  </main>
+
+  <div class="cofounders reveal">
+    <div class="cf-label">follow co-founders</div>
+    <div class="cf-btns">
+      <a class="bevel cf-btn" href="https://x.com/validotxyz" target="_blank" rel="noopener">Vali | ATH</a>
+      <a class="bevel cf-btn" href="https://x.com/Frame_tailor_" target="_blank" rel="noopener">Tom | ATH</a>
+    </div>
+  </div>
+
+  <footer class="bar reveal">
+    <span>© 2026 ATH</span>
+    <a href="https://x.com/athcamera" target="_blank" rel="noopener">@athcamera</a>
+  </footer>
+
+  <!-- panels -->
+  <div class="overlay" id="overlay">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+      <div class="panel-titlebar">
+        <span id="panelTitle">—</span>
+        <button class="panel-close bevel" id="panelClose" aria-label="Close">✕</button>
+      </div>
+      <div class="panel-body" id="panelBody"></div>
+    </div>
+  </div>
+
+  <template id="tpl-who">
+    <p><em>ATH is a duo.</em> We position ourselves as extra content and growth layer for projects on Solana — kind of like ambassadors and partners, an extension team that independently builds content, community-driven campaigns, and anything that grabs attention. We just love doing it in an unconventional way.</p>
+    <p>We don't just make videos. When we partner with a project, we become the people who are constantly sharing it and advocating for it everywhere.</p>
+    <p>What else can we say — we love Solana and we're here for the long run.</p>
+  </template>
+
+  <template id="tpl-what">
+    <div class="what-row"><span class="num">01</span><span class="name">AI cinematic trailers</span><span class="desc">AI-driven films built around your brand.</span></div>
+    <div class="what-row"><span class="num">02</span><span class="name">Product &amp; promo videos</span><span class="desc">Promos, walkthroughs, tutorials, short-form.</span></div>
+    <div class="what-row"><span class="num">03</span><span class="name">Event coverage</span><span class="desc">We fly out, shoot, and deliver recaps plus cutdowns.</span></div>
+    <div class="what-row"><span class="num">04</span><span class="name">Always-on media partner</span><span class="desc">Your external media team, long-term.</span></div>
+  </template>
+
+  <template id="tpl-touch">
+    <a class="touch-row" href="mailto:athmedia21@gmail.com"><span class="kind">Email</span><span class="val">athmedia21@gmail.com</span><span class="arrow">→</span></a>
+    <a class="touch-row" href="https://x.com/athcamera" target="_blank" rel="noopener"><span class="kind">X</span><span class="val">@athcamera</span><span class="arrow">→</span></a>
+    <a class="touch-row" href="https://calendly.com/athcamera" target="_blank" rel="noopener"><span class="kind">Call</span><span class="val">Book on Calendly</span><span class="arrow">→</span></a>
+  </template>
 
 <script>
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "ink":    "#0A0A0A",
-          "ink-2":  "#111111",
-          "ink-3":  "#17181A",
-          "ink-4":  "#1F2124",
-          "line":   "#2A2D31",
-          "line-2": "#3A3E44",
-          "silver": "#9EA5B0",
-          "fg":     "#F5F5F5",
-          "mute":   "#737373",
-          "dim":    "#525252",
-          "ice-1":  "#BFE8F2",
-          "ice-2":  "#93D2E8",
-          "ice-3":  "#7BC4DF",
-          "warn":   "#F2C37A",
-        },
-        fontFamily: {
-          serif: ['"Source Serif 4"', "serif"],
-          sans:  ['"DM Sans"', "sans-serif"],
-          mono:  ['"JetBrains Mono"', "monospace"],
-        },
-        borderRadius: { DEFAULT: "0.25rem" },
+(function(){
+  /* ── panels ── */
+  const titles = { who: "Who we are", what: "What we do", touch: "Get in touch" };
+  const overlay = document.getElementById('overlay');
+  const panelTitle = document.getElementById('panelTitle');
+  const panelBody = document.getElementById('panelBody');
+  const buttons = document.querySelectorAll('.menu button[data-panel]');
+  let openId = null;
+
+  function openPanel(id){
+    panelTitle.textContent = titles[id];
+    panelBody.innerHTML = '';
+    panelBody.appendChild(document.getElementById('tpl-' + id).content.cloneNode(true));
+    overlay.classList.add('open');
+    openId = id;
+    buttons.forEach(b => b.setAttribute('aria-expanded', String(b.dataset.panel === id)));
+  }
+  function closePanel(){
+    overlay.classList.remove('open');
+    openId = null;
+    buttons.forEach(b => b.setAttribute('aria-expanded', 'false'));
+  }
+  buttons.forEach(b => b.addEventListener('click', () => {
+    (openId === b.dataset.panel) ? closePanel() : openPanel(b.dataset.panel);
+  }));
+  overlay.addEventListener('click', e => { if (e.target === overlay) closePanel(); });
+  document.getElementById('panelClose').addEventListener('click', closePanel);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  /* ── gallery data (order mirrors production carousel) ── */
+  const items = [
+    { src: "videos/optimized/status_2067549038333858281_1.mp4",  poster: "videos/posters/status_2067549038333858281_1.jpg?v=custom",  client: "Solflare",             title: "Solana Summer Song",              x: "https://x.com/solflare/status/2067549038333858281" },
+    { src: "videos/optimized/status_2047721279416131865_1.mp4",  poster: "videos/posters/status_2047721279416131865_1.jpg",  client: "Solana",               title: "Friends Edition",                x: "https://x.com/solana/status/2047784009791320245" },
+    { src: "videos/optimized/status_2044066170471624711_1.mp4",  poster: "videos/posters/status_2044066170471624711_1.jpg?v=custom",  client: "Solana",               title: "Moon Camp trailer",               x: "https://x.com/solflare/status/2044066170471624711" },
+    { src: "videos/optimized/status_2072637765699977466_1.mp4",  poster: "videos/posters/status_2072637765699977466_1.jpg?v=custom",  client: "Seeker",               title: "Live motion",                     x: "https://x.com/Frame_tailor_/status/2072637765699977466" },
+    { src: "videos/optimized/status_2073358201744175422_1.mp4",  poster: "videos/posters/status_2073358201744175422_1.jpg",  client: "Superteam Thailand",   title: "Launch Video",                    x: "https://x.com/SuperteamTH/status/2073358201744175422" },
+    { src: "videos/optimized/status_2058151170733191561_1.mp4",  poster: "videos/posters/status_2058151170733191561_1.jpg?v=custom",  client: "MonkeDAO",             title: "Return to Monke trailer",         x: "https://x.com/Frame_tailor_/status/2058151170733191561" },
+    { src: "videos/optimized/status_2073010933564342558_1.mp4",  poster: "videos/posters/status_2073010933564342558_1.jpg",  client: "Solflare",             title: "IRL ELI5 tutorials",             x: "https://x.com/validotxyz/status/2073010933564342558" },
+    { src: "videos/optimized/status_2052767900910731569_1.mp4",  poster: "videos/posters/status_2052767900910731569_1.jpg?v=custom",  client: "Solana",               title: "Me and Solana every night. Debut Single 2026", x: "https://x.com/Frame_tailor_/status/2052767900910731569" },
+    { src: "videos/optimized/status_2066887600003277054_1.mp4",  poster: "videos/posters/status_2066887600003277054_1.jpg",  client: "IslandDAO",            title: "Solana Summer Vibes",             x: "https://x.com/Frame_tailor_/status/2066887600003277054" },
+    { src: "videos/optimized/status_2021224132394811791_1.mp4", poster: "videos/posters/status_2021224132394811791_1.jpg",  client: "Solflare",             title: "Feature cinematic promo",         x: "https://x.com/athcamera/status/2021224132394811791" },
+    { src: "videos/optimized/status_1898652306478100757_1.mp4",  poster: "videos/posters/status_1898652306478100757_1.jpg?v=custom",  client: "Metaplex · 1st prize", title: "Solana Global Content Comp.",     x: "https://x.com/validotxyz/status/1898652306478100757" },
+    { src: "videos/optimized/status_2029551642614616278_1.mp4",  poster: "videos/posters/status_2029551642614616278_1.jpg",  client: "Solflare",             title: "Shield cinematic promo",          x: "https://x.com/athcamera/status/2029551642614616278" },
+    { src: "videos/optimized/status_2036765297856926051_1.mp4",  poster: "videos/posters/status_2036765297856926051_1.jpg",  client: "Solflare",             title: "Wallet Dealers clip",             x: "https://x.com/frame_tailor_/status/2036765297856926051" },
+    { src: "videos/optimized/status_2032811076463865937_1.mp4",  poster: "videos/posters/status_2032811076463865937_1.jpg",  client: "Pudgy Penguins",       title: "Malaysia trip vlog",              x: "https://x.com/validotxyz/status/2032811076463865937" },
+    { src: "videos/optimized/status_2037549403414646827_1.mp4",  poster: "videos/posters/status_2037549403414646827_1.jpg",  client: "Solflare",             title: "Beyond Speculation",              x: "https://x.com/solflare/status/2037549403414646827" },
+    { src: "videos/optimized/status_2033602532367282617_1.mp4",  poster: "videos/posters/status_2033602532367282617_1.jpg",  client: "Solflare",             title: "Solana Birthday clip",            x: "https://x.com/solflare/status/2033602532367282617" },
+    { src: "videos/optimized/status_2043323417328488876_1.mp4",  poster: "videos/posters/status_2043323417328488876_1.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 1",   x: "https://x.com/frame_tailor_/status/2043323417328488876" },
+    { src: "videos/optimized/status_2043323417328488876_2.mp4",  poster: "videos/posters/status_2043323417328488876_2.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 2",   x: "https://x.com/frame_tailor_/status/2043323417328488876" },
+    { src: "videos/optimized/status_2040060787524571575_1.mp4",  poster: "videos/posters/status_2040060787524571575_1.jpg",  client: "Solflare",             title: "Shield — promo",                  x: "https://x.com/frame_tailor_/status/2040060787524571575" },
+    { src: "videos/optimized/status_2029551642614616278_2.mp4",  poster: "videos/posters/status_2029551642614616278_2.jpg",  client: "Solflare",             title: "Shield overview",                 x: "https://x.com/athcamera/status/2029551642614616278" },
+    { src: "videos/optimized/status_2030998054514667826_1.mp4",  poster: "videos/posters/status_2030998054514667826_1.jpg",  client: "Solflare",             title: "GTA 6 Trailer",                   x: "https://x.com/athcamera/status/2030998054514667826" },
+    { src: "videos/optimized/status_2026620994853679146_1.mp4",  poster: "videos/posters/status_2026620994853679146_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 1",           x: "https://x.com/athcamera/status/2026620994853679146" },
+    { src: "videos/optimized/status_2023769377783627785_1.mp4",  poster: "videos/posters/status_2023769377783627785_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 2",           x: "https://x.com/athcamera/status/2023769377783627785" },
+    { src: "videos/optimized/status_2033907638787051843_1.mp4",  poster: "videos/posters/status_2033907638787051843_1.jpg",  client: "Thread visuals",       title: "Private sends",                   x: "https://x.com/athcamera/status/2033907638787051843" },
+    { src: "videos/optimized/status_2061408037789913499_1.mp4",  poster: "videos/posters/status_2061408037789913499_1.jpg?v=custom",  client: "Solana",               title: "Solana Summit Berlin 2026 trailer", x: "https://x.com/Frame_tailor_/status/2061408037789913499" },
+    { src: "videos/optimized/status_2051320555933171725_1.mp4",  poster: "videos/posters/status_2051320555933171725_1.jpg?v=custom",  client: "Solflare",             title: "Accelerate Miami trailer",        x: "https://x.com/solflare/status/2051320555933171725" },
+  ];
+
+  const rail = document.getElementById('rail');
+  const pad2 = n => String(n).padStart(2, '0');
+  rail.innerHTML = items.map((it, i) => `
+    <article class="card" data-i="${i}">
+      <video muted loop playsinline preload="none" data-poster="${it.poster}">
+        <source src="${it.src}" type="video/mp4" />
+      </video>
+      <div class="shade"></div>
+      <div class="scan"></div>
+      <div class="play-hint"><span>▶</span></div>
+      <button class="mute-btn" aria-label="Toggle sound">
+        <svg width="15" height="15" data-ic="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM23 9l-6 6M17 9l6 6"/></svg>
+        <svg width="15" height="15" data-ic="on" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+      </button>
+      <div class="cap">
+        <div class="client">${it.client}</div>
+        <div class="title">${it.title}</div>
+      </div>
+      <a class="xlink" href="${it.x}" target="_blank" rel="noopener" aria-label="View on X" onclick="event.stopPropagation()">
+        <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 4.09H5.078z"/></svg>
+      </a>
+    </article>
+  `).join('');
+
+  const cards = [...rail.querySelectorAll('.card')];
+
+  /* card width = whatever actually fits: real rail height and viewport width */
+  const railWrap = document.querySelector('.rail-wrap');
+  function sizeCards(){
+    const vw = document.documentElement.clientWidth;
+    const h = railWrap.clientHeight - 10;
+    const maxW = Math.min(vw * (vw >= 720 ? 0.74 : 0.92), 900);
+    const w = Math.max(200, Math.min(h * 16 / 9, maxW));
+    document.documentElement.style.setProperty('--cardw', Math.round(w) + 'px');
+  }
+  sizeCards();
+  new ResizeObserver(sizeCards).observe(railWrap);
+  window.addEventListener('resize', sizeCards);
+
+  /* lazy posters: load only near-viewport cards */
+  const posterIO = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      const v = en.target.querySelector('video');
+      if (v.dataset.poster) { v.poster = v.dataset.poster; delete v.dataset.poster; }
+      posterIO.unobserve(en.target);
+    });
+  }, { root: rail, rootMargin: '0px 60% 0px 60%' });
+  cards.forEach(c => posterIO.observe(c));
+
+  /* current card = nearest to scroll position */
+  let current = 0;
+  function updateCurrent(){
+    const cardw = cards[0].getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(rail).columnGap) || 14;
+    current = Math.max(0, Math.min(items.length - 1, Math.round(rail.scrollLeft / (cardw + gap))));
+  }
+  updateCurrent();
+  rail.addEventListener('scroll', () => requestAnimationFrame(updateCurrent), { passive: true });
+
+  /* pause videos scrolled out of view */
+  const pauseIO = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.intersectionRatio < 0.5) {
+        const v = en.target.querySelector('video');
+        if (!v.paused) { v.pause(); en.target.classList.remove('playing'); }
       }
+    });
+  }, { root: rail, threshold: [0.5] });
+  cards.forEach(c => pauseIO.observe(c));
+
+  function scrollToCard(i){
+    const clamped = Math.max(0, Math.min(items.length - 1, i));
+    cards[clamped].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+  document.addEventListener('keydown', e => {
+    if (openId) return;
+    if (e.key === 'ArrowLeft') scrollToCard(current - 1);
+    if (e.key === 'ArrowRight') scrollToCard(current + 1);
+  });
+
+  /* drag-to-scroll with the mouse (touch scrolls natively) */
+  if (window.matchMedia('(pointer: fine)').matches) {
+    let down = false, startX = 0, startScroll = 0, moved = 0;
+    rail.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      down = true; moved = 0; startX = e.clientX; startScroll = rail.scrollLeft;
+      rail.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', e => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      rail.scrollLeft = startScroll - dx;
+    });
+    window.addEventListener('pointerup', () => {
+      if (!down) return;
+      down = false;
+      rail.classList.remove('dragging');
+      if (moved > 8) { updateCurrent(); scrollToCard(current); }
+    });
+    /* a drag should not count as a click on the card */
+    rail.addEventListener('click', e => {
+      if (moved > 8) { e.stopPropagation(); e.preventDefault(); moved = 0; }
+    }, true);
+  }
+
+  /* mouse wheel moves the gallery card by card */
+  let wheelAcc = 0, wheelLock = 0;
+  rail.addEventListener('wheel', e => {
+    e.preventDefault();
+    const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    const now = Date.now();
+    if (now < wheelLock) return;
+    wheelAcc += d;
+    if (Math.abs(wheelAcc) > 40) {
+      scrollToCard(current + (wheelAcc > 0 ? 1 : -1));
+      wheelAcc = 0;
+      wheelLock = now + 450;
+    }
+  }, { passive: false });
+
+  function muteAllExcept(except){
+    cards.forEach(c => {
+      const v = c.querySelector('video');
+      if (v !== except) {
+        v.muted = true;
+        c.querySelector('[data-ic="off"]').style.display = '';
+        c.querySelector('[data-ic="on"]').style.display = 'none';
+      }
+    });
+  }
+
+  /* ── intro: ATH + slogan type in screen center → float up → gallery → buttons ── */
+  const sloganFull = "extra content and growth layer for projects on Solana";
+  const sloganText = document.getElementById('sloganText');
+  const sloganCursor = document.getElementById('sloganCursor');
+  const heroCore = document.getElementById('heroCore');
+  const wordmark = document.querySelector('.wordmark');
+  const menu = document.querySelector('.menu');
+  const cofounders = document.querySelector('.cofounders');
+  const stage = document.querySelector('.stage');
+  const footer = document.querySelector('footer');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function finishIntro(){
+    stage.classList.add('in');
+    setTimeout(() => menu.classList.add('in'), reduced ? 0 : 900);
+    setTimeout(() => { cofounders.classList.add('in'); footer.classList.add('in'); }, reduced ? 0 : 1800);
+  }
+  if (reduced) {
+    sloganText.textContent = sloganFull;
+    heroCore.style.visibility = 'visible';
+    wordmark.classList.add('in');
+    finishIntro();
+  } else {
+    /* shift the wordmark+slogan block so it sits in the visual center of the screen */
+    const startIntro = () => {
+      const r = heroCore.getBoundingClientRect();
+      const delta = Math.max(0, Math.round(window.innerHeight / 2 - (r.top + r.height / 2)));
+      heroCore.style.transform = 'translateY(' + delta + 'px)';
+      heroCore.style.visibility = 'visible';
+      setTimeout(() => wordmark.classList.add('in'), 300);
+      setTimeout(() => {
+        let i = 0;
+        const t = setInterval(() => {
+          sloganText.textContent = sloganFull.slice(0, ++i);
+          if (i >= sloganFull.length) {
+            clearInterval(t);
+            /* pause so it can be read, then float up and bring in the rest */
+            setTimeout(() => {
+              heroCore.classList.add('settle');
+              heroCore.style.transform = 'translateY(0)';
+              setTimeout(finishIntro, 800);
+            }, 1100);
+          }
+        }, 30);
+      }, 1200);
+    };
+    /* wait for webfonts so the centred measurement is accurate */
+    if (document.fonts && document.fonts.ready) {
+      let started = false;
+      const go = () => { if (!started) { started = true; startIntro(); } };
+      document.fonts.ready.then(go);
+      setTimeout(go, 900);
+    } else {
+      startIntro();
     }
   }
-</script>
 
-<style>
-  html, body { background: #0A0A0A; color: #F5F5F5; font-family: "DM Sans", sans-serif; }
-  .font-serif { font-family: "Source Serif 4", serif; font-feature-settings: "ss01"; }
-  .label { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
-
-  .type-display { font-size: clamp(3rem, 7.4vw, 7.5rem); line-height: 0.95; letter-spacing: -0.03em; }
-  .type-h1      { font-size: clamp(2.2rem, 4.2vw, 3.8rem); line-height: 1.02; letter-spacing: -0.025em; }
-  .type-h2      { font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1.1;  letter-spacing: -0.02em; }
-
-  /* Ticker */
-  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  .ticker { display: inline-flex; animation: tick 45s linear infinite; }
-
-  /* Marker annotations on the "before" panel */
-  .marker {
-    position: absolute;
-    width: 26px; height: 26px; border-radius: 9999px;
-    background: #F2C37A; color: #0A0A0A;
-    font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600;
-    display: inline-flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 0 3px rgba(242,195,122,0.18), 0 0 22px rgba(242,195,122,0.45);
-    z-index: 4;
-    cursor: help;
-  }
-  .marker::after {
-    content: "";
-    position: absolute; inset: -6px; border-radius: 9999px;
-    border: 1px solid rgba(242,195,122,0.35);
-    animation: pulse 2.8s ease-out infinite;
-  }
-  @keyframes pulse {
-    0% { transform: scale(0.85); opacity: 0.9; }
-    100% { transform: scale(1.6); opacity: 0; }
-  }
-
-  /* Scroll-snap screen showcase (before/after) */
-  .screen {
-    background: #0A0A0A;
-    border: 1px solid #2A2D31;
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-  }
-  .screen-scroll {
-    height: 720px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #2A2D31 transparent;
-  }
-  .screen-scroll::-webkit-scrollbar { width: 8px; }
-  .screen-scroll::-webkit-scrollbar-thumb { background: #2A2D31; border-radius: 4px; }
-
-  .pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px; border-radius: 9999px;
-    border: 1px solid #2A2D31; background: rgba(255,255,255,0.02);
-    font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #9EA5B0;
-  }
-  .pill .dot { width: 6px; height: 6px; border-radius: 9999px; background: #7BC4DF; box-shadow: 0 0 10px #7BC4DF; }
-
-  .hairline { background-image: linear-gradient(to right, #2A2D31 50%, transparent 50%); background-size: 8px 1px; background-repeat: repeat-x; background-position: 0 100%; }
-
-  .grainy {
-    background-image:
-      radial-gradient(1200px 600px at 80% -10%, rgba(191,232,242,0.08), transparent 60%),
-      radial-gradient(900px 500px at -10% 30%, rgba(123,196,223,0.05), transparent 60%);
-  }
-
-  .stripe-placeholder {
-    background:
-      repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 10px, rgba(255,255,255,0.01) 10px 20px);
-  }
-
-  /* In-page nav */
-  .jumpnav a { transition: color .2s; }
-  .jumpnav a:hover { color: #BFE8F2; }
-
-  /* Mini video tile */
-  .tile { position: relative; overflow: hidden; border-radius: 4px; border: 1px solid #2A2D31; background: #111111; }
-  .tile video, .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .tile .overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(10,10,10,0.9) 100%); }
-  .tile .caption { position: absolute; left: 14px; bottom: 12px; right: 14px; }
-
-  /* Horizontal work rail */
-  .work-rail { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 32px 16px; scroll-padding-left: 32px; -webkit-overflow-scrolling: touch; }
-  .work-rail::-webkit-scrollbar { height: 8px; }
-  .work-rail::-webkit-scrollbar-thumb { background: #2A2D31; border-radius: 4px; }
-  .work-card { flex: 0 0 auto; width: min(620px, 82vw); scroll-snap-align: start; }
-  .work-card .tile { aspect-ratio: 16 / 9; }
-  .work-card .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
-  .work-card .meta .x-link { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9EA5B0; display: inline-flex; align-items: center; gap: 6px; }
-  .work-card .meta .x-link:hover { color: #BFE8F2; }
-
-  /* Comparison column headers */
-  .col-head {
-    position: sticky; top: 0; z-index: 3;
-    background: rgba(10,10,10,0.88); backdrop-filter: blur(14px);
-    border-bottom: 1px solid #2A2D31;
-  }
-
-  /* KPI */
-  .kpi-num { font-family: "Source Serif 4", serif; font-size: clamp(2.6rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -0.02em; }
-
-  /* Hover lift */
-  .lift { transition: transform .25s ease, border-color .25s ease; }
-  .lift:hover { transform: translateY(-2px); border-color: #3A3E44; }
-
-  /* Critique list numbering */
-  .crit-num {
-    font-family: "JetBrains Mono", monospace; font-size: 11px; color: #F2C37A;
-    border: 1px solid rgba(242,195,122,0.4); background: rgba(242,195,122,0.07);
-    padding: 2px 8px; border-radius: 9999px; letter-spacing: .1em;
-  }
-
-  /* Button */
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 22px; border-radius: 9999px;
-    background: #BFE8F2; color: #0A0A0A; font-weight: 700; letter-spacing: 0.01em;
-    transition: background .2s, transform .2s;
-  }
-  .btn-primary:hover { background: #93D2E8; transform: translateY(-1px); }
-  .btn-ghost {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 22px; border-radius: 9999px;
-    border: 1px solid #2A2D31; color: #F5F5F5;
-    transition: border-color .2s, color .2s;
-  }
-  .btn-ghost:hover { border-color: #7BC4DF; color: #BFE8F2; }
-
-  /* Subtle divider line */
-  .rule { height: 1px; background: linear-gradient(to right, transparent, #2A2D31 20%, #2A2D31 80%, transparent); }
-</style>
-
-</head>
-<body class="bg-ink text-bone antialiased">
-<main id="proposed">
-        <!-- =========================== -->
-        <!-- Proposed landing page v2     -->
-        <!-- =========================== -->
-
-        <!-- Sticky nav -->
-        <div class="sticky top-0 z-20 backdrop-blur-md bg-ink/80 border-b border-line">
-          <div class="flex items-center justify-between px-6 py-4">
-            <div class="flex items-center gap-5">
-              <img src="favicon.ico" class="w-6 h-6" alt="" />
-              <div class="hidden md:flex items-center gap-5 label text-silver">
-                <a href="#v2-work">Work</a>
-                <a href="#v2-services">What we do</a>
-                <a href="#v2-process">Process</a>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <a href="https://calendly.com/athcamera" target="_blank" rel="noopener" class="label text-silver hidden md:inline">Book a call</a>
-              <a href="#v2-contact" class="btn-primary text-xs !py-2 !px-4">Get in touch</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- HERO : full-bleed showreel -->
-        <div class="relative overflow-hidden">
-          <!-- NOTE: swap src to the real showreel export when available -->
-          <video class="absolute inset-0 w-full h-full object-cover opacity-60" autoplay muted loop playsinline preload="auto" poster="videos/posters/status_2044066170471624711_1_hero.jpg">
-            <source src="videos/optimized/status_2044066170471624711_1.mp4" type="video/mp4" />
-          </video>
-          <div class="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/70 to-ink"></div>
-
-          <div class="relative px-8 pt-24 pb-24">
-            <div class="pill mb-6"><span class="dot"></span> Showreel · 2026</div>
-            <h1 class="font-serif text-5xl leading-[0.98] tracking-tight max-w-3xl">
-              Cinematic media<br />
-              <em class="italic text-ice-1">for the projects</em><br />shaping Web3.
-            </h1>
-            <p class="text-silver text-base mt-6 max-w-xl leading-relaxed">
-              We're a small, versatile media team. We make content around your product — AI films, event coverage, promos, tutorials — and figure out what the story needs to be.
-            </p>
-            <div class="flex flex-wrap items-center gap-3 mt-8">
-              <a href="#v2-contact" class="btn-primary">Tell us what you need →</a>
-              <a href="#v2-work" class="btn-ghost">Watch recent work</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- RESULTS STRIP (KPIs) -->
-        <div class="px-8 py-16 border-b border-line">
-          <div class="label text-silver mb-6">Since 2021</div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <div class="kpi-num" data-count="1000" data-suffix="+">0+</div>
-              <div class="label text-mute mt-2">Videos delivered</div>
-            </div>
-            <div>
-              <div class="kpi-num" data-count="20" data-suffix="+">0+</div>
-              <div class="label text-mute mt-2">Events covered globally</div>
-            </div>
-            <div>
-              <div class="kpi-num" data-count="3" data-suffix="M+">0M+</div>
-              <div class="label text-mute mt-2">Views on delivered work</div>
-            </div>
-            <div>
-              <div class="kpi-num" data-static="1st">1st</div>
-              <div class="label text-mute mt-2">Solana Global Content Comp.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- WORK : horizontal carousel -->
-        <div id="v2-work" class="py-16 border-b border-line">
-          <div class="flex items-end justify-between mb-6 px-8">
-            <h2 class="font-serif text-3xl">Our recent work</h2>
-            <div class="hidden md:flex items-center gap-2">
-              <button id="workPrev" aria-label="Previous" class="w-9 h-9 rounded border border-line text-silver hover:text-ice-1 hover:border-line-2 flex items-center justify-center">‹</button>
-              <button id="workNext" aria-label="Next" class="w-9 h-9 rounded border border-line text-silver hover:text-ice-1 hover:border-line-2 flex items-center justify-center">›</button>
-            </div>
-          </div>
-          <div id="workRail" class="work-rail"></div>
-        </div>
-
-        <script>
-          (function(){
-            const items = [
-              { src: "videos/optimized/status_2067549038333858281_1.mp4",  poster: "videos/posters/status_2067549038333858281_1.jpg?v=custom",  client: "Solflare",             title: "Solana Summer Song",              x: "https://x.com/solflare/status/2067549038333858281" },
-              { src: "videos/optimized/status_2047721279416131865_1.mp4",  poster: "videos/posters/status_2047721279416131865_1.jpg",  client: "Solana",               title: "Friends Edition",                x: "https://x.com/solana/status/2047784009791320245" },
-              { src: "videos/optimized/status_2044066170471624711_1.mp4",  poster: "videos/posters/status_2044066170471624711_1.jpg?v=custom",  client: "Solana",               title: "Moon Camp trailer",               x: "https://x.com/solflare/status/2044066170471624711" },
-              { src: "videos/optimized/status_2072637765699977466_1.mp4",  poster: "videos/posters/status_2072637765699977466_1.jpg?v=custom",  client: "Seeker",               title: "Live motion",                     x: "https://x.com/Frame_tailor_/status/2072637765699977466" },
-              { src: "videos/optimized/status_2073358201744175422_1.mp4",  poster: "videos/posters/status_2073358201744175422_1.jpg",  client: "Superteam Thailand",   title: "Launch Video",                    x: "https://x.com/SuperteamTH/status/2073358201744175422" },
-              { src: "videos/optimized/status_2058151170733191561_1.mp4",  poster: "videos/posters/status_2058151170733191561_1.jpg?v=custom",  client: "MonkeDAO",             title: "Return to Monke trailer",         x: "https://x.com/Frame_tailor_/status/2058151170733191561" },
-              { src: "videos/optimized/status_2073010933564342558_1.mp4",  poster: "videos/posters/status_2073010933564342558_1.jpg",  client: "Solflare",             title: "IRL ELI5 tutorials",             x: "https://x.com/validotxyz/status/2073010933564342558" },
-              { src: "videos/optimized/status_2052767900910731569_1.mp4",  poster: "videos/posters/status_2052767900910731569_1.jpg?v=custom",  client: "Solana",               title: "Me and Solana every night. Debut Single 2026", x: "https://x.com/Frame_tailor_/status/2052767900910731569" },
-              { src: "videos/optimized/status_2066887600003277054_1.mp4",  poster: "videos/posters/status_2066887600003277054_1.jpg",  client: "IslandDAO",            title: "Solana Summer Vibes",             x: "https://x.com/Frame_tailor_/status/2066887600003277054" },
-              { src: "videos/optimized/status_2021224132394811791_1.mp4", poster: "videos/posters/status_2021224132394811791_1.jpg",  client: "Solflare",             title: "Feature cinematic promo",         x: "https://x.com/athcamera/status/2021224132394811791" },
-              { src: "videos/optimized/status_1898652306478100757_1.mp4",  poster: "videos/posters/status_1898652306478100757_1.jpg?v=custom",  client: "Metaplex · 1st prize", title: "Solana Global Content Comp.",     x: "https://x.com/validotxyz/status/1898652306478100757" },
-              { src: "videos/optimized/status_2029551642614616278_1.mp4",  poster: "videos/posters/status_2029551642614616278_1.jpg",  client: "Solflare",             title: "Shield cinematic promo",          x: "https://x.com/athcamera/status/2029551642614616278" },
-              { src: "videos/optimized/status_2036765297856926051_1.mp4",  poster: "videos/posters/status_2036765297856926051_1.jpg",  client: "Solflare",             title: "Wallet Dealers clip",             x: "https://x.com/frame_tailor_/status/2036765297856926051" },
-              { src: "videos/optimized/status_2032811076463865937_1.mp4",  poster: "videos/posters/status_2032811076463865937_1.jpg",  client: "Pudgy Penguins",       title: "Malaysia trip vlog",              x: "https://x.com/validotxyz/status/2032811076463865937" },
-              { src: "videos/optimized/status_2037549403414646827_1.mp4",  poster: "videos/posters/status_2037549403414646827_1.jpg",  client: "Solflare",             title: "Beyond Speculation",              x: "https://x.com/solflare/status/2037549403414646827" },
-              { src: "videos/optimized/status_2033602532367282617_1.mp4",  poster: "videos/posters/status_2033602532367282617_1.jpg",  client: "Solflare",             title: "Solana Birthday clip",            x: "https://x.com/solflare/status/2033602532367282617" },
-              { src: "videos/optimized/status_2043323417328488876_1.mp4",  poster: "videos/posters/status_2043323417328488876_1.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 1",   x: "https://x.com/frame_tailor_/status/2043323417328488876" },
-              { src: "videos/optimized/status_2043323417328488876_2.mp4",  poster: "videos/posters/status_2043323417328488876_2.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 2",   x: "https://x.com/frame_tailor_/status/2043323417328488876" },
-              { src: "videos/optimized/status_2040060787524571575_1.mp4",  poster: "videos/posters/status_2040060787524571575_1.jpg",  client: "Solflare",             title: "Shield — promo",                  x: "https://x.com/frame_tailor_/status/2040060787524571575" },
-              { src: "videos/optimized/status_2029551642614616278_2.mp4",  poster: "videos/posters/status_2029551642614616278_2.jpg",  client: "Solflare",             title: "Shield overview",                 x: "https://x.com/athcamera/status/2029551642614616278" },
-              { src: "videos/optimized/status_2030998054514667826_1.mp4",  poster: "videos/posters/status_2030998054514667826_1.jpg",  client: "Solflare",             title: "GTA 6 Trailer",                   x: "https://x.com/athcamera/status/2030998054514667826" },
-              { src: "videos/optimized/status_2026620994853679146_1.mp4",  poster: "videos/posters/status_2026620994853679146_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 1",           x: "https://x.com/athcamera/status/2026620994853679146" },
-              { src: "videos/optimized/status_2023769377783627785_1.mp4",  poster: "videos/posters/status_2023769377783627785_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 2",           x: "https://x.com/athcamera/status/2023769377783627785" },
-              { src: "videos/optimized/status_2033907638787051843_1.mp4",  poster: "videos/posters/status_2033907638787051843_1.jpg",  client: "Thread visuals",       title: "Private sends",                   x: "https://x.com/athcamera/status/2033907638787051843" },
-              { src: "videos/optimized/status_2061408037789913499_1.mp4",  poster: "videos/posters/status_2061408037789913499_1.jpg?v=custom",  client: "Solana",               title: "Solana Summit Berlin 2026 trailer", x: "https://x.com/Frame_tailor_/status/2061408037789913499" },
-              { src: "videos/optimized/status_2051320555933171725_1.mp4",  poster: "videos/posters/status_2051320555933171725_1.jpg?v=custom",  client: "Solflare",             title: "Accelerate Miami trailer",        x: "https://x.com/solflare/status/2051320555933171725" },
-            ];
-            const rail = document.getElementById('workRail');
-            if (!rail) return;
-            rail.innerHTML = items.map((it, i) => `
-              <article class="work-card" data-i="${i}">
-                <div class="tile relative group">
-                  <video data-video muted loop playsinline preload="none" poster="${it.poster}">
-                    <source src="${it.src}" type="video/mp4" />
-                  </video>
-                  <div class="overlay pointer-events-none"></div>
-                  <button data-mute aria-label="Toggle sound" class="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-black/55 border border-line text-silver hover:text-ice-1 flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-4 h-4" data-icon-muted viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM23 9l-6 6M17 9l6 6"/></svg>
-                    <svg class="w-4 h-4 hidden" data-icon-on viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
-                  </button>
-                  <div class="caption pointer-events-none">
-                    <div class="label text-ice-1">${it.client}</div>
-                    <div class="font-serif text-lg">${it.title}</div>
-                  </div>
-                </div>
-                <div class="meta">
-                  <span class="label text-mute">${String(i+1).padStart(2,'0')} / ${String(items.length).padStart(2,'0')}</span>
-                  <a href="${it.x}" target="_blank" rel="noopener" class="x-link">
-                    View on X
-                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 4.09H5.078z"/></svg>
-                  </a>
-                </div>
-              </article>
-            `).join('');
-
-            const prevBtn = document.getElementById('workPrev');
-            const nextBtn = document.getElementById('workNext');
-            function scrollByCard(dir){
-              const card = rail.querySelector('.work-card');
-              if (!card) return;
-              const step = card.getBoundingClientRect().width + 16;
-              rail.scrollBy({ left: dir * step, behavior: 'smooth' });
-            }
-            prevBtn && prevBtn.addEventListener('click', () => scrollByCard(-1));
-            nextBtn && nextBtn.addEventListener('click', () => scrollByCard(1));
-
-            function muteAll(except){
-              rail.querySelectorAll('video[data-video]').forEach(v => {
-                if (v !== except) {
-                  v.muted = true;
-                  const card = v.closest('article');
-                  card.querySelector('[data-icon-muted]').classList.remove('hidden');
-                  card.querySelector('[data-icon-on]').classList.add('hidden');
-                }
-              });
-            }
-
-            rail.querySelectorAll('article').forEach(card => {
-              const v = card.querySelector('video[data-video]');
-              const muteBtn = card.querySelector('[data-mute]');
-              const iconMuted = card.querySelector('[data-icon-muted]');
-              const iconOn = card.querySelector('[data-icon-on]');
-              const fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
-              const tileEl = card.querySelector('.tile');
-
-              if (fine) {
-                tileEl.addEventListener('mouseenter', () => { v.play().catch(()=>{}); });
-                tileEl.addEventListener('mouseleave', () => { v.pause(); });
-              }
-              tileEl.addEventListener('click', (e) => {
-                if (e.target.closest('[data-mute]')) return;
-                if (v.paused) v.play().catch(()=>{}); else v.pause();
-              });
-
-              muteBtn.addEventListener('click', (e) => {
-                e.preventDefault(); e.stopPropagation();
-                if (v.muted) {
-                  muteAll(v);
-                  v.muted = false;
-                  v.play().catch(()=>{});
-                  iconMuted.classList.add('hidden');
-                  iconOn.classList.remove('hidden');
-                } else {
-                  v.muted = true;
-                  iconMuted.classList.remove('hidden');
-                  iconOn.classList.add('hidden');
-                }
-              });
-            });
-          })();
-        </script>
-
-        <!-- WHY ATH -->
-        <div class="px-8 py-16 border-b border-line">
-          <div class="label text-silver mb-8">Why ATH</div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div class="font-serif text-2xl mb-3">We travel.</div>
-              <p class="text-silver text-sm leading-relaxed">Breakpoint, Korea Blockchain Week, DevConnect, Cosmoverse. We land with kit, shoot your booth and keynote, and deliver on location.</p>
-            </div>
-            <div>
-              <div class="font-serif text-2xl mb-3">We adapt.</div>
-              <p class="text-silver text-sm leading-relaxed">We take on different briefs and formats. When the deadline's tight, we ship — fast and clean. When the concept needs time, we give it time.</p>
-            </div>
-            <div>
-              <div class="font-serif text-2xl mb-3">We have taste.</div>
-              <p class="text-silver text-sm leading-relaxed">We understand cinematic, we understand trends, we understand formats. We're not just creators — we're creative directors and mentors. We care about the story.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- SERVICES : four offers, no prices -->
-        <div id="v2-services" class="px-8 py-16 border-b border-line">
-          <div class="flex items-end justify-between mb-8">
-            <div>
-              <div class="label text-silver mb-2">What we do</div>
-              <h2 class="font-serif text-3xl">A few ways to work with us.</h2>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="border border-line rounded p-6 bg-ink-2 lift">
-              <div class="flex items-baseline justify-between mb-3">
-                <div class="font-mono text-ice-1 text-sm">01</div>
-                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
-              </div>
-              <div class="font-serif text-2xl mb-2">AI cinematic trailer</div>
-              <p class="text-silver text-sm leading-relaxed">AI-driven film made around your brand. Cinematic, on-concept, built to feel like a proper trailer — not a moodboard.</p>
-            </div>
-            <div class="border border-line rounded p-6 bg-ink-2 lift">
-              <div class="flex items-baseline justify-between mb-3">
-                <div class="font-mono text-ice-1 text-sm">02</div>
-                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
-              </div>
-              <div class="font-serif text-2xl mb-2">Product &amp; promo videos</div>
-              <p class="text-silver text-sm leading-relaxed">Promos, walkthroughs, tutorials, short-form. Content built around your product — we figure out the angle, you approve the brief.</p>
-            </div>
-            <div class="border border-line rounded p-6 bg-ink-2 lift">
-              <div class="flex items-baseline justify-between mb-3">
-                <div class="font-mono text-ice-1 text-sm">03</div>
-                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
-              </div>
-              <div class="font-serif text-2xl mb-2">Event coverage</div>
-              <p class="text-silver text-sm leading-relaxed">We fly out, shoot your booth, keynote, or side event, and deliver a recap film plus cutdowns.</p>
-            </div>
-            <div class="border border-line rounded p-6 bg-ink-2 lift">
-              <div class="flex items-baseline justify-between mb-3">
-                <div class="font-mono text-ice-1 text-sm">04</div>
-                <a href="#v2-contact" class="label text-mute hover:text-ice-1">Request →</a>
-              </div>
-              <div class="font-serif text-2xl mb-2">Always-on media partner</div>
-              <p class="text-silver text-sm leading-relaxed">Your external media team. Ongoing content across formats and platforms — long-term engagements where we sit inside the work.</p>
-            </div>
-          </div>
-          <p class="text-mute text-sm mt-6 max-w-2xl">We're generalists by design. If you have a product, we can build the content around it — including launch campaigns, podcasts, and creator training.</p>
-        </div>
-
-        <!-- PROCESS -->
-        <div id="v2-process" class="px-8 py-16 border-b border-line">
-          <div class="label text-silver mb-6">How we work</div>
-          <ol class="space-y-6">
-            <li class="grid grid-cols-12 gap-6 border-b border-line pb-6">
-              <div class="col-span-2 font-mono text-ice-1">01</div>
-              <div class="col-span-3 font-serif text-lg">We talk</div>
-              <div class="col-span-7 text-silver text-sm leading-relaxed">15 minutes. You tell us what you need, we ask the right questions. No pressure — just figuring out if we're the right fit.</div>
-            </li>
-            <li class="grid grid-cols-12 gap-6 border-b border-line pb-6">
-              <div class="col-span-2 font-mono text-ice-1">02</div>
-              <div class="col-span-3 font-serif text-lg">We scope + quote</div>
-              <div class="col-span-7 text-silver text-sm leading-relaxed">We take time to understand what you're actually building, then come back with pricing and a plan. If speed matters, we move faster.</div>
-            </li>
-            <li class="grid grid-cols-12 gap-6 border-b border-line pb-6">
-              <div class="col-span-2 font-mono text-ice-1">03</div>
-              <div class="col-span-3 font-serif text-lg">We handle it</div>
-              <div class="col-span-7 text-silver text-sm leading-relaxed">On-site, remote, or both. Two people, end-to-end. You won't need to brief a crew or manage anyone — just us.</div>
-            </li>
-            <li class="grid grid-cols-12 gap-6">
-              <div class="col-span-2 font-mono text-ice-1">04</div>
-              <div class="col-span-3 font-serif text-lg">We ship</div>
-              <div class="col-span-7 text-silver text-sm leading-relaxed">Exactly what we agreed on. Delivered clean and ready to use.</div>
-            </li>
-          </ol>
-        </div>
-
-        <!-- CONTACT -->
-        <div id="v2-contact" class="px-8 py-20 relative overflow-hidden">
-          <div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-ice-2/10 rounded-full blur-[120px] pointer-events-none"></div>
-          <div class="relative grid grid-cols-12 gap-8">
-            <div class="col-span-12 md:col-span-5">
-              <div class="label text-silver mb-4">Get in touch</div>
-              <h2 class="font-serif text-4xl leading-tight mb-4">Tell us what you need. We'll reply.</h2>
-              <p class="text-silver text-sm leading-relaxed mb-6">Or book a 30-minute call directly:</p>
-              <a href="https://calendly.com/athcamera" target="_blank" rel="noopener" class="btn-ghost">Book on Calendly →</a>
-              <div class="rule my-8"></div>
-              <div class="label text-mute">Email</div>
-              <a href="mailto:athmedia21@gmail.com" class="text-silver hover:text-ice-1 block mb-4">athmedia21@gmail.com</a>
-              <div class="label text-mute">Based in</div>
-              <div class="text-silver">Southeast Asia</div>
-            </div>
-            <div class="col-span-12 md:col-span-7">
-              <form id="contactForm" class="space-y-5 border border-line rounded p-6 bg-ink-2">
-                <div>
-                  <div class="label text-silver mb-3">What do you need?</div>
-                  <div class="grid grid-cols-2 gap-2">
-                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="AI cinematic trailer" class="accent-ice-2" required /> AI cinematic trailer</label>
-                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="Product / promo video" class="accent-ice-2" /> Product / promo video</label>
-                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="Event coverage" class="accent-ice-2" /> Event coverage</label>
-                    <label class="flex items-center gap-2 border border-line rounded px-3 py-2 text-sm text-silver cursor-pointer"><input type="radio" name="need" value="Always-on media" class="accent-ice-2" /> Always-on media</label>
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <div class="label text-silver mb-2">Contact method</div>
-                    <select name="contact_method" required class="w-full h-10 border border-line rounded bg-ink px-3 text-sm text-fg focus:outline-none focus:border-line-2 appearance-none cursor-pointer">
-                      <option value="" disabled selected class="text-mute">Pick one</option>
-                      <option value="Telegram">Telegram</option>
-                      <option value="Email">Email</option>
-                      <option value="X">X</option>
-                    </select>
-                  </div>
-                  <div>
-                    <div class="label text-silver mb-2">Your @ or email</div>
-                    <input type="text" name="contact" placeholder="@you" required class="w-full h-10 border border-line rounded bg-ink px-3 text-sm text-fg placeholder-mute focus:outline-none focus:border-line-2" />
-                  </div>
-                </div>
-                <div>
-                  <div class="label text-silver mb-2">Brief</div>
-                  <textarea name="brief" placeholder="What you're shipping, when you need it." rows="4" class="w-full border border-line rounded bg-ink px-3 py-2 text-sm text-fg placeholder-mute focus:outline-none focus:border-line-2 resize-none"></textarea>
-                </div>
-                <div id="formSuccess" class="hidden text-center py-4">
-                  <div class="font-serif text-2xl text-ice-1 mb-2">Success!</div>
-                  <div class="text-silver text-sm">We'll get back to you shortly.</div>
-                </div>
-                <button type="submit" id="formSubmit" class="btn-primary w-full justify-center">Send →</button>
-              </form>
-              <script>
-                document.getElementById('contactForm').addEventListener('submit', async function(e) {
-                  e.preventDefault();
-                  const btn = document.getElementById('formSubmit');
-                  btn.textContent = 'Sending…';
-                  btn.disabled = true;
-                  const res = await fetch('https://formspree.io/f/xeevggdd', {
-                    method: 'POST',
-                    body: new FormData(this),
-                    headers: { 'Accept': 'application/json' }
-                  });
-                  if (res.ok) {
-                    this.reset();
-                    btn.classList.add('hidden');
-                    document.getElementById('formSuccess').classList.remove('hidden');
-                  } else {
-                    btn.textContent = 'Send →';
-                    btn.disabled = false;
-                    alert('Something went wrong. Please try again.');
-                  }
-                });
-              </script>
-            </div>
-          </div>
-        </div>
-
-        <!-- FOOTER -->
-        <footer class="px-8 py-10 border-t border-line">
-          <div class="flex flex-col md:flex-row justify-between items-start gap-6">
-            <div class="flex items-center gap-3">
-              <img src="favicon.ico" class="w-7 h-7" alt="" />
-              <div class="label text-silver">ATH</div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-x-12 gap-y-6 label text-silver">
-              <div>
-                <div class="text-mute mb-3">Contact</div>
-                <div>athmedia21@gmail.com</div>
-                <div>@athcamera</div>
-                <div><a href="https://calendly.com/athcamera" target="_blank" rel="noopener" class="hover:text-ice-1">Book a call</a></div>
-              </div>
-              <div>
-                <div class="text-mute mb-3">Based in</div>
-                <div>Southeast Asia</div>
-              </div>
-            </div>
-          </div>
-          <div class="rule my-8"></div>
-          <div class="label text-mute">© 2026 ATH</div>
-        </footer>
-  </main>
-<script>
-  if (window.location.hash) {
-    history.replaceState(null, document.title, window.location.pathname);
-  }
-
-  // Count-up animation for KPI numbers
-  (function() {
-    const els = document.querySelectorAll('.kpi-num[data-count]');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        observer.unobserve(entry.target);
-        const el = entry.target;
-        const target = +el.dataset.count;
-        const suffix = el.dataset.suffix || '';
-        const duration = 1600;
-        const start = performance.now();
-        function tick(now) {
-          const elapsed = Math.min((now - start) / duration, 1);
-          const ease = 1 - Math.pow(1 - elapsed, 3);
-          el.textContent = Math.floor(ease * target) + suffix;
-          if (elapsed < 1) requestAnimationFrame(tick);
-          else el.textContent = target + suffix;
-        }
-        requestAnimationFrame(tick);
-      });
-    }, { threshold: 0.3 });
-    els.forEach(el => observer.observe(el));
-  })();
+  cards.forEach(card => {
+    const v = card.querySelector('video');
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.mute-btn') || e.target.closest('.xlink')) return;
+      if (v.paused) { v.play().catch(()=>{}); card.classList.add('playing'); }
+      else { v.pause(); card.classList.remove('playing'); }
+    });
+    card.querySelector('.mute-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (v.muted) {
+        muteAllExcept(v);
+        v.muted = false;
+        v.play().catch(()=>{});
+        card.classList.add('playing');
+        card.querySelector('[data-ic="off"]').style.display = 'none';
+        card.querySelector('[data-ic="on"]').style.display = '';
+      } else {
+        v.muted = true;
+        card.querySelector('[data-ic="off"]').style.display = '';
+        card.querySelector('[data-ic="on"]').style.display = 'none';
+      }
+    });
+  });
+})();
 </script>
 </body>
 </html>
