@@ -200,11 +200,12 @@
   .panel-body p + p { margin-top: 12px; }
   .panel-body p em { color: var(--fg); font-style: normal; }
 
-  .what-row { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px dashed var(--line); align-items: baseline; }
+  .what-row { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px dashed var(--line); align-items: baseline; }
   .what-row:last-child { border-bottom: none; }
-  .what-row .num { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ice-3); flex: 0 0 auto; }
-  .what-row .name { font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.01em; flex: 0 0 auto; }
-  .what-row .desc { color: var(--mute); font-size: 13px; line-height: 1.5; }
+  .what-row .num { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ice-3); flex: 0 0 auto; padding-top: 2px; }
+  .what-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .what-row .name { font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+  .what-row .desc { color: var(--mute); font-size: 13px; line-height: 1.45; }
 
   .touch-row {
     display: flex; align-items: center; justify-content: space-between;
@@ -230,7 +231,8 @@
     padding: clamp(10px, 2.5vh, 26px) 0 clamp(20px, 4.5vh, 48px);
   }
   @media (max-width: 719px) {
-    .stage { padding-bottom: 11vh; }
+    .stage { padding-bottom: 4.5vh; }
+    .cofounders { padding-top: clamp(4px, 1vh, 10px); }
   }
   .rail-wrap { position: relative; flex: 1 1 0; min-height: 0; display: flex; align-items: center; }
   .rail {
@@ -245,6 +247,7 @@
   .rail::-webkit-scrollbar { display: none; }
   @media (pointer: fine) { .rail { cursor: grab; } }
   .rail.dragging { scroll-snap-type: none; cursor: grabbing; user-select: none; }
+  .rail.freewheel { scroll-snap-type: none; }
   .card {
     flex: 0 0 var(--cardw);
     width: var(--cardw);
@@ -615,10 +618,12 @@
   </template>
 
   <template id="tpl-what">
-    <div class="what-row"><span class="num">01</span><span class="name">AI cinematic trailers</span><span class="desc">AI-driven films built around your brand.</span></div>
-    <div class="what-row"><span class="num">02</span><span class="name">Product &amp; promo videos</span><span class="desc">Promos, walkthroughs, tutorials, short-form.</span></div>
-    <div class="what-row"><span class="num">03</span><span class="name">Event coverage</span><span class="desc">We fly out, shoot, and deliver recaps plus cutdowns.</span></div>
-    <div class="what-row"><span class="num">04</span><span class="name">Always-on media partner</span><span class="desc">Your external media team, long-term.</span></div>
+    <div class="what-row"><span class="num">01</span><div class="what-body"><div class="name">Autonomous media partner</div><div class="desc">Your external media team. Proactive, creative, long-term.</div></div></div>
+    <div class="what-row"><span class="num">02</span><div class="what-body"><div class="name">Event content layer</div><div class="desc">We add the shareable content your event deserves.</div></div></div>
+    <div class="what-row"><span class="num">03</span><div class="what-body"><div class="name">AI cinematic trailers</div><div class="desc">Cinematic films built around your brand.</div></div></div>
+    <div class="what-row"><span class="num">04</span><div class="what-body"><div class="name">Product &amp; promo videos</div><div class="desc">Promos, tutorials, launches, and shorts.</div></div></div>
+    <div class="what-row"><span class="num">05</span><div class="what-body"><div class="name">Tools &amp; mini-products</div><div class="desc">Useful tools built around real community needs.</div></div></div>
+    <div class="what-row"><span class="num">06</span><div class="what-body"><div class="name">IRL activations</div><div class="desc">We host, represent, and create under your brand.</div></div></div>
   </template>
 
   <template id="tpl-touch">
@@ -799,30 +804,31 @@
   function peekHint(){
     if (railTouched || rail.scrollLeft > 2 || document.documentElement.clientWidth >= 720) return;
     rail.classList.add('dragging'); /* suspend snap for the nudge */
-    const dist = 120, total = 2200, t0 = performance.now();
+    const dist = 120, outMs = 700, holdMs = 1200, backMs = 850, t0 = performance.now();
+    const easeInOut = p => (1 - Math.cos(Math.PI * p)) / 2;
     function frame(now){
-      const p = Math.min(1, (now - t0) / total);
       if (railTouched) { rail.classList.remove('dragging'); return; }
-      rail.scrollLeft = (1 - Math.cos(2 * Math.PI * p)) / 2 * dist; /* eases in and out both ways */
-      if (p < 1) requestAnimationFrame(frame);
-      else { rail.scrollLeft = 0; rail.classList.remove('dragging'); }
+      const t = now - t0;
+      let x;
+      if (t < outMs)                    x = easeInOut(t / outMs) * dist;              /* slide out */
+      else if (t < outMs + holdMs)      x = dist;                                     /* hold, showing the 2nd video */
+      else if (t < outMs + holdMs + backMs) x = dist * (1 - easeInOut((t - outMs - holdMs) / backMs)); /* slide back */
+      else { rail.scrollLeft = 0; rail.classList.remove('dragging'); return; }
+      rail.scrollLeft = x;
+      requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   }
 
-  /* mouse wheel moves the gallery card by card */
-  let wheelAcc = 0, wheelLock = 0;
+  /* mouse wheel = free horizontal scroll (snap settles when the wheel stops) */
+  let wheelTimer = 0;
   rail.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; /* horizontal trackpad scrolls natively */
     e.preventDefault();
-    const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-    const now = Date.now();
-    if (now < wheelLock) return;
-    wheelAcc += d;
-    if (Math.abs(wheelAcc) > 40) {
-      scrollToCard(current + (wheelAcc > 0 ? 1 : -1));
-      wheelAcc = 0;
-      wheelLock = now + 450;
-    }
+    rail.classList.add('freewheel');
+    rail.scrollLeft += e.deltaY * 1.6;
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(() => { rail.classList.remove('freewheel'); updateCurrent(); }, 150);
   }, { passive: false });
 
   function muteAllExcept(except){
