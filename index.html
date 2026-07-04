@@ -290,17 +290,6 @@
     transition: color .15s, border-color .15s;
   }
   .card .mute-btn:hover { color: var(--ice-1); border-color: var(--ice-3); }
-  .card .play-hint {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    pointer-events: none; transition: opacity .25s;
-  }
-  .card .play-hint span {
-    width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
-    background: rgba(10,10,10,0.5); border: 1px solid var(--line-2);
-    color: var(--ice-1); font-size: 16px;
-    backdrop-filter: blur(4px);
-  }
-  .card.playing .play-hint { opacity: 0; }
 
   button { background: none; border: none; font: inherit; color: inherit; }
 
@@ -707,7 +696,6 @@
       </video>
       <div class="shade"></div>
       <div class="scan"></div>
-      <div class="play-hint"><span>▶</span></div>
       <button class="mute-btn" aria-label="Toggle sound">
         <svg width="15" height="15" data-ic="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM23 9l-6 6M17 9l6 6"/></svg>
         <svg width="15" height="15" data-ic="on" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
