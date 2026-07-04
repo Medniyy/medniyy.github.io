@@ -238,14 +238,16 @@
   .rail {
     display: flex; gap: 14px;
     overflow-x: auto; overflow-y: hidden;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory; /* touch: clean native paging */
+    scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     width: 100%;
     padding: 4px calc(50% - var(--cardw) / 2);
   }
   .rail::-webkit-scrollbar { display: none; }
-  @media (pointer: fine) { .rail { cursor: grab; } }
+  /* mouse: soft proximity snap so momentum isn't yanked back */
+  @media (pointer: fine) { .rail { cursor: grab; scroll-snap-type: x proximity; } }
   .rail.dragging { scroll-snap-type: none; cursor: grabbing; user-select: none; }
   .rail.freewheel { scroll-snap-type: none; }
   .card {
@@ -772,12 +774,19 @@
     if (e.key === 'ArrowRight') scrollToCard(current + 1);
   });
 
-  /* drag-to-scroll with the mouse (touch scrolls natively) */
+  /* drag-to-scroll with momentum (touch scrolls natively) */
   if (window.matchMedia('(pointer: fine)').matches) {
     let down = false, startX = 0, startScroll = 0, moved = 0;
+    let lastX = 0, lastT = 0, vel = 0, inertiaRAF = 0; /* vel = px/ms of scroll */
+
+    function stopInertia(){ cancelAnimationFrame(inertiaRAF); inertiaRAF = 0; }
+
     rail.addEventListener('pointerdown', e => {
       if (e.button !== 0) return;
-      down = true; moved = 0; startX = e.clientX; startScroll = rail.scrollLeft;
+      stopInertia();
+      down = true; moved = 0;
+      startX = lastX = e.clientX; startScroll = rail.scrollLeft;
+      lastT = performance.now(); vel = 0;
       rail.classList.add('dragging');
     });
     window.addEventListener('pointermove', e => {
@@ -785,12 +794,29 @@
       const dx = e.clientX - startX;
       moved = Math.max(moved, Math.abs(dx));
       rail.scrollLeft = startScroll - dx;
+      const now = performance.now(), dt = now - lastT;
+      if (dt > 0) vel = 0.8 * vel + 0.2 * (-(e.clientX - lastX) / dt); /* smoothed */
+      lastX = e.clientX; lastT = now;
     });
     window.addEventListener('pointerup', () => {
       if (!down) return;
       down = false;
-      rail.classList.remove('dragging');
-      if (moved > 8) { updateCurrent(); scrollToCard(current); }
+      const maxSL = rail.scrollWidth - rail.clientWidth;
+      let v = vel * 16; /* px per frame */
+      function glide(){
+        v *= 0.95; /* decay → keeps momentum, eases out */
+        rail.scrollLeft += v;
+        if (rail.scrollLeft <= 0 || rail.scrollLeft >= maxSL || Math.abs(v) < 0.15) {
+          rail.scrollLeft = Math.max(0, Math.min(maxSL, rail.scrollLeft));
+          rail.classList.remove('dragging'); /* let proximity snap settle softly */
+          updateCurrent();
+          inertiaRAF = 0;
+          return;
+        }
+        inertiaRAF = requestAnimationFrame(glide);
+      }
+      if (moved > 8 && Math.abs(v) > 0.4) { inertiaRAF = requestAnimationFrame(glide); }
+      else { rail.classList.remove('dragging'); updateCurrent(); }
     });
     /* a drag should not count as a click on the card */
     rail.addEventListener('click', e => {
