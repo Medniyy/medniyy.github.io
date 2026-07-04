@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://ath.camera/og-image.png" />
 <script defer src="https://umami-service-production-3ded.up.railway.app/script.js" data-website-id="c6a909fb-aee0-4738-a319-eff57127ea98"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@700&display=swap" rel="stylesheet" />
 
 <style>
   :root {
@@ -86,11 +86,11 @@
   .hero-core { will-change: transform; visibility: hidden; }
   .hero-core.settle { transition: transform 1.5s cubic-bezier(0.4, 0, 0.1, 1); }
   .wordmark {
-    font-family: "Source Serif 4", serif;
+    font-family: "Unbounded", "Source Serif 4", serif;
     font-weight: 700;
     font-size: clamp(3rem, 9vh, 5.5rem);
     line-height: 1;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.054em; /* 0.06em − 10% */
   }
   .slogan {
     margin-top: clamp(8px, 1.6vh, 16px);
@@ -799,11 +799,11 @@
   function peekHint(){
     if (railTouched || rail.scrollLeft > 2 || document.documentElement.clientWidth >= 720) return;
     rail.classList.add('dragging'); /* suspend snap for the nudge */
-    const dist = 56, total = 1100, t0 = performance.now();
+    const dist = 96, total = 1900, t0 = performance.now();
     function frame(now){
       const p = Math.min(1, (now - t0) / total);
       if (railTouched) { rail.classList.remove('dragging'); return; }
-      rail.scrollLeft = Math.sin(Math.PI * p) * dist;
+      rail.scrollLeft = (1 - Math.cos(2 * Math.PI * p)) / 2 * dist; /* eases in and out both ways */
       if (p < 1) requestAnimationFrame(frame);
       else { rail.scrollLeft = 0; rail.classList.remove('dragging'); }
     }
