@@ -805,6 +805,23 @@
     }, true);
   }
 
+  /* one-time peek hint: nudge the rail left and back so phones see there are more videos */
+  let railTouched = false;
+  rail.addEventListener('pointerdown', () => { railTouched = true; }, { passive: true });
+  function peekHint(){
+    if (railTouched || rail.scrollLeft > 2 || document.documentElement.clientWidth >= 720) return;
+    rail.classList.add('dragging'); /* suspend snap for the nudge */
+    const dist = 56, total = 1100, t0 = performance.now();
+    function frame(now){
+      const p = Math.min(1, (now - t0) / total);
+      if (railTouched) { rail.classList.remove('dragging'); return; }
+      rail.scrollLeft = Math.sin(Math.PI * p) * dist;
+      if (p < 1) requestAnimationFrame(frame);
+      else { rail.scrollLeft = 0; rail.classList.remove('dragging'); }
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* mouse wheel moves the gallery card by card */
   let wheelAcc = 0, wheelLock = 0;
   rail.addEventListener('wheel', e => {
@@ -847,6 +864,7 @@
     stage.classList.add('in');
     setTimeout(() => menu.classList.add('in'), reduced ? 0 : 900);
     setTimeout(() => { cofounders.classList.add('in'); footer.classList.add('in'); }, reduced ? 0 : 1800);
+    if (!reduced) setTimeout(peekHint, 3100);
   }
   if (reduced) {
     sloganText.textContent = sloganFull;
