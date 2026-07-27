@@ -295,6 +295,15 @@
     transition: color .15s, border-color .15s;
   }
   .card .mute-btn:hover { color: var(--ice-1); border-color: var(--ice-3); }
+  .card .views {
+    position: absolute; top: 10px; left: 10px; z-index: 5;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    color: var(--silver);
+    background: rgba(10,10,10,0.55); border: 1px solid var(--line);
+    padding: 5px 8px; pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
 
   button { background: none; border: none; font: inherit; color: inherit; }
 
@@ -665,33 +674,47 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
   /* ── gallery data (order mirrors production carousel) ── */
+  function formatViews(n) {
+    if (!n) return '';
+    if (n >= 1_000_000) {
+      const m = n / 1_000_000;
+      return (m >= 10 ? Math.round(m) : +m.toFixed(1).replace(/\.0$/, '')) + 'M views';
+    }
+    if (n >= 1_000) {
+      const k = n / 1_000;
+      return (k >= 10 ? Math.round(k) : +k.toFixed(1).replace(/\.0$/, '')) + 'K views';
+    }
+    return n.toLocaleString('en-US') + ' views';
+  }
+
   const items = [
-    { src: "videos/optimized/status_2067549038333858281_1.mp4",  poster: "videos/posters/status_2067549038333858281_1.jpg?v=custom",  client: "Solflare",             title: "Solana Summer Song",              x: "https://x.com/solflare/status/2067549038333858281" },
-    { src: "videos/optimized/status_2047721279416131865_1.mp4",  poster: "videos/posters/status_2047721279416131865_1.jpg",  client: "Solana",               title: "Friends Edition",                x: "https://x.com/solana/status/2047784009791320245" },
-    { src: "videos/optimized/status_2044066170471624711_1.mp4",  poster: "videos/posters/status_2044066170471624711_1.jpg?v=custom",  client: "Solana",               title: "Moon Camp trailer",               x: "https://x.com/solflare/status/2044066170471624711" },
-    { src: "videos/optimized/status_2072637765699977466_1.mp4",  poster: "videos/posters/status_2072637765699977466_1.jpg?v=custom",  client: "Seeker",               title: "Live motion",                     x: "https://x.com/Frame_tailor_/status/2072637765699977466" },
-    { src: "videos/optimized/status_2073358201744175422_1.mp4",  poster: "videos/posters/status_2073358201744175422_1.jpg",  client: "Superteam Thailand",   title: "Launch Video",                    x: "https://x.com/SuperteamTH/status/2073358201744175422" },
-    { src: "videos/optimized/status_2058151170733191561_1.mp4",  poster: "videos/posters/status_2058151170733191561_1.jpg?v=custom",  client: "MonkeDAO",             title: "Return to Monke trailer",         x: "https://x.com/Frame_tailor_/status/2058151170733191561" },
-    { src: "videos/optimized/status_2073010933564342558_1.mp4",  poster: "videos/posters/status_2073010933564342558_1.jpg",  client: "Solflare",             title: "IRL ELI5 tutorials",             x: "https://x.com/validotxyz/status/2073010933564342558" },
-    { src: "videos/optimized/status_2052767900910731569_1.mp4",  poster: "videos/posters/status_2052767900910731569_1.jpg?v=custom",  client: "Solana",               title: "Me and Solana every night. Debut Single 2026", x: "https://x.com/Frame_tailor_/status/2052767900910731569" },
-    { src: "videos/optimized/status_2066887600003277054_1.mp4",  poster: "videos/posters/status_2066887600003277054_1.jpg",  client: "IslandDAO",            title: "Solana Summer Vibes",             x: "https://x.com/Frame_tailor_/status/2066887600003277054" },
-    { src: "videos/optimized/status_2021224132394811791_1.mp4", poster: "videos/posters/status_2021224132394811791_1.jpg",  client: "Solflare",             title: "Feature cinematic promo",         x: "https://x.com/athcamera/status/2021224132394811791" },
-    { src: "videos/optimized/status_1898652306478100757_1.mp4",  poster: "videos/posters/status_1898652306478100757_1.jpg?v=custom",  client: "Metaplex · 1st prize", title: "Solana Global Content Comp.",     x: "https://x.com/validotxyz/status/1898652306478100757" },
-    { src: "videos/optimized/status_2029551642614616278_1.mp4",  poster: "videos/posters/status_2029551642614616278_1.jpg",  client: "Solflare",             title: "Shield cinematic promo",          x: "https://x.com/athcamera/status/2029551642614616278" },
-    { src: "videos/optimized/status_2036765297856926051_1.mp4",  poster: "videos/posters/status_2036765297856926051_1.jpg",  client: "Solflare",             title: "Wallet Dealers clip",             x: "https://x.com/frame_tailor_/status/2036765297856926051" },
-    { src: "videos/optimized/status_2032811076463865937_1.mp4",  poster: "videos/posters/status_2032811076463865937_1.jpg",  client: "Pudgy Penguins",       title: "Malaysia trip vlog",              x: "https://x.com/validotxyz/status/2032811076463865937" },
-    { src: "videos/optimized/status_2037549403414646827_1.mp4",  poster: "videos/posters/status_2037549403414646827_1.jpg",  client: "Solflare",             title: "Beyond Speculation",              x: "https://x.com/solflare/status/2037549403414646827" },
-    { src: "videos/optimized/status_2033602532367282617_1.mp4",  poster: "videos/posters/status_2033602532367282617_1.jpg",  client: "Solflare",             title: "Solana Birthday clip",            x: "https://x.com/solflare/status/2033602532367282617" },
-    { src: "videos/optimized/status_2043323417328488876_1.mp4",  poster: "videos/posters/status_2043323417328488876_1.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 1",   x: "https://x.com/frame_tailor_/status/2043323417328488876" },
-    { src: "videos/optimized/status_2043323417328488876_2.mp4",  poster: "videos/posters/status_2043323417328488876_2.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 2",   x: "https://x.com/frame_tailor_/status/2043323417328488876" },
-    { src: "videos/optimized/status_2040060787524571575_1.mp4",  poster: "videos/posters/status_2040060787524571575_1.jpg",  client: "Solflare",             title: "Shield — promo",                  x: "https://x.com/frame_tailor_/status/2040060787524571575" },
-    { src: "videos/optimized/status_2029551642614616278_2.mp4",  poster: "videos/posters/status_2029551642614616278_2.jpg",  client: "Solflare",             title: "Shield overview",                 x: "https://x.com/athcamera/status/2029551642614616278" },
-    { src: "videos/optimized/status_2030998054514667826_1.mp4",  poster: "videos/posters/status_2030998054514667826_1.jpg",  client: "Solflare",             title: "GTA 6 Trailer",                   x: "https://x.com/athcamera/status/2030998054514667826" },
-    { src: "videos/optimized/status_2026620994853679146_1.mp4",  poster: "videos/posters/status_2026620994853679146_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 1",           x: "https://x.com/athcamera/status/2026620994853679146" },
-    { src: "videos/optimized/status_2023769377783627785_1.mp4",  poster: "videos/posters/status_2023769377783627785_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 2",           x: "https://x.com/athcamera/status/2023769377783627785" },
-    { src: "videos/optimized/status_2033907638787051843_1.mp4",  poster: "videos/posters/status_2033907638787051843_1.jpg",  client: "Thread visuals",       title: "Private sends",                   x: "https://x.com/athcamera/status/2033907638787051843" },
-    { src: "videos/optimized/status_2061408037789913499_1.mp4",  poster: "videos/posters/status_2061408037789913499_1.jpg?v=custom",  client: "Solana",               title: "Solana Summit Berlin 2026 trailer", x: "https://x.com/Frame_tailor_/status/2061408037789913499" },
-    { src: "videos/optimized/status_2051320555933171725_1.mp4",  poster: "videos/posters/status_2051320555933171725_1.jpg?v=custom",  client: "Solflare",             title: "Accelerate Miami trailer",        x: "https://x.com/solflare/status/2051320555933171725" },
+    { src: "videos/optimized/status_2067549038333858281_1.mp4",  poster: "videos/posters/status_2067549038333858281_1.jpg?v=custom",  client: "Solflare",             title: "Solana Summer Song",              views: 1645296, x: "https://x.com/solflare/status/2067549038333858281" },
+    { src: "videos/optimized/status_2047721279416131865_1.mp4",  poster: "videos/posters/status_2047721279416131865_1.jpg",  client: "Solana",               title: "Friends Edition",                views: 47343,   x: "https://x.com/solana/status/2047784009791320245" },
+    { src: "videos/optimized/status_2044066170471624711_1.mp4",  poster: "videos/posters/status_2044066170471624711_1.jpg?v=custom",  client: "Solana",               title: "Moon Camp trailer",               views: 14329,   x: "https://x.com/solflare/status/2044066170471624711" },
+    { src: "videos/optimized/status_2072637765699977466_1.mp4",  poster: "videos/posters/status_2072637765699977466_1.jpg?v=custom",  client: "Seeker",               title: "Live motion",                     views: 5206,    x: "https://x.com/Frame_tailor_/status/2072637765699977466" },
+    { src: "videos/optimized/status_2081024169592922252_1.mp4",  poster: "videos/posters/status_2081024169592922252_1.jpg",  client: "Superteam Thailand",   title: "Official Launch video",           views: 21309,   x: "https://x.com/SuperteamTH/status/2081024169592922252" },
+    { src: "videos/optimized/status_2073358201744175422_1.mp4",  poster: "videos/posters/status_2073358201744175422_1.jpg",  client: "Superteam Thailand",   title: "Launch Video",                    views: 86804,   x: "https://x.com/SuperteamTH/status/2073358201744175422" },
+    { src: "videos/optimized/status_2058151170733191561_1.mp4",  poster: "videos/posters/status_2058151170733191561_1.jpg?v=custom",  client: "MonkeDAO",             title: "Return to Monke trailer",         views: 3000,    x: "https://x.com/Frame_tailor_/status/2058151170733191561" },
+    { src: "videos/optimized/status_2073010933564342558_1.mp4",  poster: "videos/posters/status_2073010933564342558_1.jpg",  client: "Solflare",             title: "IRL ELI5 tutorials",             views: 6528,    x: "https://x.com/validotxyz/status/2073010933564342558" },
+    { src: "videos/optimized/status_2052767900910731569_1.mp4",  poster: "videos/posters/status_2052767900910731569_1.jpg?v=custom",  client: "Solana",               title: "Me and Solana every night. Debut Single 2026", views: 5217, x: "https://x.com/Frame_tailor_/status/2052767900910731569" },
+    { src: "videos/optimized/status_2066887600003277054_1.mp4",  poster: "videos/posters/status_2066887600003277054_1.jpg",  client: "IslandDAO",            title: "Solana Summer Vibes",             views: 8357,    x: "https://x.com/Frame_tailor_/status/2066887600003277054" },
+    { src: "videos/optimized/status_2021224132394811791_1.mp4", poster: "videos/posters/status_2021224132394811791_1.jpg",  client: "Solflare",             title: "Feature cinematic promo",         views: 4479,    x: "https://x.com/athcamera/status/2021224132394811791" },
+    { src: "videos/optimized/status_1898652306478100757_1.mp4",  poster: "videos/posters/status_1898652306478100757_1.jpg?v=custom",  client: "Metaplex · 1st prize", title: "Solana Global Content Comp.",     views: 20403,   x: "https://x.com/validotxyz/status/1898652306478100757" },
+    { src: "videos/optimized/status_2029551642614616278_1.mp4",  poster: "videos/posters/status_2029551642614616278_1.jpg",  client: "Solflare",             title: "Shield cinematic promo",          views: 617,     x: "https://x.com/athcamera/status/2029551642614616278" },
+    { src: "videos/optimized/status_2036765297856926051_1.mp4",  poster: "videos/posters/status_2036765297856926051_1.jpg",  client: "Solflare",             title: "Wallet Dealers clip",             views: 7279,    x: "https://x.com/frame_tailor_/status/2036765297856926051" },
+    { src: "videos/optimized/status_2032811076463865937_1.mp4",  poster: "videos/posters/status_2032811076463865937_1.jpg",  client: "Pudgy Penguins",       title: "Malaysia trip vlog",              views: 14383,   x: "https://x.com/validotxyz/status/2032811076463865937" },
+    { src: "videos/optimized/status_2037549403414646827_1.mp4",  poster: "videos/posters/status_2037549403414646827_1.jpg",  client: "Solflare",             title: "Beyond Speculation",              views: 3214767, x: "https://x.com/solflare/status/2037549403414646827" },
+    { src: "videos/optimized/status_2033602532367282617_1.mp4",  poster: "videos/posters/status_2033602532367282617_1.jpg",  client: "Solflare",             title: "Solana Birthday clip",            views: 11151,   x: "https://x.com/solflare/status/2033602532367282617" },
+    { src: "videos/optimized/status_2043323417328488876_1.mp4",  poster: "videos/posters/status_2043323417328488876_1.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 1",   views: 7015,    x: "https://x.com/frame_tailor_/status/2043323417328488876" },
+    { src: "videos/optimized/status_2043323417328488876_2.mp4",  poster: "videos/posters/status_2043323417328488876_2.jpg",  client: "Solflare",             title: "Visual aesthetics — trailer 2",   views: 7015,    x: "https://x.com/frame_tailor_/status/2043323417328488876" },
+    { src: "videos/optimized/status_2040060787524571575_1.mp4",  poster: "videos/posters/status_2040060787524571575_1.jpg",  client: "Solflare",             title: "Shield — promo",                  views: 2156,    x: "https://x.com/frame_tailor_/status/2040060787524571575" },
+    { src: "videos/optimized/status_2029551642614616278_2.mp4",  poster: "videos/posters/status_2029551642614616278_2.jpg",  client: "Solflare",             title: "Shield overview",                 views: 617,     x: "https://x.com/athcamera/status/2029551642614616278" },
+    { src: "videos/optimized/status_2030998054514667826_1.mp4",  poster: "videos/posters/status_2030998054514667826_1.jpg",  client: "Solflare",             title: "GTA 6 Trailer",                   views: 9635,    x: "https://x.com/athcamera/status/2030998054514667826" },
+    { src: "videos/optimized/status_2026620994853679146_1.mp4",  poster: "videos/posters/status_2026620994853679146_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 1",           views: 902,     x: "https://x.com/athcamera/status/2026620994853679146" },
+    { src: "videos/optimized/status_2023769377783627785_1.mp4",  poster: "videos/posters/status_2023769377783627785_1.jpg",  client: "Solflare",             title: "Comedy sketch promo 2",           views: 7766,    x: "https://x.com/athcamera/status/2023769377783627785" },
+    { src: "videos/optimized/status_2033907638787051843_1.mp4",  poster: "videos/posters/status_2033907638787051843_1.jpg",  client: "Thread visuals",       title: "Private sends",                   views: 1910,    x: "https://x.com/athcamera/status/2033907638787051843" },
+    { src: "videos/optimized/status_2061408037789913499_1.mp4",  poster: "videos/posters/status_2061408037789913499_1.jpg?v=custom",  client: "Solana",               title: "Solana Summit Berlin 2026 trailer", views: 5009, x: "https://x.com/Frame_tailor_/status/2061408037789913499" },
+    { src: "videos/optimized/status_2051320555933171725_1.mp4",  poster: "videos/posters/status_2051320555933171725_1.jpg?v=custom",  client: "Solflare",             title: "Accelerate Miami trailer",        views: 6616,    x: "https://x.com/solflare/status/2051320555933171725" },
   ];
 
   const rail = document.getElementById('rail');
@@ -703,6 +726,7 @@
       </video>
       <div class="shade"></div>
       <div class="scan"></div>
+      ${it.views ? `<div class="views">${formatViews(it.views)}</div>` : ''}
       <button class="mute-btn" aria-label="Toggle sound">
         <svg width="15" height="15" data-ic="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM23 9l-6 6M17 9l6 6"/></svg>
         <svg width="15" height="15" data-ic="on" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
